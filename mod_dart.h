@@ -8,5 +8,7 @@
 #ifndef MOD_DART_H
 #define	MOD_DART_H
 
+extern module AP_MODULE_DECLARE_DATA dart_module;
+
 #endif	/* MOD_DART_H */
 
