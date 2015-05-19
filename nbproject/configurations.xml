@@ -35,37 +35,11 @@
           <executablePath></executablePath>
         </makeTool>
       </makefileType>
-      <item path="apache.c" ex="false" tool="1" flavor2="0">
-        <ccTool>
-          <incDir>
-            <pElem>../../../../../build/dart/runtime/include</pElem>
-            <pElem>/usr/include/apr-1</pElem>
-            <pElem>/usr/include/httpd</pElem>
-            <pElem>../../../../../build/dart/runtime</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
+      <item path="apache.c" ex="false" tool="0" flavor2="2">
       </item>
-      <item path="mod_dart.c" ex="false" tool="1" flavor2="0">
-        <ccTool>
-          <incDir>
-            <pElem>../../../../../build/dart/runtime/include</pElem>
-            <pElem>../../../../../build/dart/runtime/platform</pElem>
-            <pElem>../../../../../build/dart/runtime/bin</pElem>
-            <pElem>/usr/include/apr-1</pElem>
-            <pElem>/usr/include/httpd</pElem>
-            <pElem>/usr/include/c++/4.8.2/bits</pElem>
-            <pElem>../../../../../build/dart/runtime</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
+      <item path="mod_dart.c" ex="false" tool="0" flavor2="2">
       </item>
-      <item path="mod_dart_gen.c" ex="false" tool="1" flavor2="0">
-        <ccTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
+      <item path="mod_dart_gen.c" ex="false" tool="0" flavor2="2">
       </item>
     </conf>
   </confs>

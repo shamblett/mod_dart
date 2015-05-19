@@ -17,7 +17,7 @@ all: dart
 .PHONY: dart
 dart: 
 	
-	$(APXS) -S CC=g++ -o mod_dart.so -Wc,-Wall -Wi, -I -lstdc++  apache.c mod_dart.c
+	$(APXS) -S CC=g++ -o mod_dart.so -Wc,-Wall -Wi, -I -lstdc++ mod_dart.c
 
 
 #   cleanup
