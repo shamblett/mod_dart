@@ -10,9 +10,6 @@ home=/home/steve
 #   the used tools
 APXS=apxs
 
-#   additional defines, includes and libraries
-COPTS="-DNDEBUG -fPIC"
-
 #   the default target
 all: dart
 
@@ -20,7 +17,7 @@ all: dart
 .PHONY: dart
 dart: 
 	
-	$(APXS) -S CC=g++ -c $(COPTS) -o mod_dart.so -Wc,-Wall -Wi, -lstdc++ mod_dart.c
+	$(APXS) -a -c -Wc,-Wall -Wi, mod_dart.c
 
 
 #   cleanup

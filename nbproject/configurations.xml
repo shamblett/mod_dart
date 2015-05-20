@@ -27,7 +27,7 @@
       </toolsSet>
       <flagsDictionary>
         <element flagsID="0"
-                 commonFlags="-O2 -fstack-protector-strong -m64 -mtune=generic -fPIC"/>
+                 commonFlags="-std=gnu99 -O2 -g -fexceptions -fstack-protector-strong -m64 -mtune=generic -fPIC"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -47,16 +47,19 @@
       </makefileType>
       <item path="apache.c" ex="false" tool="1" flavor2="4">
       </item>
-      <item path="mod_dart.c" ex="false" tool="1" flavor2="0">
-        <ccTool flags="0">
+      <item path="mod_dart.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="0">
+          <incDir>
+            <pElem>/usr/include/httpd</pElem>
+            <pElem>/usr/include/apr-1</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>LINUX</Elem>
-            <Elem>NDEBUG</Elem>
             <Elem>PIC</Elem>
             <Elem>_GNU_SOURCE</Elem>
             <Elem>_REENTRANT</Elem>
           </preprocessorList>
-        </ccTool>
+        </cTool>
       </item>
       <item path="mod_dart_gen.c" ex="false" tool="0" flavor2="2">
       </item>
