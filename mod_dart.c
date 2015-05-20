@@ -1,5 +1,5 @@
 
-// Copyright 2012 Google Inc.
+// Copyright 20 S. Hamblett
 // Licensed under the Apache License, Version 2.0 (the "License")
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
@@ -38,7 +38,7 @@ static int md_handler(request_rec *r) {
     FILE *fp;
     char output[PATH_MAX];
     char command[PATH_MAX];
-
+    
     if (!r->handler || strcmp(r->handler, "dart")) return (DECLINED);
 
     /**
