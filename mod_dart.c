@@ -19,6 +19,8 @@
 
 typedef struct {
     const char *pathToExe;
+    const char *pathToCache;
+    const char *pathToTemplate;
 
 } md_config;
 
@@ -29,9 +31,15 @@ const char *md_set_exe_path(cmd_parms *cmd, void *cfg, const char *arg) {
     return (const char*) NULL;
 }
 
-//static void md_child_init(apr_pool_t *p, server_rec *s) {
+const char *md_set_cache_path(cmd_parms *cmd, void *cfg, const char *arg) {
+    config.pathToCache = arg;
+    return (const char*) NULL;
+}
 
-//}
+const char *md_set_template_path(cmd_parms *cmd, void *cfg, const char *arg) {
+    config.pathToTemplate = arg;
+    return (const char*) NULL;
+}
 
 static int md_handler(request_rec *r) {
 
@@ -55,8 +63,11 @@ static int md_handler(request_rec *r) {
     strcpy(cacheFile, cachePath);
     strcat(cacheFile, basename(filename));
     sprintf( cpcmd, "cp \'%s\' \'%s\'", filename, cacheFile);
-    status =  system(cpcmd);
-    
+    status = system(cpcmd);
+    if (status == -1 ) {
+        ap_rprintf(r, "<h2> Failed to create cache file</h2>");
+        return (DECLINED);
+    }
     /* Open it and append the template */
     pcacheFile = fopen(cacheFile, "a");
     templateBuffer = getApacheClass();
@@ -71,6 +82,7 @@ static int md_handler(request_rec *r) {
     if (fp == NULL) {
 
         ap_rprintf(r, "<h2> POPEN Fail %s</h2>", command);
+        return (DECLINED);
     }
     
     /**
@@ -89,14 +101,14 @@ static int md_handler(request_rec *r) {
 
 static void md_register_hooks(apr_pool_t *p) {
     ap_hook_handler(md_handler, NULL, NULL, APR_HOOK_MIDDLE);
-    //ap_hook_child_init(md_child_init, NULL, NULL, APR_HOOK_MIDDLE);
 
 }
 
 static const command_rec md_directives[] = {
-    //AP_INIT_TAKE1("DartDebug", (cmd_func) dart_set_debug, NULL, OR_ALL, "Whether error messages should be sent to the browser"),
-    AP_INIT_TAKE1("DartExePath", md_set_exe_path, NULL, RSRC_CONF, "The path to the Dart executable"), {
-        NULL}
+    AP_INIT_TAKE1("DartExePath", md_set_exe_path, NULL, RSRC_CONF, "The path to the Dart executable"), 
+    AP_INIT_TAKE1("CachePath", md_set_cache_path, NULL, RSRC_CONF, "The path to the script cache"), 
+    AP_INIT_TAKE1("DartTemplatePath", md_set_template_path, NULL, RSRC_CONF, "The path to the script template"),
+    {NULL}
 };
 
 
