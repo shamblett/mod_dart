@@ -3,9 +3,11 @@
 ##  S. Hamblett May 2015
 ##
 
-builddir=.
-home=/home/steve
+# setup
+current_dir = $(shell pwd)
 
+# third party
+CTMPL=$(current_dir)/ctemplate-1.0/
 
 #   the used tools
 APXS=apxs
@@ -17,7 +19,7 @@ all: dart
 .PHONY: dart
 dart: 
 	
-	$(APXS) -a -c -Wc,-Wall -Wi, mod_dart.c
+	$(APXS) -a -c -Wc,-Wall -Wi, -L$(CTMPL) -lctemplate mod_dart.c template.c
 
 
 #   cleanup

@@ -4,7 +4,7 @@
     <df root="." name="0">
       <in>apache.c</in>
       <in>mod_dart.c</in>
-      <in>mod_dart_gen.c</in>
+      <in>template.c</in>
     </df>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -37,6 +37,18 @@
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
           <executablePath></executablePath>
+          <cTool>
+            <incDir>
+              <pElem>/usr/include/httpd</pElem>
+              <pElem>/usr/include/apr-1</pElem>
+            </incDir>
+            <preprocessorList>
+              <Elem>LINUX</Elem>
+              <Elem>PIC</Elem>
+              <Elem>_GNU_SOURCE</Elem>
+              <Elem>_REENTRANT</Elem>
+            </preprocessorList>
+          </cTool>
           <ccTool>
             <incDir>
               <pElem>/usr/include/httpd</pElem>
@@ -49,19 +61,11 @@
       </item>
       <item path="mod_dart.c" ex="false" tool="0" flavor2="3">
         <cTool flags="0">
-          <incDir>
-            <pElem>/usr/include/httpd</pElem>
-            <pElem>/usr/include/apr-1</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>LINUX</Elem>
-            <Elem>PIC</Elem>
-            <Elem>_GNU_SOURCE</Elem>
-            <Elem>_REENTRANT</Elem>
-          </preprocessorList>
         </cTool>
       </item>
-      <item path="mod_dart_gen.c" ex="false" tool="0" flavor2="2">
+      <item path="template.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="0">
+        </cTool>
       </item>
     </conf>
   </confs>

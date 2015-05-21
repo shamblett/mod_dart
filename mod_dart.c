@@ -15,6 +15,7 @@
 #include "apr_strings.h"
 
 #include "mod_dart.h"
+#include "template.h"
 
 typedef struct {
     const char *pathToExe;
@@ -36,25 +37,46 @@ static int md_handler(request_rec *r) {
 
     char* filename;
     FILE *fp;
+    FILE *pcacheFile;
     char output[PATH_MAX];
     char command[PATH_MAX];
+    char* cachePath = "/var/www/html/cache/";
+    char cacheFile[PATH_MAX];
+    char cpcmd[PATH_MAX];
+    int status;
+    char* templateBuffer;
     
     if (!r->handler || strcmp(r->handler, "dart")) return (DECLINED);
 
-    /**
-     * We must first set the appropriate content type, followed by our output.
-     */
-    ap_set_content_type(r, "text/html");
+    /* Get the filename  */
     filename = apr_pstrdup(r->pool, r->filename);
+    
+    /* Create the copied cache file */
+    strcpy(cacheFile, cachePath);
+    strcat(cacheFile, basename(filename));
+    sprintf( cpcmd, "cp \'%s\' \'%s\'", filename, cacheFile);
+    status =  system(cpcmd);
+    
+    /* Open it and append the template */
+    pcacheFile = fopen(cacheFile, "a");
+    templateBuffer = getApacheClass();
+    fprintf(pcacheFile, templateBuffer );
+    fclose(pcacheFile);
+    
+    /* Invoke the VM */
     strcpy(command, config.pathToExe);
     strcat(command, "  ");
-    strcat(command, filename);
+    strcat(command, cacheFile);
     fp = popen(command, "r");
     if (fp == NULL) {
 
         ap_rprintf(r, "<h2> POPEN Fail %s</h2>", command);
     }
-
+    
+    /**
+     * We must first set the appropriate content type, followed by our output.
+     */
+    ap_set_content_type(r, "text/html");
     while (fgets(output, PATH_MAX, fp) != NULL)
         ap_rprintf(r, "%s", output);
    pclose(fp);
