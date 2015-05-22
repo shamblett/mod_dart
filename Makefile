@@ -20,6 +20,7 @@ all: dart
 dart: 
 	
 	$(APXS) -a -c -Wc,-Wall -Wi, -L$(CTMPL) -lctemplate mod_dart.c template.c
+	cp apacheTemplate/apacheTemplate.tpl /var/www/html/template
 
 
 #   cleanup

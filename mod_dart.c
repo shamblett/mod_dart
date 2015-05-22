@@ -44,19 +44,28 @@ const char *md_set_template_path(cmd_parms *cmd, void *cfg, const char *arg) {
 static int md_handler(request_rec *r) {
 
     char* filename;
-    FILE *fp;
-    FILE *pcacheFile;
+    FILE *fp = NULL;
+    FILE *pcacheFile = NULL;
     char output[PATH_MAX];
     char command[PATH_MAX];
     char cacheFile[PATH_MAX];
     char cpcmd[PATH_MAX];
-    int status;
-    char* templateBuffer;
+    int status = -1;
+    char* templateBuffer = NULL;
     
     if (!r->handler || strcmp(r->handler, "dart")) return (DECLINED);
 
+    /* Set the template path*/
+    setTemplatePath(config.pathToTemplate);
+    
+    /* Set the cache path*/
+    setTemplatePath(config.pathToCache);
+    
     /* Get the filename */
     filename = apr_pstrdup(r->pool, r->filename);
+    
+    //TODO bodge the ip address for now
+    addVar("IP", "123.456.789.000");
     
     /* Create the copied cache file */
     strcpy(cacheFile, config.pathToCache);
@@ -94,7 +103,10 @@ static int md_handler(request_rec *r) {
         ap_rprintf(r, "%s", output);
    pclose(fp);
 
-    /* Lastly, we must tell the server that we took care of this request and everything went fine.
+   /* Tidy up */
+   free(templateBuffer);
+   
+   /* Lastly, we must tell the server that we took care of this request and everything went fine.
      * We do so by simply returning the value OK to the server.
      */
     return OK;
@@ -108,7 +120,7 @@ static void md_register_hooks(apr_pool_t *p) {
 static const command_rec md_directives[] = {
     AP_INIT_TAKE1("DartExePath", md_set_exe_path, NULL, RSRC_CONF, "The path to the Dart executable"), 
     AP_INIT_TAKE1("CachePath", md_set_cache_path, NULL, RSRC_CONF, "The path to the script cache"), 
-    AP_INIT_TAKE1("DartTemplatePath", md_set_template_path, NULL, RSRC_CONF, "The path to the script template"),
+    AP_INIT_TAKE1("TemplatePath", md_set_template_path, NULL, RSRC_CONF, "The path to the script template"),
     {NULL}
 };
 

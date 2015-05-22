@@ -4,7 +4,7 @@
 // You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 #include <stdio.h>
-#include "include/dart_api.h"
+
 
 #include "httpd.h"
 #include "http_config.h"
@@ -14,9 +14,7 @@
 #include "apr_buckets.h"
 #include "apr_strings.h"
 
-#define AP_WARN(r, message, ...) ap_log_error(APLOG_MARK, LOG_WARNING, 0, (r)->server, message "\n", ##__VA_ARGS__)
-extern Dart_Handle LoadFile(const char* cpath);
-extern const char *mod_dart_source;
+
 
 typedef struct {
   request_rec *request;

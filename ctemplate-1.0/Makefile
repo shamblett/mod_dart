@@ -1,4 +1,4 @@
-CFLAGS = -I .
+CFLAGS = -I. -fPIC
 
 template: main.o libctemplate.a
 	$(CC) $(CFLAGS) -o template -L . main.o -lctemplate

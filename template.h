@@ -16,6 +16,13 @@ extern "C" {
 #endif
     
     char* getApacheClass();
+    
+    void setTemplatePath(const char*path);
+    
+    void setCachePath(const char* path);
+    
+    void addVar( const char *name, const char *value);
+    
 
 #ifdef	__cplusplus
 }
