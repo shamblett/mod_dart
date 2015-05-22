@@ -48,7 +48,6 @@ static int md_handler(request_rec *r) {
     FILE *pcacheFile;
     char output[PATH_MAX];
     char command[PATH_MAX];
-    char* cachePath = "/var/www/html/cache/";
     char cacheFile[PATH_MAX];
     char cpcmd[PATH_MAX];
     int status;
@@ -56,11 +55,11 @@ static int md_handler(request_rec *r) {
     
     if (!r->handler || strcmp(r->handler, "dart")) return (DECLINED);
 
-    /* Get the filename  */
+    /* Get the filename */
     filename = apr_pstrdup(r->pool, r->filename);
     
     /* Create the copied cache file */
-    strcpy(cacheFile, cachePath);
+    strcpy(cacheFile, config.pathToCache);
     strcat(cacheFile, basename(filename));
     sprintf( cpcmd, "cp \'%s\' \'%s\'", filename, cacheFile);
     status = system(cpcmd);
@@ -68,6 +67,7 @@ static int md_handler(request_rec *r) {
         ap_rprintf(r, "<h2> Failed to create cache file</h2>");
         return (DECLINED);
     }
+    
     /* Open it and append the template */
     pcacheFile = fopen(cacheFile, "a");
     templateBuffer = getApacheClass();
@@ -76,8 +76,9 @@ static int md_handler(request_rec *r) {
     
     /* Invoke the VM */
     strcpy(command, config.pathToExe);
-    strcat(command, "  ");
+    strcat(command, " ");
     strcat(command, cacheFile);
+    strcat(command, " 2>&1");
     fp = popen(command, "r");
     if (fp == NULL) {
 
