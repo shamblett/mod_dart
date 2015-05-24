@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <string.h>
-
+#include <stdlib.h>
 
 #include "template.h"
 #include "ctemplate-1.0/ctemplate.h"
@@ -12,30 +12,20 @@ const char* cachePath = NULL;
 
 TMPL_varlist * varList;
 
-char * generateScriptFilename() {
-
-    char* ptr = NULL;
-    char scriptFileName[L_tmpnam + 1];
-
-    ptr = tmpnam(scriptFileName);
-    return ptr;
-
-}
-
 char* getApacheClass() {
-
-    
-    char* scriptFileName = NULL;
+   
     char scriptPath[PATH_MAX];
     FILE *fp;
+    int fd;
     char* buffer = malloc(1000);
     ssize_t bytes_read = 0;
     int status = -1;
 
-    scriptFileName = generateScriptFilename();
     strcpy(scriptPath, cachePath);
-    strcat(scriptPath, scriptFileName);
-    fp = fopen(scriptPath, "w");
+    strcat(scriptPath, "XXXXXX");
+    fd = mkstemp(scriptPath);
+    if ( !fd ) { return "MKSTMP failure";}
+    fp = fdopen(fd, "w");
     
     status = TMPL_write(templatePath, 0, 0, varList, fp, 0);
     if ( status ) { return "TMPL_WRITE failed";}
