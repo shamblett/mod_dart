@@ -5,6 +5,6 @@
 
 class Apache{ 
 
-    static final String ip =  '<TMPL_VAR name="IP">';
+    static final String ip =  '<TMPL_VAR name= "IP">';
         
 }
