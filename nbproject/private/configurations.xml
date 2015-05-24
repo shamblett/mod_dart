@@ -6,17 +6,8 @@
         <in>apacheTemplate.tpl</in>
       </df>
       <df name="ctemplate-1.0">
-        <df name="examples">
-          <in>fact.c</in>
-          <in>printenv.c</in>
-        </df>
-        <df name="t">
-        </df>
         <in>ctemplate.c</in>
         <in>ctemplate.h</in>
-        <in>main.c</in>
-      </df>
-      <df name="test">
       </df>
       <in>apache.c</in>
       <in>mod_dart.c</in>
