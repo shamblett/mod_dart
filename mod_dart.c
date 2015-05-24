@@ -59,7 +59,7 @@ static int md_handler(request_rec *r) {
     setTemplatePath(config.pathToTemplate);
     
     /* Set the cache path*/
-    setTemplatePath(config.pathToCache);
+    setCachePath(config.pathToCache);
     
     /* Get the filename */
     filename = apr_pstrdup(r->pool, r->filename);
@@ -104,7 +104,7 @@ static int md_handler(request_rec *r) {
    pclose(fp);
 
    /* Tidy up */
-   free(templateBuffer);
+   //free(templateBuffer);
    
    /* Lastly, we must tell the server that we took care of this request and everything went fine.
      * We do so by simply returning the value OK to the server.

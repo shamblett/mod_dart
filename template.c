@@ -25,7 +25,7 @@ char* getApacheClass() {
     strcat(scriptPath, "XXXXXX");
     fd = mkstemp(scriptPath);
     if ( !fd ) { return "MKSTMP failure";}
-    fp = fdopen(fd, "w");
+    fp = fdopen(fd, "w+");
     
     status = TMPL_write(templatePath, 0, 0, varList, fp, 0);
     if ( status ) { return "TMPL_WRITE failed";}
