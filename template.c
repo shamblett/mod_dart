@@ -26,12 +26,14 @@ char* getApacheClass() {
     fd = mkstemp(scriptPath);
     if ( !fd ) { return "MKSTMP failure";}
     fp = fdopen(fd, "w+");
+    fclose(fp);
     
-    status = TMPL_write(templatePath, 0, 0, varList, fp, 0);
+    status = TMPL_write(templatePath, 0, 0, varList, fp, fp);
     if ( status ) { return "TMPL_WRITE failed";}
     bytes_read = getdelim(&buffer, 0, '\0', fp);
     if (bytes_read != -1) {return "getdelim failed";}
 
+    TMPL_free_varlist (varList);
     return buffer;
 
 }
