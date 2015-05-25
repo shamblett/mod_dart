@@ -28,7 +28,7 @@ char* getApacheClass() {
     fp = fdopen(fd, "w+");
     fclose(fp);
     
-    status = TMPL_write(templatePath, 0, 0, varList, fp, fp);
+    status = TMPL_write(templatePath, 0, 0, varList, fp, 0);
     if ( status ) { return "TMPL_WRITE failed";}
     bytes_read = getdelim(&buffer, 0, '\0', fp);
     if (bytes_read != -1) {return "getdelim failed";}

@@ -30,6 +30,8 @@
       </toolsSet>
       <flagsDictionary>
         <element flagsID="0"
+                 commonFlags="-std=gnu99 -O2 -g -fexceptions -fstack-protector-strong -m64 -mtune=generic -fPIC"/>
+        <element flagsID="1"
                  commonFlags="-std=gnu99 -O2 -g -fexceptions -fstack-protector-strong -march=i686 -mtune=atom -fasynchronous-unwind-tables -fPIC"/>
       </flagsDictionary>
       <codeAssistance>
@@ -49,7 +51,6 @@
               <Elem>LINUX</Elem>
               <Elem>PIC</Elem>
               <Elem>_GNU_SOURCE</Elem>
-              <Elem>_LARGEFILE64_SOURCE</Elem>
               <Elem>_REENTRANT</Elem>
             </preprocessorList>
           </cTool>
@@ -64,7 +65,7 @@
       <item path="apache.c" ex="false" tool="1" flavor2="4">
       </item>
       <item path="ctemplate-1.0/ctemplate.c" ex="false" tool="0" flavor2="3">
-        <cTool flags="0">
+        <cTool flags="1">
         </cTool>
       </item>
       <folder path="0/ctemplate-1.0">
@@ -72,6 +73,9 @@
           <incDir>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>_LARGEFILE64_SOURCE</Elem>
+          </preprocessorList>
         </cTool>
       </folder>
       <item path="mod_dart.c" ex="false" tool="0" flavor2="3">
