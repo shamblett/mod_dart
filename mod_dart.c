@@ -64,6 +64,7 @@ static int md_handler(request_rec *r) {
     /* Get the filename */
     filename = apr_pstrdup(r->pool, r->filename);
     
+    addVar("version", "0.1.0");
     //TODO bodge the ip address for now
     addVar("IP", "123.456.789.000");
     

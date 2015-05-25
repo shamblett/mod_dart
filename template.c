@@ -3,6 +3,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <apr_file_io.h>
+
 #include "template.h"
 #include "ctemplate-1.0/ctemplate.h"
 
@@ -18,20 +20,23 @@ char* getApacheClass() {
     FILE *fp;
     int fd;
     char* buffer = malloc(1000);
-    ssize_t bytes_read = 0;
     int status = -1;
+    apr_file_t* thefile;
+    apr_size_t fileSize = 1000;
 
     strcpy(scriptPath, cachePath);
     strcat(scriptPath, "XXXXXX");
     fd = mkstemp(scriptPath);
     if ( !fd ) { return "MKSTMP failure";}
-    fp = fdopen(fd, "w+");
+    fp = fdopen(fd, "rw");
     fclose(fp);
-    
+    fp = fopen(scriptPath, "w");
     status = TMPL_write(templatePath, 0, 0, varList, fp, 0);
+    fclose(fp);
     if ( status ) { return "TMPL_WRITE failed";}
-    bytes_read = getdelim(&buffer, 0, '\0', fp);
-    if (bytes_read != -1) {return "getdelim failed";}
+    thefile = apr_file_open(scriptPath, "r");
+    apr_file_read(thefile, buffer, &fileSize);
+                                       
 
     TMPL_free_varlist (varList);
     return buffer;
