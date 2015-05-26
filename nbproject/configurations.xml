@@ -6,8 +6,10 @@
         <in>ctemplate.c</in>
       </df>
       <in>apache.c</in>
+      <in>error.c</in>
       <in>mod_dart.c</in>
       <in>template.c</in>
+      <in>utils.c</in>
     </df>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -31,8 +33,6 @@
       <flagsDictionary>
         <element flagsID="0"
                  commonFlags="-std=gnu99 -O2 -g -fexceptions -fstack-protector-strong -m64 -mtune=generic -fPIC"/>
-        <element flagsID="1"
-                 commonFlags="-std=gnu99 -O2 -g -fexceptions -fstack-protector-strong -march=i686 -mtune=atom -fasynchronous-unwind-tables -fPIC"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -54,18 +54,16 @@
               <Elem>_REENTRANT</Elem>
             </preprocessorList>
           </cTool>
-          <ccTool>
-            <incDir>
-              <pElem>/usr/include/httpd</pElem>
-              <pElem>/usr/include/apr-1</pElem>
-            </incDir>
-          </ccTool>
         </makeTool>
       </makefileType>
-      <item path="apache.c" ex="false" tool="1" flavor2="4">
+      <item path="apache.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="0">
+        </cTool>
       </item>
       <item path="ctemplate-1.0/ctemplate.c" ex="false" tool="0" flavor2="3">
-        <cTool flags="1">
+      </item>
+      <item path="error.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="0">
         </cTool>
       </item>
       <folder path="0/ctemplate-1.0">
@@ -83,6 +81,10 @@
         </cTool>
       </item>
       <item path="template.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="utils.c" ex="false" tool="0" flavor2="3">
         <cTool flags="0">
         </cTool>
       </item>

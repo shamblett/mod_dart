@@ -5,17 +5,18 @@
 
 #include <stdio.h>
 
-#include "httpd.h"
-#include "http_config.h"
-#include "http_log.h"
-#include "http_protocol.h"
-#include "apr_hash.h"
-#include "ap_config.h"
-#include "ap_provider.h"
-#include "apr_strings.h"
+#include <httpd.h>
+#include <http_config.h>
+#include <http_log.h>
+#include <http_protocol.h>
+#include <apr_hash.h>
+#include <ap_config.h>
+#include <ap_provider.h>
+#include <apr_strings.h>
 
+#include "apache.h"
 #include "mod_dart.h"
-#include "template.h"
+
 
 typedef struct {
     const char *pathToExe;
@@ -55,39 +56,13 @@ static int md_handler(request_rec *r) {
     
     if (!r->handler || strcmp(r->handler, "dart")) return (DECLINED);
 
-    /* Set the template path*/
-    setTemplatePath(config.pathToTemplate);
-    
-    /* Set the cache path*/
-    setCachePath(config.pathToCache);
-    
     /* Get the filename */
     filename = apr_pstrdup(r->pool, r->filename);
-    
-    addVar("version", "0.1.0");
-    //TODO bodge the ip address for now
-    addVar("IP", "123.456.789.000");
-    
-    /* Create the copied cache file */
-    strcpy(cacheFile, config.pathToCache);
-    strcat(cacheFile, basename(filename));
-    sprintf( cpcmd, "cp \'%s\' \'%s\'", filename, cacheFile);
-    status = system(cpcmd);
-    if (status == -1 ) {
-        ap_rprintf(r, "<h2> Failed to create cache file</h2>");
-        return (DECLINED);
-    }
-    
-    /* Open it and append the template */
-    pcacheFile = fopen(cacheFile, "a");
-    templateBuffer = getApacheClass();
-    fprintf(pcacheFile, templateBuffer );
-    fclose(pcacheFile);
     
     /* Invoke the VM */
     strcpy(command, config.pathToExe);
     strcat(command, " ");
-    strcat(command, cacheFile);
+    strcat(command, filename);
     strcat(command, " 2>&1");
     fp = popen(command, "r");
     if (fp == NULL) {
@@ -103,9 +78,6 @@ static int md_handler(request_rec *r) {
     while (fgets(output, PATH_MAX, fp) != NULL)
         ap_rprintf(r, "%s", output);
    pclose(fp);
-
-   /* Tidy up */
-   //free(templateBuffer);
    
    /* Lastly, we must tell the server that we took care of this request and everything went fine.
      * We do so by simply returning the value OK to the server.

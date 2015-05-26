@@ -8,13 +8,16 @@
         <in>ctemplate.c</in>
         <in>ctemplate.h</in>
       </df>
-      <df name="test">
-      </df>
       <in>apache.c</in>
+      <in>apache.h</in>
+      <in>error.c</in>
+      <in>error.h</in>
       <in>mod_dart.c</in>
       <in>mod_dart.h</in>
       <in>template.c</in>
       <in>template.h</in>
+      <in>utils.c</in>
+      <in>utils.h</in>
     </df>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>

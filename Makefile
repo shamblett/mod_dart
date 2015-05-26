@@ -19,7 +19,8 @@ all: dart
 .PHONY: dart
 dart: 
 	
-	$(APXS) -a -c -Wc,-Wall -Wi,  mod_dart.c template.c -I$(CTMPL) $(CTMPL)/ctemplate.c
+	$(APXS) -a -c -Wc,-Wall -Wi,  mod_dart.c template.c utils.c error.c apache.c \
+	    -I$(CTMPL) $(CTMPL)/ctemplate.c
 	cp apacheTemplate/apacheTemplate.tpl /var/www/html/template
 
 

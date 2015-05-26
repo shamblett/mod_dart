@@ -8,20 +8,13 @@
 #ifndef TEMPLATE_H
 #define	TEMPLATE_H
 
-#include <stdio.h>
 #include "ctemplate-1.0/ctemplate.h"
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
     
-    char* getApacheClass();
-    
-    void setTemplatePath(const char*path);
-    
-    void setCachePath(const char* path);
-    
-    void addVar( const char *name, const char *value);
+    TMPL_varlist * addVar( const char *name, const char *value, TMPL_varlist * varList);
     
 
 #ifdef	__cplusplus
