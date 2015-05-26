@@ -1,7 +1,10 @@
-
-// Copyright 2012 Google Inc.
-// Licensed under the Apache License, Version 2.0 (the "License")
-// You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+/*
+ * Package : mod_dart
+ * Author : S. Hamblett <steve.hamblett@linux.com>
+ * Date   : 26/05/2015
+ * Copyright :  S.Hamblett 2015
+ * License : GPL V3, see the LICENSE file for details
+ */
 
 
 #include <apr_strings.h>

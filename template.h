@@ -1,9 +1,11 @@
-/* 
- * File:   template.h
- * Author: steve
- *
- * Created on 21 May 2015, 09:44
+/*
+ * Package : mod_dart
+ * Author : S. Hamblett <steve.hamblett@linux.com>
+ * Date   : 26/05/2015
+ * Copyright :  S.Hamblett 2015
+ * License : GPL V3, see the LICENSE file for details
  */
+
 
 #ifndef TEMPLATE_H
 #define	TEMPLATE_H

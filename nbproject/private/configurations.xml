@@ -8,6 +8,7 @@
         <in>ctemplate.c</in>
         <in>ctemplate.h</in>
       </df>
+      <in>LICENSE</in>
       <in>apache.c</in>
       <in>apache.h</in>
       <in>error.c</in>
