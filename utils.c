@@ -18,7 +18,7 @@ apr_file_t* getTempFile(char* template, apr_pool_t* pool) {
     
     status = apr_file_mktemp(&ret, template, 0, pool);
     if ( status != APR_SUCCESS) {
-        logError("mod_dart - getTempFile - Failed to create temp file", pool, status);
+        logError("getTempFile - Failed to create temp file", pool, status);
         return NULL;
     }
     

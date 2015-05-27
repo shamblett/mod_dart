@@ -16,10 +16,12 @@
 #include <ap_config.h>
 #include <ap_provider.h>
 #include <apr_strings.h>
+#include <apr_file_io.h>
 
 #include "apache.h"
+#include "utils.h"
+#include "error.h"
 #include "mod_dart.h"
-
 
 typedef struct {
     const char *pathToExe;
@@ -47,31 +49,61 @@ const char *md_set_template_path(cmd_parms *cmd, void *cfg, const char *arg) {
 
 static int md_handler(request_rec *r) {
 
-    char* filename;
-    FILE *fp = NULL;
-    FILE *pcacheFile = NULL;
-    char output[PATH_MAX];
+    char* filename; 
     char command[PATH_MAX];
-    char cacheFile[PATH_MAX];
-    char cpcmd[PATH_MAX];
-    int status = -1;
-    char* templateBuffer = NULL;
+    char scriptFileTemplate[PATH_MAX];
+    char output[PATH_MAX];
+    FILE* fp;
+    apr_file_t* scriptFile;
+    apr_file_t* apacheClassFile;
+    apr_status_t status;
+    apr_size_t len;
+    const char* scriptFileName;
+    const char* apacheFileName;
     
+    /* Check for a Dart file */
     if (!r->handler || strcmp(r->handler, "dart")) return (DECLINED);
-
-    /* Get the filename */
+    
+    /* Copy the script file contents to a temp file */
     filename = apr_pstrdup(r->pool, r->filename);
+    len = sizeof(scriptFileTemplate);
+    apr_cpystrn(scriptFileTemplate, config.pathToCache, len);
+    apr_pstrcat(r->pool, scriptFileTemplate, "XXXXXX", NULL);
+    scriptFile = getTempFile(scriptFileTemplate, r->pool);
+    if (scriptFile == NULL ) {
+        logError("md_handler - Failed to create script class  file", r->pool, 0);
+        return HTTP_INTERNAL_SERVER_ERROR ;
+    }
+    status = apr_file_name_get(&scriptFileName, scriptFile);
+    status = apr_file_copy(filename, scriptFileName, APR_OS_DEFAULT, r->pool);
+    if ( status != APR_SUCCESS) {
+        logError("md_handler - Failed to create script file copy", r->pool, status);
+        return HTTP_INTERNAL_SERVER_ERROR ;
+    }	
+    
+    /* Build the apache class template and append it to the script file */
+    apacheClassFile = buildApacheClass(config.pathToTemplate, config.pathToCache, r);
+    if (apacheClassFile == NULL ) {
+        logError("md_handler - Failed to create apache class  file", r->pool, status);
+        return HTTP_INTERNAL_SERVER_ERROR ;
+    }
+    status = apr_file_name_get(&apacheFileName, apacheClassFile);
+    status = apr_file_append(scriptFileName, apacheFileName, APR_OS_DEFAULT, r->pool);
+    if ( status != APR_SUCCESS) {
+        logError("md_handler - Failed to append apache class  file", r->pool, status);
+        return HTTP_INTERNAL_SERVER_ERROR ;
+    }
     
     /* Invoke the VM */
     strcpy(command, config.pathToExe);
     strcat(command, " ");
-    strcat(command, filename);
+    strcat(command, scriptFileName);
     strcat(command, " 2>&1");
     fp = popen(command, "r");
     if (fp == NULL) {
 
-        ap_rprintf(r, "<h2> POPEN Fail %s</h2>", command);
-        return (DECLINED);
+        logError("md_handler - POPEN Fail ", r->pool, 0);
+        return (HTTP_INTERNAL_SERVER_ERROR );
     }
     
     /**

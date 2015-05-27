@@ -16,7 +16,7 @@
 
 #include "apache.h"
 
-apr_file_t* buildApacheClass(char* templatePath, char* cachePath, request_rec *r) {
+apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, request_rec *r) {
     
     TMPL_varlist* varList = NULL;
     apr_file_t* scriptFile;
