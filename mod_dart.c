@@ -110,7 +110,7 @@ static int md_handler(request_rec *r) {
         logError("md_handler - POPEN Fail ", r->pool, 0);
         return (HTTP_INTERNAL_SERVER_ERROR);
     }
-
+    
     /**
      * We must first set the appropriate content type, followed by our output.
      */
@@ -118,6 +118,10 @@ static int md_handler(request_rec *r) {
     while (fgets(output, PATH_MAX, fp) != NULL)
         ap_rprintf(r, "%s", output);
     pclose(fp);
+    
+    /* Remove the script file */
+    status = apr_file_close(scriptFile);
+    status = apr_file_remove(scriptFileName, r->pool);
 
     /* Lastly, we must tell the server that we took care of this request and everything went fine.
      * We do so by simply returning the value OK to the server.
