@@ -10,9 +10,9 @@
       </df>
       <df name="test">
       </df>
-      <in>LICENSE</in>
       <in>apache.c</in>
       <in>apache.h</in>
+      <in>constants.h</in>
       <in>error.c</in>
       <in>error.h</in>
       <in>mod_dart.c</in>

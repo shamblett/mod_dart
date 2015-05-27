@@ -20,7 +20,17 @@
 
 #include "template.h"
 
-TMPL_varlist * addVar(const char *name, const char *value, TMPL_varlist * varList ) {
+tpl_varlist * tpl_addVar(const char *name, const char *value, tpl_varlist * varList) {
 
     return TMPL_add_var(varList, name, value, 0);
+}
+
+int tpl_write(const char *filename, const tpl_varlist *varlist, FILE *out) {
+
+    return TMPL_write(filename, 0, 0, varlist, out, 0);
+}
+
+void tpl_free(tpl_varlist *varlist) {
+    
+    TMPL_free_varlist(varlist);
 }

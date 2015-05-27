@@ -14,13 +14,18 @@
 
 #include "ctemplate-1.0/ctemplate.h"
 
+typedef  TMPL_varlist tpl_varlist;
+
 #ifdef	__cplusplus
 extern "C" {
 #endif
     
-    TMPL_varlist * addVar( const char *name, const char *value, TMPL_varlist * varList);
+    tpl_varlist * tpl_addVar( const char *name, const char *value,tpl_varlist * varList);
     
+    int tpl_write(const char *filename, const tpl_varlist *varlist, FILE *out);
 
+    void tpl_free(tpl_varlist *varlist);
+    
 #ifdef	__cplusplus
 }
 #endif

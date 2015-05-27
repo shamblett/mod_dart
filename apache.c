@@ -18,7 +18,7 @@
 
 apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, request_rec *r) {
     
-    TMPL_varlist* varList = NULL;
+    tpl_varlist* varList = NULL;
     apr_file_t* scriptFile;
     apr_status_t status;
     FILE* fp;
@@ -31,10 +31,10 @@ apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, re
     /* Build the apache environment */
     
     /* Version */
-    varList = addVar("version", VERSION, NULL);
+    varList = tpl_addVar("version", VERSION, NULL);
     
     //TODO
-    varList = addVar("ip", "123.456.789.000", varList);
+    varList = tpl_addVar("ip", "123.456.789.000", varList);
     
     /* Create the template file output file, get its name and close it. */
     len = sizeof(scriptFileTemplate);
@@ -49,17 +49,18 @@ apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, re
         return NULL;
     }
     
-    /* Ctemplate needs normal files, not APR stuff so we become 
-     non-portable here for now.
-     */
+    /* Template needs normal files, not APR types, create the template file  */
     fp = fopen(scriptFileName, "a");
-    tmplStatus = TMPL_write (templatePath, 0, 0, varList, fp, 0);
+    tmplStatus = tpl_write (templatePath, varList, fp);
     if ( tmplStatus ) {
         
         logError("mod_dart - buildApacheClass - TMPL_write failed", r->pool, 0);
         return NULL;
     }
     fclose(fp);
+    
+    /* Free the var list */
+    tpl_free(varList);
     
     return scriptFile;
     
