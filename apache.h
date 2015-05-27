@@ -9,7 +9,7 @@
 /* Purpose :-
  * 
  * This module contains the functions needed to query the Apache environment
- * and build the Apache class form the supplied template file.
+ * and build the Apache class from the supplied template file.
  */
 
 #ifndef APACHE_H
