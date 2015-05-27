@@ -6,6 +6,10 @@
  * License : GPL V3, see the LICENSE file for details
  */
 
+/* Purpose :-
+ * 
+ * This module contains constants for mod_dart
+ */
 
 #ifndef CONSTANTS_H
 #define	CONSTANTS_H

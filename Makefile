@@ -1,7 +1,11 @@
 ##
-##  Makefile -- Build procedure for the mod_dart Apache module
-##  Copyright S. Hamblett May 2015
+## Package : mod_dart
+## Author : S. Hamblett <steve.hamblett@linux.com>
+## Date   : 26/05/2015
+## Copyright :  S.Hamblett 2015
+## License : GPL V3, see the LICENSE file for details
 ##
+
 
 # setup
 current_dir = $(shell pwd)
@@ -14,11 +18,11 @@ CTMPL=$(current_dir)/ctemplate-1.0/
 APXS=apxs
 
 #   the default target
-all: dart
+all: mod_dart
 
 # main module target 
-.PHONY: dart
-dart: 
+.PHONY: mod_dart
+mod_dart: 
 	
 	$(APXS) -a -c -Wc,-Wall -Wi,  mod_dart.c template.c utils.c error.c apache.c \
 	    -I$(CTMPL) $(CTMPL)/ctemplate.c

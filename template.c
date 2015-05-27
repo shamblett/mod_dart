@@ -31,6 +31,6 @@ int tpl_write(const char *filename, const tpl_varlist *varlist, FILE *out) {
 }
 
 void tpl_free(tpl_varlist *varlist) {
-    
+
     TMPL_free_varlist(varlist);
 }

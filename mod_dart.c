@@ -6,6 +6,13 @@
  * License : GPL V3, see the LICENSE file for details
  */
 
+
+/* Purpose :-
+ * 
+ * This module is the apache module interface for mod_dart, it gets module configuration,
+ * builds the Apache class, invokes the Dart VM and collects and parses its output.
+ */
+
 #include <stdio.h>
 
 #include <httpd.h>
@@ -23,6 +30,9 @@
 #include "error.h"
 #include "mod_dart.h"
 
+/*
+ Module configuration 
+ */
 typedef struct {
     const char *pathToExe;
     const char *pathToCache;
@@ -47,6 +57,9 @@ const char *md_set_template_path(cmd_parms *cmd, void *cfg, const char *arg) {
     return (const char*) NULL;
 }
 
+/*
+ The apache handler 
+ */
 static int md_handler(request_rec *r) {
 
     char* filename;
@@ -98,7 +111,7 @@ static int md_handler(request_rec *r) {
     }
     status = apr_file_close(apacheClassFile);
     status = apr_file_remove(apacheFileName, r->pool);
-    
+
     /* Invoke the VM */
     strcpy(command, config.pathToExe);
     strcat(command, " ");
@@ -110,7 +123,7 @@ static int md_handler(request_rec *r) {
         logError("md_handler - POPEN Fail ", r->pool, 0);
         return (HTTP_INTERNAL_SERVER_ERROR);
     }
-    
+
     /**
      * We must first set the appropriate content type, followed by our output.
      */
@@ -118,7 +131,7 @@ static int md_handler(request_rec *r) {
     while (fgets(output, PATH_MAX, fp) != NULL)
         ap_rprintf(r, "%s", output);
     pclose(fp);
-    
+
     /* Remove the script file */
     status = apr_file_close(scriptFile);
     status = apr_file_remove(scriptFileName, r->pool);
@@ -129,20 +142,29 @@ static int md_handler(request_rec *r) {
     return OK;
 }
 
+/*
+ Apache register hooks 
+ */
 static void md_register_hooks(apr_pool_t *p) {
     ap_hook_handler(md_handler, NULL, NULL, APR_HOOK_MIDDLE);
 
 }
 
+/*
+ Apache configuration directives 
+ */
 static const command_rec md_directives[] = {
     AP_INIT_TAKE1("DartExePath", md_set_exe_path, NULL, RSRC_CONF, "The path to the Dart executable"),
     AP_INIT_TAKE1("CachePath", md_set_cache_path, NULL, RSRC_CONF, "The path to the script cache"),
     AP_INIT_TAKE1("TemplatePath", md_set_template_path, NULL, RSRC_CONF, "The path to the script template"), {
-        NULL}
+        NULL
+    }
 };
 
 
-/* Dispatch list for API hooks */
+/* 
+Dispatch list for API hooks *
+ */
 module AP_MODULE_DECLARE_DATA dart_module = {
     STANDARD20_MODULE_STUFF,
     NULL, /* Per-directory configuration handler */

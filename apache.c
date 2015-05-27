@@ -17,7 +17,7 @@
 #include "apache.h"
 
 apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, request_rec *r) {
-    
+
     tpl_varlist* varList = NULL;
     apr_file_t* scriptFile;
     apr_status_t status;
@@ -27,42 +27,42 @@ apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, re
     char* scriptFileTemplatePath;
     apr_size_t len;
     const char* scriptFileName;
-   
+
     /* Build the apache environment */
-    
+
     /* Version */
     varList = tpl_addVar("version", VERSION, NULL);
-    
+
     //TODO
     varList = tpl_addVar("ip", "123.456.789.000", varList);
-    
+
     /* Create the template file output file, get its name and close it. */
-    len = sizeof(scriptFileTemplate);
+    len = sizeof (scriptFileTemplate);
     apr_cpystrn(scriptFileTemplate, cachePath, len);
     scriptFileTemplatePath = apr_pstrcat(r->pool, scriptFileTemplate, "XXXXXX", NULL);
     scriptFile = getTempFile(scriptFileTemplatePath, r->pool);
-    if ( scriptFile == NULL ) return NULL;
+    if (scriptFile == NULL) return NULL;
     status = apr_file_name_get(&scriptFileName, scriptFile);
     status = apr_file_close(scriptFile);
-    if ( status != APR_SUCCESS) {
+    if (status != APR_SUCCESS) {
         logError("buildApacheClass - Failed to create apache template file", r->pool, status);
         return NULL;
     }
-    
+
     /* Template needs normal files, not APR types, create the template file  */
     fp = fopen(scriptFileName, "a");
-    tmplStatus = tpl_write (templatePath, varList, fp);
-    if ( tmplStatus ) {
-        
+    tmplStatus = tpl_write(templatePath, varList, fp);
+    if (tmplStatus) {
+
         logError("mod_dart - buildApacheClass - TMPL_write failed", r->pool, 0);
         return NULL;
     }
     fclose(fp);
-    
+
     /* Free the var list */
     tpl_free(varList);
-    
+
     return scriptFile;
-    
+
 }
 

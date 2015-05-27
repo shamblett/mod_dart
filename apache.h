@@ -6,6 +6,11 @@
  * License : GPL V3, see the LICENSE file for details
  */
 
+/* Purpose :-
+ * 
+ * This module contains the functions needed to query the Apache environment
+ * and build the Apache class form the supplied template file.
+ */
 
 #ifndef APACHE_H
 #define	APACHE_H
@@ -21,7 +26,17 @@
 extern "C" {
 #endif
 
-apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, request_rec *r);
+    /**
+     * buildApacheClass
+     * 
+     * Builds the Apache class from the apache environment.
+     * 
+     * @param templatePath - The path to the Apache class template
+     * @param cachePath - The path to the cache directory
+     * @param r - The apache request structure
+     * @return - An APR files descriptor of the built Apache class script
+     */
+    apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, request_rec *r);
 
 
 #ifdef	__cplusplus
