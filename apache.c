@@ -62,7 +62,5 @@ apr_file_t* buildApacheClass(char* templatePath, char* cachePath, request_rec *r
     
     return scriptFile;
     
-    
-    
 }
 
