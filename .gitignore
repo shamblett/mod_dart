@@ -1,7 +1,6 @@
 *.slo
-/mod_dart.la
-/mod_dart.lo
-/mod_dart.o
+*.o
 /.libs
-/template.slo
-/ctemplate-1.0/*.slo
+ctemplate-1.0/.libs
+ctemplate-1.0/*.slo
+ctemplate-1.0/*.o

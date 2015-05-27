@@ -8,6 +8,8 @@
         <in>ctemplate.c</in>
         <in>ctemplate.h</in>
       </df>
+      <df name="test">
+      </df>
       <in>LICENSE</in>
       <in>apache.c</in>
       <in>apache.h</in>

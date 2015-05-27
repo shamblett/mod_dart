@@ -7,23 +7,19 @@
  */
 
 
-#ifndef TEMPLATE_H
-#define	TEMPLATE_H
-
-#include <stdio.h>
-
-#include "ctemplate-1.0/ctemplate.h"
+#ifndef CONSTANTS_H
+#define	CONSTANTS_H
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
-    
-    TMPL_varlist * addVar( const char *name, const char *value, TMPL_varlist * varList);
-    
+
+    const char* VERSION = "0.1.0";
+
 
 #ifdef	__cplusplus
 }
 #endif
 
-#endif	/* TEMPLATE_H */
+#endif	/* CONSTANTS_H */
 
