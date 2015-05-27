@@ -49,9 +49,10 @@ const char *md_set_template_path(cmd_parms *cmd, void *cfg, const char *arg) {
 
 static int md_handler(request_rec *r) {
 
-    char* filename; 
+    char* filename;
     char command[PATH_MAX];
     char scriptFileTemplate[PATH_MAX];
+    char* scriptFileTemplatePath;
     char output[PATH_MAX];
     FILE* fp;
     apr_file_t* scriptFile;
@@ -60,39 +61,43 @@ static int md_handler(request_rec *r) {
     apr_size_t len;
     const char* scriptFileName;
     const char* apacheFileName;
-    
+    char errorBuff[1000];
+
     /* Check for a Dart file */
     if (!r->handler || strcmp(r->handler, "dart")) return (DECLINED);
-    
+
     /* Copy the script file contents to a temp file */
     filename = apr_pstrdup(r->pool, r->filename);
-    len = sizeof(scriptFileTemplate);
+    len = sizeof (scriptFileTemplate);
     apr_cpystrn(scriptFileTemplate, config.pathToCache, len);
-    apr_pstrcat(r->pool, scriptFileTemplate, "XXXXXX", NULL);
-    scriptFile = getTempFile(scriptFileTemplate, r->pool);
-    if (scriptFile == NULL ) {
-        logError("md_handler - Failed to create script class  file", r->pool, 0);
-        return HTTP_INTERNAL_SERVER_ERROR ;
+    scriptFileTemplatePath = apr_pstrcat(r->pool, scriptFileTemplate, "XXXXXX", NULL);
+    scriptFile = getTempFile(scriptFileTemplatePath, r->pool);
+    if (scriptFile == NULL) {
+        sprintf(errorBuff, "md_handler - Failed to create script class file > %s", scriptFileTemplate);
+        logError(errorBuff, r->pool, 0);
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
     status = apr_file_name_get(&scriptFileName, scriptFile);
     status = apr_file_copy(filename, scriptFileName, APR_OS_DEFAULT, r->pool);
-    if ( status != APR_SUCCESS) {
+    if (status != APR_SUCCESS) {
         logError("md_handler - Failed to create script file copy", r->pool, status);
-        return HTTP_INTERNAL_SERVER_ERROR ;
-    }	
-    
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+
     /* Build the apache class template and append it to the script file */
     apacheClassFile = buildApacheClass(config.pathToTemplate, config.pathToCache, r);
-    if (apacheClassFile == NULL ) {
+    if (apacheClassFile == NULL) {
         logError("md_handler - Failed to create apache class  file", r->pool, status);
-        return HTTP_INTERNAL_SERVER_ERROR ;
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
     status = apr_file_name_get(&apacheFileName, apacheClassFile);
-    status = apr_file_append(scriptFileName, apacheFileName, APR_OS_DEFAULT, r->pool);
-    if ( status != APR_SUCCESS) {
+    status = apr_file_append(apacheFileName, scriptFileName, APR_OS_DEFAULT, r->pool);
+    if (status != APR_SUCCESS) {
         logError("md_handler - Failed to append apache class  file", r->pool, status);
-        return HTTP_INTERNAL_SERVER_ERROR ;
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
+    status = apr_file_close(apacheClassFile);
+    status = apr_file_remove(apacheFileName, r->pool);
     
     /* Invoke the VM */
     strcpy(command, config.pathToExe);
@@ -103,18 +108,18 @@ static int md_handler(request_rec *r) {
     if (fp == NULL) {
 
         logError("md_handler - POPEN Fail ", r->pool, 0);
-        return (HTTP_INTERNAL_SERVER_ERROR );
+        return (HTTP_INTERNAL_SERVER_ERROR);
     }
-    
+
     /**
      * We must first set the appropriate content type, followed by our output.
      */
     ap_set_content_type(r, "text/html");
     while (fgets(output, PATH_MAX, fp) != NULL)
         ap_rprintf(r, "%s", output);
-   pclose(fp);
-   
-   /* Lastly, we must tell the server that we took care of this request and everything went fine.
+    pclose(fp);
+
+    /* Lastly, we must tell the server that we took care of this request and everything went fine.
      * We do so by simply returning the value OK to the server.
      */
     return OK;
@@ -126,10 +131,10 @@ static void md_register_hooks(apr_pool_t *p) {
 }
 
 static const command_rec md_directives[] = {
-    AP_INIT_TAKE1("DartExePath", md_set_exe_path, NULL, RSRC_CONF, "The path to the Dart executable"), 
-    AP_INIT_TAKE1("CachePath", md_set_cache_path, NULL, RSRC_CONF, "The path to the script cache"), 
-    AP_INIT_TAKE1("TemplatePath", md_set_template_path, NULL, RSRC_CONF, "The path to the script template"),
-    {NULL}
+    AP_INIT_TAKE1("DartExePath", md_set_exe_path, NULL, RSRC_CONF, "The path to the Dart executable"),
+    AP_INIT_TAKE1("CachePath", md_set_cache_path, NULL, RSRC_CONF, "The path to the script cache"),
+    AP_INIT_TAKE1("TemplatePath", md_set_template_path, NULL, RSRC_CONF, "The path to the script template"), {
+        NULL}
 };
 
 

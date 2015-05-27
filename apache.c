@@ -24,6 +24,7 @@ apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, re
     FILE* fp;
     int tmplStatus = -1;
     char scriptFileTemplate[PATH_MAX];
+    char* scriptFileTemplatePath;
     apr_size_t len;
     const char* scriptFileName;
    
@@ -38,8 +39,8 @@ apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, re
     /* Create the template file output file, get its name and close it. */
     len = sizeof(scriptFileTemplate);
     apr_cpystrn(scriptFileTemplate, cachePath, len);
-    apr_pstrcat(r->pool, scriptFileTemplate, "XXXXXX", NULL);
-    scriptFile = getTempFile(scriptFileTemplate, r->pool);
+    scriptFileTemplatePath = apr_pstrcat(r->pool, scriptFileTemplate, "XXXXXX", NULL);
+    scriptFile = getTempFile(scriptFileTemplatePath, r->pool);
     if ( scriptFile == NULL ) return NULL;
     status = apr_file_name_get(&scriptFileName, scriptFile);
     status = apr_file_close(scriptFile);
