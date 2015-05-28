@@ -19,7 +19,7 @@ class Apache{
                                 'SERVER_NAME' : '<TMPL_VAR name = "server_name">',
                                 'SERVER_SOFTWARE' : '<TMPL_VAR name = "server_software">',
                                 'SERVER_PROTOCOL' : '<TMPL_VAR name = "server_protocol">',
-                                'REQUEST_METHOD' : '<TMPL_VAR name = "server_request_method">'
+                                'REQUEST_METHOD' : '<TMPL_VAR name = "server_request_method">',
                                 'REQUEST_TIME' : '<TMPL_VAR name = "server_request_time">'
                                 };
         
