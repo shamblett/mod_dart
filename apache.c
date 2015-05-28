@@ -19,14 +19,15 @@
 tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
 
     apr_status_t status;
-    char *self;
+    char* self;
     char* addr;
+    char* hostname;
 
     /* SELF */
     self = apr_pstrdup(r->pool, r->filename);
     varlist = tpl_addVar("server_self", self, varlist);
 
-    /* SERVER_ADDR' */
+    /* SERVER_ADDR */
     status = apr_sockaddr_ip_get(&addr, r->connection->local_addr);
     if (status != APR_SUCCESS) {
 
@@ -38,6 +39,10 @@ tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
 
     }
 
+    /* SERVER_NAME */
+    hostname = apr_pstrdup(r->pool, r->server->server_hostname);
+    varlist = tpl_addVar("server_name", hostname, varlist);
+     
     return varlist;
 
 }
