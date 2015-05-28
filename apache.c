@@ -16,7 +16,19 @@
 
 #include "apache.h"
 
-apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, request_rec *r) {
+tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
+
+    char *self;
+
+    /* Self */
+    self = apr_pstrdup(r->pool, r->filename);
+    tpl_addVar("server_self", self, varlist);
+    
+    return varlist;
+
+}
+
+apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, request_rec* r) {
 
     tpl_varlist* varList = NULL;
     apr_file_t* scriptFile;
@@ -33,8 +45,8 @@ apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, re
     /* Version */
     varList = tpl_addVar("version", VERSION, NULL);
 
-    //TODO
-    varList = tpl_addVar("ip", "123.456.789.000", varList);
+    /* SERVER super global */
+    varList = getServerGlobal(r, varList);
 
     /* Create the template file output file, get its name and close it. */
     len = sizeof (scriptFileTemplate);
