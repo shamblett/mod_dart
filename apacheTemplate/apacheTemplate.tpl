@@ -16,7 +16,12 @@ class Apache{
     
     static final Map Server = { 'SELF' : '<TMPL_VAR name = "server_self">',
                                 'SERVER_ADDR' : '<TMPL_VAR name = "server_addr">',
-                                'SERVER_NAME' : '<TMPL_VAR name = "server_name">'};
+                                'SERVER_NAME' : '<TMPL_VAR name = "server_name">',
+                                'SERVER_SOFTWARE' : '<TMPL_VAR name = "server_software">',
+                                'SERVER_PROTOCOL' : '<TMPL_VAR name = "server_protocol">',
+                                'REQUEST_METHOD' : '<TMPL_VAR name = "server_request_method">'
+                                'REQUEST_TIME' : '<TMPL_VAR name = "server_request_time">'
+                                };
         
     // Functions
     
@@ -50,13 +55,17 @@ class Apache{
         writeOutput('<h2><u> General </u></h2>');
     
         // Version     
-        writeOutput('<h3> Version : ${version} </h3>');
+        writeOutput('<h3> Mod_Dart Version : ${version} </h3>');
         
         // SERVER
         writeOutput('<h2><u> Server </u></h2>');
         writeOutput('<h3> SELF : ${Server["SELF"]} </h3>');
         writeOutput('<h3> SERVER_ADDR : ${Server["SERVER_ADDR"]} </h3>');
         writeOutput('<h3> SERVER_NAME : ${Server["SERVER_NAME"]} </h3>');
+        writeOutput('<h3> SERVER_SOFTWARE : ${Server["SERVER_SOFTWARE"]} </h3>');
+        writeOutput('<h3> SERVER_PROTOCOL : ${Server["SERVER_PROTOCOL"]} </h3>');
+        writeOutput('<h3> REQUEST_METHOD : ${Server["REQUEST_METHOD"]}  </h3>');
+        writeOutput('<h3> REQUEST_TIME : ${Server["REQUEST_TIME"]}  </h3>');
         
         // End
         writeOutput('<h3>------- End of Dump ------</h3>');

@@ -16,15 +16,22 @@
 
 #include "apache.h"
 
+//TODO leave for now, used to get table contents
+/*static int printitem(void *rec, const char *key, const char *value)
+{
+    request_rec *r = rec;
+    ap_rprintf(r,"Key %s Value %s", key, value);
+    return 1;
+}*/
+
 tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
 
     apr_status_t status;
-    char* self;
+    char ctime[APR_CTIME_LEN];
     char* addr;
-    char* hostname;
 
     /* SELF */
-    self = apr_pstrdup(r->pool, r->filename);
+    char* self = apr_pstrdup(r->pool, r->filename);
     varlist = tpl_addVar("server_self", self, varlist);
 
     /* SERVER_ADDR */
@@ -40,9 +47,25 @@ tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
     }
 
     /* SERVER_NAME */
-    hostname = apr_pstrdup(r->pool, r->server->server_hostname);
+    char* hostname = apr_pstrdup(r->pool, r->server->server_hostname);
     varlist = tpl_addVar("server_name", hostname, varlist);
      
+    /* SERVER_SOFTWARE */
+    const char* serverSoftware = ap_get_server_description();
+    varlist = tpl_addVar("server_software", serverSoftware, varlist);
+   
+    /* SERVER_PROTOCOL */
+    char* protocol = apr_pstrdup(r->pool, r->protocol);
+    varlist = tpl_addVar("server_protocol", protocol, varlist);
+    
+    /* REQUEST_METHOD */
+    char* method = apr_pstrdup(r->pool, r->method);
+    varlist = tpl_addVar("server_request_method", method, varlist);
+    
+    /* REQUEST_TIME */
+    status = apr_ctime(ctime, r->request_time);
+    varlist = tpl_addVar("server_request_time", ctime, varlist);
+    
     return varlist;
 
 }
