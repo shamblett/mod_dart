@@ -109,8 +109,8 @@ static int md_handler(request_rec *r) {
         logError("md_handler - Failed to append apache class  file", r->pool, status);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
-    status = apr_file_close(apacheClassFile);
-    status = apr_file_remove(apacheFileName, r->pool);
+    //status = apr_file_close(apacheClassFile);
+    //status = apr_file_remove(apacheFileName, r->pool);
 
     /* Invoke the VM */
     strcpy(command, config.pathToExe);

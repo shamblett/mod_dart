@@ -18,12 +18,26 @@
 
 tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
 
+    apr_status_t status;
     char *self;
+    char* addr;
 
-    /* Self */
+    /* SELF */
     self = apr_pstrdup(r->pool, r->filename);
-    tpl_addVar("server_self", self, varlist);
+    varlist = tpl_addVar("server_self", self, varlist);
+
+    /* SERVER_ADDR' */
+    status = apr_sockaddr_ip_get(&addr, r->connection->local_addr);
+    if (status != APR_SUCCESS) {
+
+        varlist = tpl_addVar("server_addr", "Unable To Obtain", varlist);
     
+    } else {
+        
+        varlist = tpl_addVar("server_addr", addr, varlist);
+
+    }
+
     return varlist;
 
 }

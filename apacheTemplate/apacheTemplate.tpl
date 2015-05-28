@@ -14,7 +14,8 @@ class Apache{
         
     // SERVER superglobal
     
-    static final Map Server = { 'SELF' : '<TMPL_VAR name = "server_self">' };
+    static final Map Server = { 'SELF' : '<TMPL_VAR name = "server_self">',
+                                'SERVER_ADDR' : '<TMPL_VAR name = "server_addr">'};
         
     // Functions
     
@@ -53,6 +54,8 @@ class Apache{
         // SERVER
         writeOutput('<h2><u> Server </u></h2>');
         writeOutput('<h3> SELF : ${Server["SELF"]} </h3>');
+        writeOutput('<h3> SERVER_ADDR : ${Server["SERVER_ADDR"]} </h3>');
+        
         
         // End
         writeOutput('<h3>------- End of Dump ------</h3>');
