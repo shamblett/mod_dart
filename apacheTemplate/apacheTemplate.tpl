@@ -22,7 +22,10 @@ class Apache{
                                 'REQUEST_METHOD' : '<TMPL_VAR name = "server_request_method">',
                                 'REQUEST_TIME' : '<TMPL_VAR name = "server_request_time">',
                                 'QUERY_STRING' : '<TMPL_VAR name = "server_query_string">',
-                                'DOCUMENT_ROOT' : '<TMPL_VAR name = "server_document_root">'
+                                'DOCUMENT_ROOT' : '<TMPL_VAR name = "server_document_root">',
+                                'HTTP_ACCEPT' : '<TMPL_VAR name = "server_http_accept">',
+                                'HTTP_ACCEPT_CHARSET' : '<TMPL_VAR name = "server_http_accept_charset">',
+                                'HTTP_ACCEPT_ENCODING' : '<TMPL_VAR name = "server_http_accept_encoding">'
                                     
                                  };
         
@@ -71,7 +74,10 @@ class Apache{
         writeOutput('<h3> REQUEST_TIME : ${Server["REQUEST_TIME"]}  </h3>');
         writeOutput('<h3> QUERY_STRING : ${Server["QUERY_STRING"]}  </h3>');
         writeOutput('<h3> DOCUMENT_ROOT : ${Server["DOCUMENT_ROOT"]}  </h3>');
-         
+        writeOutput('<h3> HTTP_ACCEPT : ${Server["HTTP_ACCEPT"]}  </h3>');
+        writeOutput('<h3> HTTP_ACCEPT_CHARSET : ${Server["HTTP_ACCEPT_CHARSET"]}  </h3>');
+        writeOutput('<h3> HTTP_ACCEPT_ENCODING : ${Server["HTTP_ACCEPT_ENCODING"]}  </h3>');
+        
         // End
         writeOutput('<h3>------- End of Dump ------</h3>');
         
