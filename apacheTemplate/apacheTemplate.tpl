@@ -20,8 +20,11 @@ class Apache{
                                 'SERVER_SOFTWARE' : '<TMPL_VAR name = "server_software">',
                                 'SERVER_PROTOCOL' : '<TMPL_VAR name = "server_protocol">',
                                 'REQUEST_METHOD' : '<TMPL_VAR name = "server_request_method">',
-                                'REQUEST_TIME' : '<TMPL_VAR name = "server_request_time">'
-                                };
+                                'REQUEST_TIME' : '<TMPL_VAR name = "server_request_time">',
+                                'QUERY_STRING' : '<TMPL_VAR name = "server_query_string">',
+                                'DOCUMENT_ROOT' : '<TMPL_VAR name = "server_document_root">'
+                                    
+                                 };
         
     // Functions
     
@@ -66,7 +69,9 @@ class Apache{
         writeOutput('<h3> SERVER_PROTOCOL : ${Server["SERVER_PROTOCOL"]} </h3>');
         writeOutput('<h3> REQUEST_METHOD : ${Server["REQUEST_METHOD"]}  </h3>');
         writeOutput('<h3> REQUEST_TIME : ${Server["REQUEST_TIME"]}  </h3>');
-        
+        writeOutput('<h3> QUERY_STRING : ${Server["QUERY_STRING"]}  </h3>');
+        writeOutput('<h3> DOCUMENT_ROOT : ${Server["DOCUMENT_ROOT"]}  </h3>');
+         
         // End
         writeOutput('<h3>------- End of Dump ------</h3>');
         

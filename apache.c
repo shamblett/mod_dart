@@ -7,6 +7,7 @@
  */
 
 
+#include <http_core.h>
 #include <apr_strings.h>
 
 #include "template.h"
@@ -65,6 +66,14 @@ tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
     /* REQUEST_TIME */
     status = apr_ctime(ctime, r->request_time);
     varlist = tpl_addVar("server_request_time", ctime, varlist);
+    
+    /* QUERY_STRING */
+    char* queryString = apr_pstrdup(r->pool, r->parsed_uri.query);
+    varlist = tpl_addVar("server_query_string", queryString, varlist);
+    
+    /* DOCUMENT_ROOT */
+    const char* documentRoot = ap_document_root(r);
+    varlist = tpl_addVar("server_document_root", documentRoot, varlist);
     
     return varlist;
 
