@@ -87,6 +87,13 @@ tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
     const char* acceptEncoding = apr_table_get(r->headers_in, "Accept-Encoding");
     varlist = tpl_addVar("server_http_accept_encoding", acceptEncoding, varlist);
     
+    /* HTTP_ACCEPT_LANGUAGE */
+    const char* acceptLanguage = apr_table_get(r->headers_in, "Accept-Language");
+    varlist = tpl_addVar("server_http_accept_language", acceptLanguage, varlist);
+    
+    /* HTTP_CONNECTION */
+    const char* acceptConnection = apr_table_get(r->headers_in, "Connection");
+    varlist = tpl_addVar("server_http_connection", acceptConnection, varlist);
     return varlist;
     
     /* Key Host Value localhostKey Connection Value keep-aliveKey Cache-Control Value max-age=0Key Accept Value text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,;q=0.8Key User-Agent Value Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.65 Safari/537.36Key DNT Value 1Key Accept-Encoding Value gzip, deflate, sdchKey Accept-Language Value en-GB,en-US;q=0.8,en;q=0.6*/

@@ -25,8 +25,9 @@ class Apache{
                                 'DOCUMENT_ROOT' : '<TMPL_VAR name = "server_document_root">',
                                 'HTTP_ACCEPT' : '<TMPL_VAR name = "server_http_accept">',
                                 'HTTP_ACCEPT_CHARSET' : '<TMPL_VAR name = "server_http_accept_charset">',
-                                'HTTP_ACCEPT_ENCODING' : '<TMPL_VAR name = "server_http_accept_encoding">'
-                                    
+                                'HTTP_ACCEPT_ENCODING' : '<TMPL_VAR name = "server_http_accept_encoding">',
+                                'HTTP_ACCEPT_LANGUAGE' : '<TMPL_VAR name = "server_http_accept_language">',
+                                'HTTP_CONNECTION' : '<TMPL_VAR name = "server_http_connection">' 
                                  };
         
     // Functions
@@ -77,6 +78,9 @@ class Apache{
         writeOutput('<h3> HTTP_ACCEPT : ${Server["HTTP_ACCEPT"]}  </h3>');
         writeOutput('<h3> HTTP_ACCEPT_CHARSET : ${Server["HTTP_ACCEPT_CHARSET"]}  </h3>');
         writeOutput('<h3> HTTP_ACCEPT_ENCODING : ${Server["HTTP_ACCEPT_ENCODING"]}  </h3>');
+        writeOutput('<h3> HTTP_ACCEPT_LANGUAGE : ${Server["HTTP_ACCEPT_LANGUAGE"]}  </h3>');
+        writeOutput('<h3> HTTP_CONNECTION : ${Server["HTTP_CONNECTION"]}  </h3>');
+         
         
         // End
         writeOutput('<h3>------- End of Dump ------</h3>');
