@@ -34,7 +34,7 @@ tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
 
     /* SELF */
     const char* self = apr_pstrdup(r->pool, r->filename);
-    varlist = tpl_addVar("server_self", self, varlist);
+    varlist = tpl_addVar("server_self", basename(self), varlist);
 
     /* SERVER_ADDR */
     status = apr_sockaddr_ip_get(&addr, r->connection->local_addr);
@@ -146,8 +146,7 @@ tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
     varlist = tpl_addVar("server_remote_user", remoteUser, varlist);
 
     /* SCRIPT_FILENAME */
-    const char* scriptFilename = apr_pstrcat(r->pool, self, documentRoot, NULL);
-    varlist = tpl_addVar("server_script_filename", scriptFilename, varlist);
+    varlist = tpl_addVar("server_script_filename", self, varlist);
 
 
     return varlist;
