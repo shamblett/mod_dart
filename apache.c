@@ -28,11 +28,11 @@
 tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
 
     apr_status_t status;
-    char ctime[APR_CTIME_LEN];
+    char ctime[APR_CTIME_LEN];                   
     char* addr;
 
     /* SELF */
-    char* self = apr_pstrdup(r->pool, r->filename);
+    const char* self = apr_pstrdup(r->pool, r->filename);
     varlist = tpl_addVar("server_self", self, varlist);
 
     /* SERVER_ADDR */
@@ -48,7 +48,7 @@ tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
     }
 
     /* SERVER_NAME */
-    char* hostname = apr_pstrdup(r->pool, r->server->server_hostname);
+    const char* hostname = apr_pstrdup(r->pool, r->server->server_hostname);
     varlist = tpl_addVar("server_name", hostname, varlist);
      
     /* SERVER_SOFTWARE */
@@ -56,11 +56,11 @@ tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
     varlist = tpl_addVar("server_software", serverSoftware, varlist);
    
     /* SERVER_PROTOCOL */
-    char* protocol = apr_pstrdup(r->pool, r->protocol);
+    const char* protocol = apr_pstrdup(r->pool, r->protocol);
     varlist = tpl_addVar("server_protocol", protocol, varlist);
     
     /* REQUEST_METHOD */
-    char* method = apr_pstrdup(r->pool, r->method);
+    const char* method = apr_pstrdup(r->pool, r->method);
     varlist = tpl_addVar("server_request_method", method, varlist);
     
     /* REQUEST_TIME */
@@ -68,7 +68,7 @@ tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
     varlist = tpl_addVar("server_request_time", ctime, varlist);
     
     /* QUERY_STRING */
-    char* queryString = apr_pstrdup(r->pool, r->parsed_uri.query);
+    const char* queryString = apr_pstrdup(r->pool, r->parsed_uri.query);
     varlist = tpl_addVar("server_query_string", queryString, varlist);
     
     /* DOCUMENT_ROOT */
@@ -107,9 +107,46 @@ tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
     const char* httpUserAgent = apr_table_get(r->headers_in, "User-Agent");
     varlist = tpl_addVar("server_http_user_agent", httpUserAgent, varlist);
     
+    /* HTTPS */
+    const char* scheme = apr_pstrdup(r->pool, r->parsed_uri.scheme);
+    if ( !apr_strnatcmp(scheme, "https") ) {
+        varlist = tpl_addVar("server_https", "true", varlist);
+    } else {
+        varlist = tpl_addVar("server_https", "false", varlist);
+    }
+    
+    /* REMOTE_ADDR */
+    status = apr_sockaddr_ip_get(&addr, r->connection->client_addr);
+    if (status != APR_SUCCESS) {
+
+        varlist = tpl_addVar("server_remote_addr", "Unable To Obtain", varlist);
+    
+    } else {
+        
+        varlist = tpl_addVar("server_remote_addr", addr, varlist);
+
+    }
+    
+    /* REMOTE_HOST */
+    const char* remoteHost = ap_get_remote_host(r->connection, r->per_dir_config,
+                                                REMOTE_HOST, NULL);
+    varlist = tpl_addVar("server_remote_host", remoteHost, varlist);
+    
+    /* REMOTE_PORT */
+    apr_port_t remotePort = r->connection->client_addr->port;
+    varlist = tpl_addVar("server_remote_port", apr_itoa(r->pool, remotePort), varlist);
+    
+    /* REMOTE_USER */
+    const char* remoteUser = apr_pstrdup(r->pool, r->user);
+    varlist = tpl_addVar("server_remote_user", remoteUser, varlist);
+    
+    /* SCRIPT_FILENAME */
+    const char* scriptFilename = apr_pstrcat(r->pool, self, documentRoot, NULL);
+    varlist = tpl_addVar("server_script_filename", scriptFilename, varlist);
+    
+    
     return varlist;
     
-    /* Key Host Value localhostKey Connection Value keep-aliveKey Cache-Control Value max-age=0Key Accept Value text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,;q=0.8Key User-Agent Value Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.65 Safari/537.36Key DNT Value 1Key Accept-Encoding Value gzip, deflate, sdchKey Accept-Language Value en-GB,en-US;q=0.8,en;q=0.6*/
 
 }
 

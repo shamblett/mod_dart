@@ -30,7 +30,13 @@ class Apache{
                                 'HTTP_CONNECTION' : '<TMPL_VAR name = "server_http_connection">',
                                 'HTTP_HOST' : '<TMPL_VAR name = "server_http_host">',     
                                 'HTTP_REFERER' : '<TMPL_VAR name = "server_http_referer">', 
-                                'HTTP_USER_AGENT' : '<TMPL_VAR name = "server_http_user_agent">',     
+                                'HTTP_USER_AGENT' : '<TMPL_VAR name = "server_http_user_agent">', 
+                                'HTTPS' : '<TMPL_VAR name = "server_https">',     
+                                'REMOTE_ADDR' : '<TMPL_VAR name = "server_remote_addr">',  
+                                'REMOTE_HOST' : '<TMPL_VAR name = "server_remote_host">',     
+                                'REMOTE_PORT' : '<TMPL_VAR name = "server_remote_port">', 
+                                'REMOTE_USER' : '<TMPL_VAR name = "server_remote_user">', 
+                                'SCRIPT_FILENAME' : '<TMPL_VAR name = "server_script_filename">', 
                                     
                                 };
         
@@ -87,8 +93,13 @@ class Apache{
         writeOutput('<h3> HTTP_HOST : ${Server["HTTP_HOST"]}  </h3>'); 
         writeOutput('<h3> HTTP_REFERER : ${Server["HTTP_REFERER"]}  </h3>'); 
         writeOutput('<h3> HTTP_USER_AGENT : ${Server["HTTP_USER_AGENT"]}  </h3>'); 
-        
-        
+        writeOutput('<h3> HTTPS : ${Server["HTTPS"]}  </h3>');
+        writeOutput('<h3> REMOTE_ADDR : ${Server["REMOTE_ADDR"]}  </h3>');
+        writeOutput('<h3> REMOTE_HOST : ${Server["REMOTE_HOST"]}  </h3>');
+        writeOutput('<h3> REMOTE_PORT : ${Server["REMOTE_PORT"]}  </h3>');
+        writeOutput('<h3> REMOTE_USER : ${Server["REMOTE_USER"]}  </h3>');
+        writeOutput('<h3> SCRIPT_FILENAME : ${Server["SCRIPT_FILENAME"]}  </h3>');
+         
         // End
         writeOutput('<h3>------- End of Dump ------</h3>');
         
