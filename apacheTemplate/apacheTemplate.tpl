@@ -27,8 +27,12 @@ class Apache{
                                 'HTTP_ACCEPT_CHARSET' : '<TMPL_VAR name = "server_http_accept_charset">',
                                 'HTTP_ACCEPT_ENCODING' : '<TMPL_VAR name = "server_http_accept_encoding">',
                                 'HTTP_ACCEPT_LANGUAGE' : '<TMPL_VAR name = "server_http_accept_language">',
-                                'HTTP_CONNECTION' : '<TMPL_VAR name = "server_http_connection">' 
-                                 };
+                                'HTTP_CONNECTION' : '<TMPL_VAR name = "server_http_connection">',
+                                'HTTP_HOST' : '<TMPL_VAR name = "server_http_host">',     
+                                'HTTP_REFERER' : '<TMPL_VAR name = "server_http_referer">', 
+                                'HTTP_USER_AGENT' : '<TMPL_VAR name = "server_http_user_agent">',     
+                                    
+                                };
         
     // Functions
     
@@ -80,7 +84,10 @@ class Apache{
         writeOutput('<h3> HTTP_ACCEPT_ENCODING : ${Server["HTTP_ACCEPT_ENCODING"]}  </h3>');
         writeOutput('<h3> HTTP_ACCEPT_LANGUAGE : ${Server["HTTP_ACCEPT_LANGUAGE"]}  </h3>');
         writeOutput('<h3> HTTP_CONNECTION : ${Server["HTTP_CONNECTION"]}  </h3>');
-         
+        writeOutput('<h3> HTTP_HOST : ${Server["HTTP_HOST"]}  </h3>'); 
+        writeOutput('<h3> HTTP_REFERER : ${Server["HTTP_REFERER"]}  </h3>'); 
+        writeOutput('<h3> HTTP_USER_AGENT : ${Server["HTTP_USER_AGENT"]}  </h3>'); 
+        
         
         // End
         writeOutput('<h3>------- End of Dump ------</h3>');

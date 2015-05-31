@@ -19,6 +19,7 @@
 #include <http_config.h>
 #include <http_log.h>
 #include <http_protocol.h>
+#include <http_core.h>
 #include <apr_hash.h>
 #include <ap_config.h>
 #include <ap_provider.h>
@@ -37,6 +38,8 @@ typedef struct {
     const char *pathToExe;
     const char *pathToCache;
     const char *pathToTemplate;
+    const char *packageRoot;
+    int packageRootSet;
 
 } md_config;
 
@@ -54,6 +57,12 @@ const char *md_set_cache_path(cmd_parms *cmd, void *cfg, const char *arg) {
 
 const char *md_set_template_path(cmd_parms *cmd, void *cfg, const char *arg) {
     config.pathToTemplate = arg;
+    return (const char*) NULL;
+}
+
+const char *md_set_package_root(cmd_parms *cmd, void *cfg, const char *arg) {
+    config.packageRoot= arg;
+    config.packageRootSet = 1;
     return (const char*) NULL;
 }
 
@@ -75,7 +84,8 @@ static int md_handler(request_rec *r) {
     const char* scriptFileName;
     const char* apacheFileName;
     char errorBuff[1000];
-
+    const char* packageRoot;
+    
     /* Check for a Dart file */
     if (!r->handler || strcmp(r->handler, "dart")) return (DECLINED);
 
@@ -112,11 +122,20 @@ static int md_handler(request_rec *r) {
     status = apr_file_close(apacheClassFile);
     status = apr_file_remove(apacheFileName, r->pool);
 
-    /* Invoke the VM */
+    /* Build the dart command */
     strcpy(command, config.pathToExe);
+    strcat(command, " --package-root=");
+    if ( config.packageRootSet) {
+        strcat(command, config.packageRoot); 
+    } else {
+        packageRoot = ap_document_root(r);
+        strcat(command, packageRoot);
+    }
     strcat(command, " ");
     strcat(command, scriptFileName);
     strcat(command, " 2>&1");
+    
+    /* Invoke the VM */
     fp = popen(command, "r");
     if (fp == NULL) {
 
@@ -146,6 +165,8 @@ static int md_handler(request_rec *r) {
  Apache register hooks 
  */
 static void md_register_hooks(apr_pool_t *p) {
+    
+    config.packageRootSet = 0;
     ap_hook_handler(md_handler, NULL, NULL, APR_HOOK_MIDDLE);
 
 }
@@ -156,9 +177,9 @@ static void md_register_hooks(apr_pool_t *p) {
 static const command_rec md_directives[] = {
     AP_INIT_TAKE1("DartExePath", md_set_exe_path, NULL, RSRC_CONF, "The path to the Dart executable"),
     AP_INIT_TAKE1("CachePath", md_set_cache_path, NULL, RSRC_CONF, "The path to the script cache"),
-    AP_INIT_TAKE1("TemplatePath", md_set_template_path, NULL, RSRC_CONF, "The path to the script template"), {
-        NULL
-    }
+    AP_INIT_TAKE1("TemplatePath", md_set_template_path, NULL, RSRC_CONF, "The path to the script template"), 
+    AP_INIT_TAKE1("PackageToot", md_set_package_root, NULL, RSRC_CONF, "The package root of the dart installation"),
+    {NULL}
 };
 
 

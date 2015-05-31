@@ -94,6 +94,19 @@ tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
     /* HTTP_CONNECTION */
     const char* acceptConnection = apr_table_get(r->headers_in, "Connection");
     varlist = tpl_addVar("server_http_connection", acceptConnection, varlist);
+    
+    /* HTTP_HOST */
+    const char* httpHost = apr_table_get(r->headers_in, "Host");
+    varlist = tpl_addVar("server_http_host", httpHost, varlist);
+    
+    /* HTTP_REFERER */
+    const char* httpReferer = apr_table_get(r->headers_in, "Referer");
+    varlist = tpl_addVar("server_http_referer", httpReferer, varlist);
+    
+    /* HTTP_USER_AGENT */
+    const char* httpUserAgent = apr_table_get(r->headers_in, "User-Agent");
+    varlist = tpl_addVar("server_http_user_agent", httpUserAgent, varlist);
+    
     return varlist;
     
     /* Key Host Value localhostKey Connection Value keep-aliveKey Cache-Control Value max-age=0Key Accept Value text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,;q=0.8Key User-Agent Value Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.65 Safari/537.36Key DNT Value 1Key Accept-Encoding Value gzip, deflate, sdchKey Accept-Language Value en-GB,en-US;q=0.8,en;q=0.6*/
