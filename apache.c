@@ -18,6 +18,7 @@
 #include "apache.h"
 
 //TODO leave for now, used to get table contents
+
 /*static int printitem(void *rec, const char *key, const char *value)
 {
     request_rec *r = rec;
@@ -28,7 +29,7 @@
 tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
 
     apr_status_t status;
-    char ctime[APR_CTIME_LEN];                   
+    char ctime[APR_CTIME_LEN];
     char* addr;
 
     /* SELF */
@@ -40,9 +41,9 @@ tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
     if (status != APR_SUCCESS) {
 
         varlist = tpl_addVar("server_addr", "Unable To Obtain", varlist);
-    
+
     } else {
-        
+
         varlist = tpl_addVar("server_addr", addr, varlist);
 
     }
@@ -50,103 +51,107 @@ tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
     /* SERVER_NAME */
     const char* hostname = apr_pstrdup(r->pool, r->server->server_hostname);
     varlist = tpl_addVar("server_name", hostname, varlist);
-     
+
     /* SERVER_SOFTWARE */
     const char* serverSoftware = ap_get_server_description();
     varlist = tpl_addVar("server_software", serverSoftware, varlist);
-   
+
     /* SERVER_PROTOCOL */
     const char* protocol = apr_pstrdup(r->pool, r->protocol);
     varlist = tpl_addVar("server_protocol", protocol, varlist);
-    
+
     /* REQUEST_METHOD */
     const char* method = apr_pstrdup(r->pool, r->method);
     varlist = tpl_addVar("server_request_method", method, varlist);
-    
+
     /* REQUEST_TIME */
     status = apr_ctime(ctime, r->request_time);
     varlist = tpl_addVar("server_request_time", ctime, varlist);
-    
+
     /* QUERY_STRING */
     const char* queryString = apr_pstrdup(r->pool, r->parsed_uri.query);
     varlist = tpl_addVar("server_query_string", queryString, varlist);
-    
+
     /* DOCUMENT_ROOT */
     const char* documentRoot = ap_document_root(r);
     varlist = tpl_addVar("server_document_root", documentRoot, varlist);
-    
+
     /* HTTP_ACCEPT */
     const char* accept = apr_table_get(r->headers_in, "Accept");
     varlist = tpl_addVar("server_http_accept", accept, varlist);
-    
+
     /* HTTP_ACCEPT_CHARSET */
     const char* acceptCharset = apr_table_get(r->headers_in, "Accept-Charset");
     varlist = tpl_addVar("server_http_accept_charset", acceptCharset, varlist);
-    
+
     /* HTTP_ACCEPT_ENCODING */
     const char* acceptEncoding = apr_table_get(r->headers_in, "Accept-Encoding");
     varlist = tpl_addVar("server_http_accept_encoding", acceptEncoding, varlist);
-    
+
     /* HTTP_ACCEPT_LANGUAGE */
     const char* acceptLanguage = apr_table_get(r->headers_in, "Accept-Language");
     varlist = tpl_addVar("server_http_accept_language", acceptLanguage, varlist);
-    
+
     /* HTTP_CONNECTION */
     const char* acceptConnection = apr_table_get(r->headers_in, "Connection");
     varlist = tpl_addVar("server_http_connection", acceptConnection, varlist);
-    
+
     /* HTTP_HOST */
     const char* httpHost = apr_table_get(r->headers_in, "Host");
     varlist = tpl_addVar("server_http_host", httpHost, varlist);
-    
+
     /* HTTP_REFERER */
     const char* httpReferer = apr_table_get(r->headers_in, "Referer");
     varlist = tpl_addVar("server_http_referer", httpReferer, varlist);
-    
+
     /* HTTP_USER_AGENT */
     const char* httpUserAgent = apr_table_get(r->headers_in, "User-Agent");
     varlist = tpl_addVar("server_http_user_agent", httpUserAgent, varlist);
-    
+
     /* HTTPS */
     const char* scheme = apr_pstrdup(r->pool, r->parsed_uri.scheme);
-    if ( !apr_strnatcmp(scheme, "https") ) {
-        varlist = tpl_addVar("server_https", "true", varlist);
+    if (scheme) {
+        if (!apr_strnatcmp(scheme, "https")) {
+            varlist = tpl_addVar("server_https", "true", varlist);
+        } else {
+            varlist = tpl_addVar("server_https", "false", varlist);
+        }
     } else {
         varlist = tpl_addVar("server_https", "false", varlist);
     }
-    
+
     /* REMOTE_ADDR */
     status = apr_sockaddr_ip_get(&addr, r->connection->client_addr);
     if (status != APR_SUCCESS) {
 
         varlist = tpl_addVar("server_remote_addr", "Unable To Obtain", varlist);
-    
+
     } else {
-        
+
         varlist = tpl_addVar("server_remote_addr", addr, varlist);
 
     }
-    
+
     /* REMOTE_HOST */
     const char* remoteHost = ap_get_remote_host(r->connection, r->per_dir_config,
-                                                REMOTE_HOST, NULL);
+            REMOTE_HOST, NULL);
     varlist = tpl_addVar("server_remote_host", remoteHost, varlist);
-    
+
     /* REMOTE_PORT */
     apr_port_t remotePort = r->connection->client_addr->port;
     varlist = tpl_addVar("server_remote_port", apr_itoa(r->pool, remotePort), varlist);
-    
+
     /* REMOTE_USER */
     const char* remoteUser = apr_pstrdup(r->pool, r->user);
     varlist = tpl_addVar("server_remote_user", remoteUser, varlist);
-    
+
     /* SCRIPT_FILENAME */
     const char* scriptFilename = apr_pstrcat(r->pool, self, documentRoot, NULL);
     varlist = tpl_addVar("server_script_filename", scriptFilename, varlist);
-    
-    
+
+
     return varlist;
-    
+
 
 }
 
