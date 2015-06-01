@@ -40,7 +40,12 @@ class Apache{
                                 'SERVER_ADMIN' : '<TMPL_VAR name = "server_server_admin">',  
                                 'SERVER_PORT' : '<TMPL_VAR name = "server_server_port">', 
                                 'SERVER_SIGNATURE' : '<TMPL_VAR name = "server_server_signature">',     
-                                'REQUEST_URI' : '<TMPL_VAR name = "server_request_uri">',    
+                                'REQUEST_URI' : '<TMPL_VAR name = "server_request_uri">', 
+                                'AUTH_DIGEST' : '<TMPL_VAR name = "server_auth_digest">', 
+                                'AUTH_USER' : '<TMPL_VAR name = "server_auth_user">', 
+                                'AUTH_PW' : '<TMPL_VAR name = "server_auth_password">', 
+                                'AUTH_TYPE' : '<TMPL_VAR name = "server_auth_type">', 
+                                'PATH_INFO' : '<TMPL_VAR name = "server_path_info">'   
                                     
                                 };
         
@@ -107,7 +112,12 @@ class Apache{
         writeOutput('<h3> SERVER_PORT : ${Server["SERVER_PORT"]}  </h3>');
         writeOutput('<h3> SERVER_SIGNATURE : ${Server["SERVER_SIGNATURE"]}  </h3>');
         writeOutput('<h3> REQUEST_URI : ${Server["REQUEST_URI"]}  </h3>');
-         
+        writeOutput('<h3> AUTH_DIGEST : ${Server["AUTH_DIGEST"]}  </h3>');
+        writeOutput('<h3> AUTH_USER : ${Server["AUTH_USER"]}  </h3>');
+        writeOutput('<h3> AUTH_PW : ${Server["AUTH_PW"]}  </h3>');
+        writeOutput('<h3> AUTH_TYPE : ${Server["AUTH_TYPE"]}  </h3>');
+        writeOutput('<h3> PATH_INFO : ${Server["PATH_INFO"]}  </h3>');
+        
         // End
         writeOutput('<h3>------- End of Dump ------</h3>');
         

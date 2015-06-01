@@ -164,6 +164,25 @@ tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
     const char* requestURI = apr_pstrdup(r->pool, r->uri);
     varlist = tpl_addVar("server_request_uri", requestURI, varlist);
     
+    /* AUTH_DIGEST */
+    const char* authDigest = apr_table_get(r->headers_in, "Authorization");
+    varlist = tpl_addVar("server_auth_digest", authDigest, varlist);
+    
+    /* AUTH_USER */
+    const char* authUser = apr_pstrdup(r->pool, r->parsed_uri.user);
+    varlist = tpl_addVar("server_auth_user", authUser, varlist);
+     
+    /* AUTH_PW */
+    const char* authPassword = apr_pstrdup(r->pool, r->parsed_uri.password);
+    varlist = tpl_addVar("server_auth_password", authPassword, varlist);
+    
+    /* AUTH_TYPE */
+    const char* authType =  ap_auth_type(r);
+    varlist = tpl_addVar("server_auth_type", authType, varlist);
+    
+    /* PATH_INFO */
+    const char* pathInfo = apr_pstrdup(r->pool, r->path_info);
+    varlist = tpl_addVar("server_path_info", pathInfo, varlist);
     
     return varlist;
 
