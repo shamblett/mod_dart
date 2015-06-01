@@ -48,6 +48,13 @@ class Apache{
                                 'PATH_INFO' : '<TMPL_VAR name = "server_path_info">'   
                                     
                                 };
+                                
+    <tmpl_loop name = "arg">
+      
+          <td>Argument #<tmpl_var name = "anum"></td>
+          <td><tmpl_var name = "avalue" fmt="entity"></td>
+        
+    </tmpl_loop>                            
         
     // Functions
     

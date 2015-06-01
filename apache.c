@@ -111,13 +111,15 @@ tpl_varlist* getGetGlobal(request_rec* r, tpl_varlist* varlist) {
     const void *key;
     keyValuePair *kvp = NULL;
     int i = 0;
+    tpl_loop *loop;
 
     apr_hash_t* getHash = parse_form_from_string(r, r->args);
 
     kvp = apr_pcalloc(r->pool, sizeof (keyValuePair) * (apr_hash_count(getHash) + 1));
     for (hi = apr_hash_first(r->pool, getHash); hi; hi = apr_hash_next(hi)) {
         apr_hash_this(hi, &key, NULL, &val);
-
+        loop = TMPL_add_varlist(loop, TMPL_add_var(0,
+            "anum", num, "avalue", argv[i], 0));
         kvp[i].key = apr_pstrdup(r->pool, key);
         kvp[i].value = val;
         i++;

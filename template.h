@@ -22,6 +22,7 @@
 #include "ctemplate-1.0/ctemplate.h"
 
 typedef TMPL_varlist tpl_varlist;
+typedef TMPL_loop    tpl_loop;
 
 #ifdef	__cplusplus
 extern "C" {
@@ -39,6 +40,30 @@ extern "C" {
      */
     tpl_varlist * tpl_addVar(const char *name, const char *value, tpl_varlist * varList);
 
+    /**
+     * tpl_addVarList
+     * 
+     * Adds a dictionary to a template loop
+     * 
+     * @param loop - the loop
+     * @param varlist - the distionary to add
+     * @return - the updated loop
+     */
+    tpl_loop * tpl_addVarList(tpl_loop* loop, tpl_varlist* varlist);
+    
+    /**
+     * tpl_addLoop
+     * 
+     * Add a loop to a template dictionary
+     * 
+     * @param varlist - the dictionary to add to
+     * @param name - the name of the loop
+     * @param loop - the loop to add
+     * @return - the updated dictionary
+     */
+    tpl_varlist* tpl_addLoop(tpl_varlist *varlist, const char *name, tpl_loop *loop);
+    
+    
     /**
      * tpl_write
      * 
