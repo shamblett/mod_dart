@@ -26,6 +26,98 @@
     return 1;
 }*/
 
+typedef struct {
+    const char *key;
+    const char *value;
+} keyValuePair;
+
+/* Parse form data from a string. The input string is NOT preserved. */
+static apr_hash_t *parse_form_from_string(request_rec *r, char *args) {
+    apr_hash_t *form;
+    apr_array_header_t *values;
+    char *pair;
+    char *eq;
+    const char *delim = "&";
+    char *last;
+    char **ptr;
+    if (args == NULL) {
+        return NULL;
+    }
+    form = apr_hash_make(r->pool);
+    /* Split the input on '&' */
+    for (pair = apr_strtok(args, delim, &last); pair != NULL;
+            pair = apr_strtok(NULL, delim, &last)) {
+        for (eq = pair; *eq; ++eq) {
+            if (*eq == '+') {
+                *eq = ' ';
+            }
+        }
+        /* split into Key / Value and unescape it */
+        eq = strchr(pair, '=');
+        if (eq) {
+            *eq++ = '\0';
+            ap_unescape_url(pair);
+            ap_unescape_url(eq);
+        } else {
+            eq = "";
+            ap_unescape_url(pair);
+        }
+        /* Store key/value pair in our form hash. Given that there
+         * may be many values for the same key, we store values
+         * in an array (which we'll have to create the first
+         * time we encounter the key in question).
+         */
+        values = apr_hash_get(form, pair, APR_HASH_KEY_STRING);
+        if (values == NULL) {
+            values = apr_array_make(r->pool, 1, sizeof (const char*));
+            apr_hash_set(form, pair, APR_HASH_KEY_STRING, values);
+        }
+        ptr = apr_array_push(values);
+        *ptr = apr_pstrdup(r->pool, eq);
+    }
+    return form;
+}
+
+keyValuePair* readPost(request_rec *r) {
+    apr_array_header_t *pairs = NULL;
+    apr_off_t len;
+    apr_size_t size;
+    int res;
+    int i = 0;
+    char *buffer;
+    keyValuePair *kvp;
+
+    res = ap_parse_form_data(r, NULL, &pairs, -1, HUGE_STRING_LEN);
+    if (res != OK || !pairs) return NULL; /* Return NULL if we failed or if there are is no POST data */
+    kvp = apr_pcalloc(r->pool, sizeof (keyValuePair) * (pairs->nelts + 1));
+    while (pairs && !apr_is_empty_array(pairs)) {
+        ap_form_pair_t *pair = (ap_form_pair_t *) apr_array_pop(pairs);
+        apr_brigade_length(pair->value, 1, &len);
+        size = (apr_size_t) len;
+        buffer = apr_palloc(r->pool, size + 1);
+        apr_brigade_flatten(pair->value, buffer, &size);
+        buffer[len] = 0;
+        kvp[i].key = apr_pstrdup(r->pool, pair->name);
+        kvp[i].value = buffer;
+        i++;
+    }
+    return kvp;
+}
+
+tpl_varlist* getGetGlobal(request_rec* r, tpl_varlist* varlist) {
+
+    apr_hash_t* getHash = parse_form_from_string(r, r->args);
+    
+    return varlist;
+}
+
+tpl_varlist* getPostGlobal(request_rec* r, tpl_varlist* varlist) {
+
+    keyValuePair* postMap = readPost(r);
+    
+    return varlist;
+}
+
 tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
 
     apr_status_t status;
@@ -147,43 +239,43 @@ tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
 
     /* SCRIPT_FILENAME */
     varlist = tpl_addVar("server_script_filename", self, varlist);
-    
+
     /* SERVER_ADMIN */
     const char* serverAdmin = apr_pstrdup(r->pool, r->server->server_admin);
     varlist = tpl_addVar("server_server_admin", serverAdmin, varlist);
-    
+
     /* SERVER_PORT */
-    apr_port_t  serverPort = r->server->port;
+    apr_port_t serverPort = r->server->port;
     varlist = tpl_addVar("server_server_port", apr_itoa(r->pool, serverPort), varlist);
-    
+
     /* SERVER_SIGNATURE */
     const char* serverSignature = ap_psignature("", r);
     varlist = tpl_addVar("server_server_signature", serverSignature, varlist);
-    
+
     /* REQUEST_URI */
     const char* requestURI = apr_pstrdup(r->pool, r->uri);
     varlist = tpl_addVar("server_request_uri", requestURI, varlist);
-    
+
     /* AUTH_DIGEST */
     const char* authDigest = apr_table_get(r->headers_in, "Authorization");
     varlist = tpl_addVar("server_auth_digest", authDigest, varlist);
-    
+
     /* AUTH_USER */
     const char* authUser = apr_pstrdup(r->pool, r->parsed_uri.user);
     varlist = tpl_addVar("server_auth_user", authUser, varlist);
-     
+
     /* AUTH_PW */
     const char* authPassword = apr_pstrdup(r->pool, r->parsed_uri.password);
     varlist = tpl_addVar("server_auth_password", authPassword, varlist);
-    
+
     /* AUTH_TYPE */
-    const char* authType =  ap_auth_type(r);
+    const char* authType = ap_auth_type(r);
     varlist = tpl_addVar("server_auth_type", authType, varlist);
-    
+
     /* PATH_INFO */
     const char* pathInfo = apr_pstrdup(r->pool, r->path_info);
     varlist = tpl_addVar("server_path_info", pathInfo, varlist);
-    
+
     return varlist;
 
 
