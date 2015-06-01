@@ -1,0 +1,11 @@
+
+# mod_dart - omissions from the PHP super globals
+
+## Server
+
+SCRIPT_NAME, use SELF
+GATEWAY_INTERFACE
+REQUEST_TIME_FLOAT
+REDIRECT_REMOTE_USER
+PATH_TRANSLATED
+ORIG_PATH_INFO 

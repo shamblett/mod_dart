@@ -37,6 +37,10 @@ class Apache{
                                 'REMOTE_PORT' : '<TMPL_VAR name = "server_remote_port">', 
                                 'REMOTE_USER' : '<TMPL_VAR name = "server_remote_user">', 
                                 'SCRIPT_FILENAME' : '<TMPL_VAR name = "server_script_filename">', 
+                                'SERVER_ADMIN' : '<TMPL_VAR name = "server_server_admin">',  
+                                'SERVER_PORT' : '<TMPL_VAR name = "server_server_port">', 
+                                'SERVER_SIGNATURE' : '<TMPL_VAR name = "server_server_signature">',     
+                                'REQUEST_URI' : '<TMPL_VAR name = "server_request_uri">',    
                                     
                                 };
         
@@ -99,6 +103,10 @@ class Apache{
         writeOutput('<h3> REMOTE_PORT : ${Server["REMOTE_PORT"]}  </h3>');
         writeOutput('<h3> REMOTE_USER : ${Server["REMOTE_USER"]}  </h3>');
         writeOutput('<h3> SCRIPT_FILENAME : ${Server["SCRIPT_FILENAME"]}  </h3>');
+        writeOutput('<h3> SERVER_ADMIN : ${Server["SERVER_ADMIN"]}  </h3>');
+        writeOutput('<h3> SERVER_PORT : ${Server["SERVER_PORT"]}  </h3>');
+        writeOutput('<h3> SERVER_SIGNATURE : ${Server["SERVER_SIGNATURE"]}  </h3>');
+        writeOutput('<h3> REQUEST_URI : ${Server["REQUEST_URI"]}  </h3>');
          
         // End
         writeOutput('<h3>------- End of Dump ------</h3>');

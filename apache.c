@@ -147,8 +147,24 @@ tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
 
     /* SCRIPT_FILENAME */
     varlist = tpl_addVar("server_script_filename", self, varlist);
-
-
+    
+    /* SERVER_ADMIN */
+    const char* serverAdmin = apr_pstrdup(r->pool, r->server->server_admin);
+    varlist = tpl_addVar("server_server_admin", serverAdmin, varlist);
+    
+    /* SERVER_PORT */
+    apr_port_t  serverPort = r->server->port;
+    varlist = tpl_addVar("server_server_port", apr_itoa(r->pool, serverPort), varlist);
+    
+    /* SERVER_SIGNATURE */
+    const char* serverSignature = ap_psignature("", r);
+    varlist = tpl_addVar("server_server_signature", serverSignature, varlist);
+    
+    /* REQUEST_URI */
+    const char* requestURI = apr_pstrdup(r->pool, r->uri);
+    varlist = tpl_addVar("server_request_uri", requestURI, varlist);
+    
+    
     return varlist;
 
 
