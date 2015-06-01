@@ -106,15 +106,30 @@ keyValuePair* readPost(request_rec *r) {
 
 tpl_varlist* getGetGlobal(request_rec* r, tpl_varlist* varlist) {
 
+    apr_hash_index_t *hi;
+    void *val;
+    const void *key;
+    keyValuePair *kvp = NULL;
+    int i = 0;
+
     apr_hash_t* getHash = parse_form_from_string(r, r->args);
-    
+
+    kvp = apr_pcalloc(r->pool, sizeof (keyValuePair) * (apr_hash_count(getHash) + 1));
+    for (hi = apr_hash_first(r->pool, getHash); hi; hi = apr_hash_next(hi)) {
+        apr_hash_this(hi, &key, NULL, &val);
+
+        kvp[i].key = apr_pstrdup(r->pool, key);
+        kvp[i].value = val;
+        i++;
+    }
+
     return varlist;
 }
 
 tpl_varlist* getPostGlobal(request_rec* r, tpl_varlist* varlist) {
 
     keyValuePair* postMap = readPost(r);
-    
+
     return varlist;
 }
 
@@ -301,6 +316,9 @@ apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, re
     /* SERVER super global */
     varList = getServerGlobal(r, varList);
 
+    /* GET global */
+    varList = getGetGlobal(r, varList);
+    
     /* Create the template file output file, get its name and close it. */
     len = sizeof (scriptFileTemplate);
     apr_cpystrn(scriptFileTemplate, cachePath, len);
