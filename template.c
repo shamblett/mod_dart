@@ -32,7 +32,7 @@ tpl_loop * tpl_addVarList(tpl_loop* loop, tpl_varlist* varlist) {
 
 tpl_varlist* tpl_addLoop(tpl_varlist *varlist, const char *name, tpl_loop *loop) {
     
-    return tpl_varlist* TMPL_add_loop(varlist, name, loop);
+    return TMPL_add_loop(varlist, name, loop);
     
 }
 

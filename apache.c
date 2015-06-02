@@ -33,13 +33,12 @@ typedef struct {
 
 /* Parse form data from a string. The input string is NOT preserved. */
 static apr_hash_t *parse_form_from_string(request_rec *r, char *args) {
+    
     apr_hash_t *form;
-    apr_array_header_t *values;
     char *pair;
     char *eq;
     const char *delim = "&";
     char *last;
-    char **ptr;
     if (args == NULL) {
         return NULL;
     }
@@ -62,19 +61,11 @@ static apr_hash_t *parse_form_from_string(request_rec *r, char *args) {
             eq = "";
             ap_unescape_url(pair);
         }
-        /* Store key/value pair in our form hash. Given that there
-         * may be many values for the same key, we store values
-         * in an array (which we'll have to create the first
-         * time we encounter the key in question).
-         */
-        values = apr_hash_get(form, pair, APR_HASH_KEY_STRING);
-        if (values == NULL) {
-            values = apr_array_make(r->pool, 1, sizeof (const char*));
-            apr_hash_set(form, pair, APR_HASH_KEY_STRING, values);
-        }
-        ptr = apr_array_push(values);
-        *ptr = apr_pstrdup(r->pool, eq);
+        /* Store key/value pair in our form hash. */
+        apr_hash_set(form, pair, APR_HASH_KEY_STRING, eq);
+      
     }
+    
     return form;
 }
 
@@ -108,24 +99,18 @@ tpl_varlist* getGetGlobal(request_rec* r, tpl_varlist* varlist) {
 
     apr_hash_index_t *hi;
     void *val;
-    const void *key;
-    keyValuePair *kvp = NULL;
-    int i = 0;
-    tpl_loop *loop;
+    const void *key; 
+    tpl_loop *loop = NULL;
 
     apr_hash_t* getHash = parse_form_from_string(r, r->args);
-
-    kvp = apr_pcalloc(r->pool, sizeof (keyValuePair) * (apr_hash_count(getHash) + 1));
     for (hi = apr_hash_first(r->pool, getHash); hi; hi = apr_hash_next(hi)) {
         apr_hash_this(hi, &key, NULL, &val);
-        loop = TMPL_add_varlist(loop, TMPL_add_var(0,
-            "anum", num, "avalue", argv[i], 0));
-        kvp[i].key = apr_pstrdup(r->pool, key);
-        kvp[i].value = val;
-        i++;
+        loop = tpl_addVarList(loop, TMPL_add_var(0,
+            "key", key, "val", val, 0));
     }
 
-    return varlist;
+    
+    return tpl_addLoop(varlist, "get_map", loop);
 }
 
 tpl_varlist* getPostGlobal(request_rec* r, tpl_varlist* varlist) {

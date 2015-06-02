@@ -49,12 +49,10 @@ class Apache{
                                     
                                 };
                                 
-    <tmpl_loop name = "arg">
-      
-          <td>Argument #<tmpl_var name = "anum"></td>
-          <td><tmpl_var name = "avalue" fmt="entity"></td>
-        
-    </tmpl_loop>                            
+    static final Map Get = { <TMPL_LOOP name = "get_map">
+                                    '<TMPL_VAR name = "key">' :'<TMPL_VAR name = "val">',
+                            </TMPL_LOOP>   
+                            };
         
     // Functions
     
@@ -91,7 +89,7 @@ class Apache{
         writeOutput('<h3> Mod_Dart Version : ${version} </h3>');
         
         // SERVER
-        writeOutput('<h2><u> Server </u></h2>');
+        writeOutput('<h2><u> SERVER </u></h2>');
         writeOutput('<h3> SELF : ${Server["SELF"]} </h3>');
         writeOutput('<h3> SERVER_ADDR : ${Server["SERVER_ADDR"]} </h3>');
         writeOutput('<h3> SERVER_NAME : ${Server["SERVER_NAME"]} </h3>');
@@ -124,6 +122,13 @@ class Apache{
         writeOutput('<h3> AUTH_PW : ${Server["AUTH_PW"]}  </h3>');
         writeOutput('<h3> AUTH_TYPE : ${Server["AUTH_TYPE"]}  </h3>');
         writeOutput('<h3> PATH_INFO : ${Server["PATH_INFO"]}  </h3>');
+        
+        // GET
+        writeOutput('<h2><u> GET</u></h2>');
+        Get.forEach((key, value) {
+            writeOutput('<h3> ${key} : ${value} </h3>');
+        });
+        
         
         // End
         writeOutput('<h3>------- End of Dump ------</h3>');
