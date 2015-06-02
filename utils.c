@@ -6,6 +6,8 @@
  * License : GPL V3, see the LICENSE file for details
  */
 
+#include <ctype.h>
+
 #include "error.h"
 
 #include "utils.h"
@@ -24,4 +26,24 @@ apr_file_t* getTempFile(char* template, apr_pool_t* pool) {
 
     return ret;
 
+}
+
+char* trimWhiteSpace(char *s) {
+
+  int i = 0;
+  int j = strlen ( s ) - 1;
+  int k = 0;
+ 
+  while ( isspace ( s[i] ) && s[i] != '\0' )
+    i++;
+ 
+  while ( isspace ( s[j] ) && j >= 0 )
+    j--;
+ 
+  while ( i <= j )
+    s[k++] = s[i++];
+ 
+  s[k] = '\0';
+ 
+  return s;
 }

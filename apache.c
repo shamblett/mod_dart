@@ -74,6 +74,50 @@ static apr_hash_t *parse_form_from_string(request_rec *r, char *args) {
     return form;
 }
 
+/* Parse cookie data from a string. The input string is NOT preserved. */
+static apr_hash_t *parse_cookie_from_string(request_rec *r, const char *args) {
+
+    apr_hash_t *cookies = NULL;
+    char *pair;
+    char *eq;
+    const char *delim = ";";
+    char *last;
+    if (args == NULL) {
+        return NULL;
+    }
+
+    if (args != NULL) {
+
+        cookies = apr_hash_make(r->pool);
+
+        /* Split the input on ';' */
+        for (pair = apr_strtok((char*)args, delim, &last); pair != NULL;
+                pair = apr_strtok(NULL, delim, &last)) {
+            for (eq = pair; *eq; ++eq) {
+                if (*eq == '+') {
+                    *eq = ' ';
+                }
+            }
+            /* split into Key / Value and unescape it */
+            eq = strchr(pair, '=');
+            if (eq) {
+                *eq++ = '\0';
+                ap_unescape_url(pair);
+                ap_unescape_url(eq);
+            } else {
+                eq = "";
+                ap_unescape_url(pair);
+            }
+            /* Store key/value pair in our form hash. */
+            pair = trimWhiteSpace(pair);
+            apr_hash_set(cookies, pair, APR_HASH_KEY_STRING, eq);
+
+        }
+    }
+
+    return cookies;
+}
+
 keyValuePair* readPost(request_rec *r, int* numEntries) {
     apr_array_header_t *pairs = NULL;
     apr_off_t len;
@@ -100,6 +144,33 @@ keyValuePair* readPost(request_rec *r, int* numEntries) {
 
     *numEntries = i;
     return kvp;
+}
+
+tpl_varlist* getCookiesGlobal(request_rec* r, tpl_varlist* varlist) {
+
+    apr_hash_index_t *hi;
+    void *val;
+    const void *key;
+    tpl_loop *loop = NULL;
+    const char *cookies;
+
+    cookies = apr_table_get(r->headers_in, "Cookie");
+    if (cookies) {
+
+        apr_hash_t* getHash = parse_cookie_from_string(r, cookies);
+        if (getHash != NULL) {
+            for (hi = apr_hash_first(r->pool, getHash); hi; hi = apr_hash_next(hi)) {
+                apr_hash_this(hi, &key, NULL, &val);
+                loop = tpl_addVarList(loop, TMPL_add_var(0,
+                        "key", key, "val", val, 0));
+            }
+
+
+            return tpl_addLoop(varlist, "cookie_map", loop);
+        }
+    }
+
+    return varlist;
 }
 
 tpl_varlist* getGetGlobal(request_rec* r, tpl_varlist* varlist) {
@@ -328,6 +399,9 @@ apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, re
 
     /* POST global */
     varList = getPostGlobal(r, varList);
+
+    /* COOKIES global */
+    varList = getCookiesGlobal(r, varList);
 
     /* Create the template file output file, get its name and close it. */
     len = sizeof (scriptFileTemplate);

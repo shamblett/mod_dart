@@ -58,7 +58,11 @@ class Apache{
                                     '<TMPL_VAR name = "key">' :'<TMPL_VAR name = "val">',
                             </TMPL_LOOP>   
                             };
-        
+    static final Map Cookie = { <TMPL_LOOP name = "cookie_map">
+                                    '<TMPL_VAR name = "key">' :'<TMPL_VAR name = "val">',
+                            </TMPL_LOOP>   
+                            };
+                            
     // Functions
     
     // The output buffer
@@ -129,14 +133,20 @@ class Apache{
         writeOutput('<h3> PATH_INFO : ${Server["PATH_INFO"]}  </h3>');
         
         // GET
-        writeOutput('<h2><u> GET</u></h2>');
+        writeOutput('<h2><u>GET</u></h2>');
         Get.forEach((key, value) {
             writeOutput('<h3> ${key} : ${value} </h3>');
         });
         
         // POST
-        writeOutput('<h2><u> POST</u></h2>');
+        writeOutput('<h2><u>POST</u></h2>');
         Post.forEach((key, value) {
+            writeOutput('<h3> ${key} : ${value} </h3>');
+        });
+        
+        // COOKIES
+        writeOutput('<h2><u>COOKIES</u></h2>');
+        Cookie.forEach((key, value) {
             writeOutput('<h3> ${key} : ${value} </h3>');
         });
         

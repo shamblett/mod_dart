@@ -1,7 +1,7 @@
 
 # mod_dart - omissions from the PHP super globals
 
-## Server
+## SERVER
 
 SCRIPT_NAME, use SELF
 GATEWAY_INTERFACE
@@ -10,8 +10,14 @@ REDIRECT_REMOTE_USER
 PATH_TRANSLATED
 ORIG_PATH_INFO
 
-## Get
+## GET
 
 None
 
- 
+## POST
+
+None
+
+## COOKIES
+
+None 
