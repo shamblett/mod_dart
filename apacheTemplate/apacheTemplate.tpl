@@ -62,7 +62,21 @@ class Apache{
                                     '<TMPL_VAR name = "key">' :'<TMPL_VAR name = "val">',
                             </TMPL_LOOP>   
                             };
-                            
+    
+    static Map _request = new Map();
+   
+    static Map get Request {
+    
+        if ( _request.isEmpty ) {
+            _request.addAll(Get);
+            _request.addAll(Post);
+            _request.addAll(Cookie);
+        }
+        return _request;
+        
+    }
+    
+        
     // Functions
     
     // The output buffer
@@ -147,6 +161,12 @@ class Apache{
         // COOKIES
         writeOutput('<h2><u>COOKIES</u></h2>');
         Cookie.forEach((key, value) {
+            writeOutput('<h3> ${key} : ${value} </h3>');
+        });
+        
+        // REQUEST
+        writeOutput('<h2><u>REQUEST</u></h2>');
+        Request.forEach((key, value) {
             writeOutput('<h3> ${key} : ${value} </h3>');
         });
         
