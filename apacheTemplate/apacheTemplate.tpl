@@ -53,6 +53,11 @@ class Apache{
                                     '<TMPL_VAR name = "key">' :'<TMPL_VAR name = "val">',
                             </TMPL_LOOP>   
                             };
+                            
+    static final Map Post = { <TMPL_LOOP name = "post_map">
+                                    '<TMPL_VAR name = "key">' :'<TMPL_VAR name = "val">',
+                            </TMPL_LOOP>   
+                            };
         
     // Functions
     
@@ -129,6 +134,11 @@ class Apache{
             writeOutput('<h3> ${key} : ${value} </h3>');
         });
         
+        // POST
+        writeOutput('<h2><u> POST</u></h2>');
+        Post.forEach((key, value) {
+            writeOutput('<h3> ${key} : ${value} </h3>');
+        });
         
         // End
         writeOutput('<h3>------- End of Dump ------</h3>');

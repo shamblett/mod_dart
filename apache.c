@@ -33,8 +33,8 @@ typedef struct {
 
 /* Parse form data from a string. The input string is NOT preserved. */
 static apr_hash_t *parse_form_from_string(request_rec *r, char *args) {
-    
-    apr_hash_t *form;
+
+    apr_hash_t *form = NULL;
     char *pair;
     char *eq;
     const char *delim = "&";
@@ -42,34 +42,39 @@ static apr_hash_t *parse_form_from_string(request_rec *r, char *args) {
     if (args == NULL) {
         return NULL;
     }
-    form = apr_hash_make(r->pool);
-    /* Split the input on '&' */
-    for (pair = apr_strtok(args, delim, &last); pair != NULL;
-            pair = apr_strtok(NULL, delim, &last)) {
-        for (eq = pair; *eq; ++eq) {
-            if (*eq == '+') {
-                *eq = ' ';
+
+    if (args != NULL) {
+
+        form = apr_hash_make(r->pool);
+
+        /* Split the input on '&' */
+        for (pair = apr_strtok(args, delim, &last); pair != NULL;
+                pair = apr_strtok(NULL, delim, &last)) {
+            for (eq = pair; *eq; ++eq) {
+                if (*eq == '+') {
+                    *eq = ' ';
+                }
             }
+            /* split into Key / Value and unescape it */
+            eq = strchr(pair, '=');
+            if (eq) {
+                *eq++ = '\0';
+                ap_unescape_url(pair);
+                ap_unescape_url(eq);
+            } else {
+                eq = "";
+                ap_unescape_url(pair);
+            }
+            /* Store key/value pair in our form hash. */
+            apr_hash_set(form, pair, APR_HASH_KEY_STRING, eq);
+
         }
-        /* split into Key / Value and unescape it */
-        eq = strchr(pair, '=');
-        if (eq) {
-            *eq++ = '\0';
-            ap_unescape_url(pair);
-            ap_unescape_url(eq);
-        } else {
-            eq = "";
-            ap_unescape_url(pair);
-        }
-        /* Store key/value pair in our form hash. */
-        apr_hash_set(form, pair, APR_HASH_KEY_STRING, eq);
-      
     }
-    
+
     return form;
 }
 
-keyValuePair* readPost(request_rec *r) {
+keyValuePair* readPost(request_rec *r, int* numEntries) {
     apr_array_header_t *pairs = NULL;
     apr_off_t len;
     apr_size_t size;
@@ -92,6 +97,8 @@ keyValuePair* readPost(request_rec *r) {
         kvp[i].value = buffer;
         i++;
     }
+
+    *numEntries = i;
     return kvp;
 }
 
@@ -99,25 +106,38 @@ tpl_varlist* getGetGlobal(request_rec* r, tpl_varlist* varlist) {
 
     apr_hash_index_t *hi;
     void *val;
-    const void *key; 
+    const void *key;
     tpl_loop *loop = NULL;
 
     apr_hash_t* getHash = parse_form_from_string(r, r->args);
-    for (hi = apr_hash_first(r->pool, getHash); hi; hi = apr_hash_next(hi)) {
-        apr_hash_this(hi, &key, NULL, &val);
-        loop = tpl_addVarList(loop, TMPL_add_var(0,
-            "key", key, "val", val, 0));
+    if (getHash != NULL) {
+        for (hi = apr_hash_first(r->pool, getHash); hi; hi = apr_hash_next(hi)) {
+            apr_hash_this(hi, &key, NULL, &val);
+            loop = tpl_addVarList(loop, TMPL_add_var(0,
+                    "key", key, "val", val, 0));
+        }
+
+
+        return tpl_addLoop(varlist, "get_map", loop);
     }
 
-    
-    return tpl_addLoop(varlist, "get_map", loop);
+    return varlist;
 }
 
 tpl_varlist* getPostGlobal(request_rec* r, tpl_varlist* varlist) {
 
-    keyValuePair* postMap = readPost(r);
+    int numEntries = 0;
+    int i;
+    tpl_loop *loop = NULL;
 
-    return varlist;
+    keyValuePair* postMap = readPost(r, &numEntries);
+    for (i = 0; i <= numEntries; i++) {
+        loop = tpl_addVarList(loop, TMPL_add_var(0,
+                "key", postMap[i].key, "val", postMap[i].value, 0));
+
+    }
+
+    return tpl_addLoop(varlist, "post_map", loop);
 }
 
 tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
@@ -305,7 +325,10 @@ apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, re
 
     /* GET global */
     varList = getGetGlobal(r, varList);
-    
+
+    /* POST global */
+    varList = getPostGlobal(r, varList);
+
     /* Create the template file output file, get its name and close it. */
     len = sizeof (scriptFileTemplate);
     apr_cpystrn(scriptFileTemplate, cachePath, len);
