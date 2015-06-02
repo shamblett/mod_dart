@@ -35,9 +35,9 @@ extern "C" {
     /**
      * trimwhitespace
      * 
-     * Trims leading and trailing whitespace 
-     * @param input - the string
-     * @param result - the stripped string
+     * Trims leading and trailing whitespace from a string
+     * @param s - the string
+     * @return - the stripped string
      */
     char* trimWhiteSpace(char *s);
         
