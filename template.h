@@ -38,8 +38,20 @@ extern "C" {
      * @param varList - The variable list to use
      * @return - An updated or new variable list
      */
-    tpl_varlist * tpl_addVar(const char *name, const char *value, tpl_varlist * varList);
+    tpl_varlist* tpl_addVar(const char *name, const char *value, tpl_varlist * varList);
 
+    /**
+     * tpl_addLoopVar
+     * 
+     * Add loop variables to a dctionary 
+     * @param keyName
+     * @param key
+     * @param valName
+     * @param val
+     * @return the variable list
+     */
+    tpl_varlist* tpl_addLoopVar(const char* keyName, const char* key,
+                                const char* valName, const char* val);
     /**
      * tpl_addVarList
      * 
@@ -49,7 +61,7 @@ extern "C" {
      * @param varlist - the distionary to add
      * @return - the updated loop
      */
-    tpl_loop * tpl_addVarList(tpl_loop* loop, tpl_varlist* varlist);
+    tpl_loop* tpl_addVarList(tpl_loop* loop, tpl_varlist* varlist);
     
     /**
      * tpl_addLoop

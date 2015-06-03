@@ -5,9 +5,6 @@
       <df name="ctemplate-1.0">
         <in>ctemplate.c</in>
       </df>
-      <df name="test">
-        <in>curl</in>
-      </df>
       <in>apache.c</in>
       <in>error.c</in>
       <in>mod_dart.c</in>
@@ -86,8 +83,6 @@
       <item path="template.c" ex="false" tool="0" flavor2="3">
         <cTool flags="0">
         </cTool>
-      </item>
-      <item path="test/curl" ex="false" tool="3" flavor2="0">
       </item>
       <item path="utils.c" ex="false" tool="0" flavor2="3">
         <cTool flags="0">

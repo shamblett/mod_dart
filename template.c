@@ -25,6 +25,13 @@ tpl_varlist * tpl_addVar(const char *name, const char *value, tpl_varlist * varL
     return TMPL_add_var(varList, name, value, 0);
 }
 
+tpl_varlist* tpl_addLoopVar(const char* keyName, const char* key,
+                                const char* valName, const char* val) {
+    
+    return TMPL_add_var(0, keyName, key, valName, val, 0);
+    
+}
+
 tpl_loop * tpl_addVarList(tpl_loop* loop, tpl_varlist* varlist) {
     
     return TMPL_add_varlist(loop, varlist);

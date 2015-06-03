@@ -33,7 +33,7 @@ extern "C" {
     apr_file_t* getTempFile(char* template, apr_pool_t* pool);
 
     /**
-     * trimwhitespace
+     * trimWhiteSpace
      * 
      * Trims leading and trailing whitespace from a string
      * @param s - the string

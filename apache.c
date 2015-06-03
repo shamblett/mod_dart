@@ -161,8 +161,8 @@ tpl_varlist* getCookiesGlobal(request_rec* r, tpl_varlist* varlist) {
         if (getHash != NULL) {
             for (hi = apr_hash_first(r->pool, getHash); hi; hi = apr_hash_next(hi)) {
                 apr_hash_this(hi, &key, NULL, &val);
-                loop = tpl_addVarList(loop, TMPL_add_var(0,
-                        "key", key, "val", val, 0));
+                loop = tpl_addVarList(loop, tpl_addLoopVar(
+                        "key", key, "val", val));
             }
 
 
@@ -184,8 +184,8 @@ tpl_varlist* getGetGlobal(request_rec* r, tpl_varlist* varlist) {
     if (getHash != NULL) {
         for (hi = apr_hash_first(r->pool, getHash); hi; hi = apr_hash_next(hi)) {
             apr_hash_this(hi, &key, NULL, &val);
-            loop = tpl_addVarList(loop, TMPL_add_var(0,
-                    "key", key, "val", val, 0));
+            loop = tpl_addVarList(loop, tpl_addLoopVar(
+                    "key", key, "val", val));
         }
 
 
