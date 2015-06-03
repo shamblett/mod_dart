@@ -13,6 +13,7 @@ template_path = /var/www/html/template
 
 # third party
 CTMPL=$(current_dir)/ctemplate-1.0/
+JANS=$(current_dir)/jansson/
 
 #   the used tools
 APXS=apxs
@@ -25,7 +26,10 @@ all: mod_dart
 mod_dart: 
 	
 	$(APXS) -a -c -Wc,-Wall -Wi,  mod_dart.c template.c utils.c error.c apache.c \
-	    -I$(CTMPL) $(CTMPL)/ctemplate.c
+	    -I$(CTMPL) $(CTMPL)/ctemplate.c \
+	    -I$(JANS) $(JANS)/dump.c $(JANS)/hashtable.c $(JANS)/hashtable_seed.c $(JANS)/load.c \
+	    $(JANS)/memory.c $(JANS)/pack_unpack.c $(JANS)/strbuffer.c $(JANS)/strconv.c $(JANS)/utf.c \
+	    $(JANS)/value.c
 	cp apacheTemplate/apacheTemplate.tpl $(template_path)
 
 

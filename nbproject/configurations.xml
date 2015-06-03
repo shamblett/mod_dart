@@ -5,6 +5,18 @@
       <df name="ctemplate-1.0">
         <in>ctemplate.c</in>
       </df>
+      <df name="jansson">
+        <in>dump.c</in>
+        <in>hashtable.c</in>
+        <in>hashtable_seed.c</in>
+        <in>load.c</in>
+        <in>memory.c</in>
+        <in>pack_unpack.c</in>
+        <in>strbuffer.c</in>
+        <in>strconv.c</in>
+        <in>utf.c</in>
+        <in>value.c</in>
+      </df>
       <in>apache.c</in>
       <in>error.c</in>
       <in>mod_dart.c</in>
@@ -76,6 +88,53 @@
           </preprocessorList>
         </cTool>
       </folder>
+      <folder path="0/jansson">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <item path="jansson/dump.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="jansson/hashtable.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="jansson/hashtable_seed.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="jansson/load.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="jansson/memory.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="jansson/pack_unpack.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="jansson/strbuffer.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="jansson/strconv.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="jansson/utf.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="jansson/value.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="0">
+        </cTool>
+      </item>
       <item path="mod_dart.c" ex="false" tool="0" flavor2="3">
         <cTool flags="0">
         </cTool>

@@ -8,6 +8,26 @@
         <in>ctemplate.c</in>
         <in>ctemplate.h</in>
       </df>
+      <df name="jansson">
+        <in>dump.c</in>
+        <in>error.c</in>
+        <in>hashtable.c</in>
+        <in>hashtable.h</in>
+        <in>hashtable_seed.c</in>
+        <in>jansson.h</in>
+        <in>jansson_config.h</in>
+        <in>jansson_private.h</in>
+        <in>load.c</in>
+        <in>lookup3.h</in>
+        <in>memory.c</in>
+        <in>pack_unpack.c</in>
+        <in>strbuffer.c</in>
+        <in>strbuffer.h</in>
+        <in>strconv.c</in>
+        <in>utf.c</in>
+        <in>utf.h</in>
+        <in>value.c</in>
+      </df>
       <df name="test">
         <in>curl</in>
         <in>omissions.md</in>
