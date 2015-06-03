@@ -433,3 +433,15 @@ apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, re
 
 }
 
+char* parseBuffer(char* input) {
+    
+    
+    //char* last;
+    
+    char* controlBuffer = (strstr(input, SENTINEL) + SENTINEL_LENGTH);
+    input[(controlBuffer - SENTINEL_LENGTH - input)] = '\0';
+    
+    return input;
+	
+}
+

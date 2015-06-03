@@ -7,6 +7,7 @@
       </df>
       <df name="jansson">
         <in>dump.c</in>
+        <in>error.c</in>
         <in>hashtable.c</in>
         <in>hashtable_seed.c</in>
         <in>load.c</in>
@@ -96,6 +97,10 @@
         </cTool>
       </folder>
       <item path="jansson/dump.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="jansson/error.c" ex="false" tool="0" flavor2="3">
         <cTool flags="0">
         </cTool>
       </item>

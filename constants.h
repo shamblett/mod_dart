@@ -18,8 +18,14 @@
 extern "C" {
 #endif
 
+    /* Version of mod_dart */
     const char* VERSION = "0.1.0";
 
+    /* Buffer sentinel, must match the declaration in the template*/
+    const char* SENTINEL = ":-:mod_dart_control:-:";
+    
+    /* Sentinel length */
+    const int SENTINEL_LENGTH = 22;
 
 #ifdef	__cplusplus
 }

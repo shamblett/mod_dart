@@ -76,11 +76,16 @@ class Apache{
         
     }
     
+    static Map<String, String> _headers = new Map<String, String>();
+            
         
     // Functions
     
     // The output buffer
     static String _outputBuffer = "";
+    // The control buffer
+    static String _controlBuffer = "";
+    static final String _sentinel = ":-:mod_dart_control:-:";
     
     // Write output to the output buffer
     static void writeOutput(String output) {
@@ -89,10 +94,13 @@ class Apache{
     
     }
     
-    // Flush the output buffer back to apache
-    static void flushOutput() {
+    // Flush the buffers back to apache
+    static void flushBuffers() {
     
-        print(_outputBuffer);
+        Map<String,Map> output = new Map<String,Map>();
+        output['Headers'] = _headers;        
+        _controlBuffer = _controlBuffer + JSON.encode(output);
+        print( _outputBuffer + _sentinel + _controlBuffer );
     
     }
     
@@ -100,6 +108,12 @@ class Apache{
     static void clearOutput() {
     
         _outputBuffer = "";
+    }
+    
+    // Headers
+    static void setHeader(String name, String value) {
+    
+        _headers[name] = value;
     }
     
     // Dump the apache environment
@@ -171,7 +185,7 @@ class Apache{
         });
         
         // End
-        writeOutput('<h3>------- End of Dump ------</h3>');
+        writeOutput('<h3>!------- End of Dump -------!</h3>');
         
     }
         

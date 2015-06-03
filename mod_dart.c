@@ -144,17 +144,19 @@ static int md_handler(request_rec *r) {
     }
 
     /**
-     * We must first set the appropriate content type, followed by our output.
+     * Parse the returned output, return the actual output and
+     * parse and apply the control commands.
      */
     ap_set_content_type(r, "text/html");
     while (fgets(output, PATH_MAX, fp) != NULL)
-        ap_rprintf(r, "%s", output);
+        ap_rprintf(r, "%s", parseBuffer(output) );
     pclose(fp);
 
     /* Remove the script file */
     status = apr_file_close(scriptFile);
     status = apr_file_remove(scriptFileName, r->pool);
 
+    
     /* Lastly, we must tell the server that we took care of this request and everything went fine.
      * We do so by simply returning the value OK to the server.
      */

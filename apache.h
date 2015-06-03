@@ -38,7 +38,17 @@ extern "C" {
      */
     apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, request_rec *r);
 
-
+    /**
+     * parseBuffer
+     * 
+     * Parse the output from the VM, apply the control commands
+     * and return the real output;
+     * 
+     * @param input - The VM output
+     * @return - the buffer to write to apache
+     */
+    char* parseBuffer(char* input);
+    
 #ifdef	__cplusplus
 }
 #endif
