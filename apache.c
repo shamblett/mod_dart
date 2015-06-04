@@ -14,6 +14,7 @@
 #include "utils.h"
 #include "error.h"
 #include "constants.h"
+#include "jansson/jansson.h"
 
 #include "apache.h"
 
@@ -91,7 +92,7 @@ static apr_hash_t *parse_cookie_from_string(request_rec *r, const char *args) {
         cookies = apr_hash_make(r->pool);
 
         /* Split the input on ';' */
-        for (pair = apr_strtok((char*)args, delim, &last); pair != NULL;
+        for (pair = apr_strtok((char*) args, delim, &last); pair != NULL;
                 pair = apr_strtok(NULL, delim, &last)) {
             for (eq = pair; *eq; ++eq) {
                 if (*eq == '+') {
@@ -433,15 +434,72 @@ apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, re
 
 }
 
-char* parseBuffer(char* input) {
-    
-    
-    //char* last;
-    
+char* parseBuffer(char* input, request_rec* r) {
+
+    json_t *root;
+    json_error_t error;
+    json_t *l1Value;
+    json_t *l2Value;
+    const char* l1Key;
+    const char* l2Key;
+
+    /* Split and get the buffers */
     char* controlBuffer = (strstr(input, SENTINEL) + SENTINEL_LENGTH);
     input[(controlBuffer - SENTINEL_LENGTH - input)] = '\0';
-    
+
+    /* Parse the JSON encoded control buffer */
+    root = json_loads(controlBuffer, 0, &error);
+    if (root) {
+
+        json_object_foreach(root, l1Key, l1Value) {
+
+            switch (getCBSwitchInt(l1Key)) {
+
+                case CB_INT_HEADERS:
+                {
+                    json_object_foreach(l1Value, l2Key, l2Value)
+                {
+
+                    switch (getHSwitchInt(l2Key)) {
+
+                        case H_INT_CONTENT_TYPE:
+                        {            
+                            ap_set_content_type(r, json_string_value(l2Value));
+                            break;
+                        }
+
+                        default:
+                        {
+                        }
+
+                    }
+
+                }
+
+                    break;
+                }
+
+                case CB_INT_END:
+                {
+
+                    break;
+                }
+                
+                default:
+                {
+                    return "mod-dart ERROR!! - Control Buffer Corrupt - Unknown Object Name";
+                }
+            }
+
+        }
+
+
+    } else {
+        return "mod-dart ERROR!! - Control Buffer Corrupt - Cannot JSON Decode it - Check your Apache TPL file";
+    }
+
     return input;
-	
+
+
 }
 

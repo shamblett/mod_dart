@@ -149,17 +149,14 @@ static int md_handler(request_rec *r) {
      */
     ap_set_content_type(r, "text/html");
     while (fgets(output, PATH_MAX, fp) != NULL)
-        ap_rprintf(r, "%s", parseBuffer(output) );
+        ap_rprintf(r, "%s", parseBuffer(output, r) );
     pclose(fp);
 
     /* Remove the script file */
     status = apr_file_close(scriptFile);
     status = apr_file_remove(scriptFileName, r->pool);
 
-    
-    /* Lastly, we must tell the server that we took care of this request and everything went fine.
-     * We do so by simply returning the value OK to the server.
-     */
+    /* Ok, all worked */
     return OK;
 }
 

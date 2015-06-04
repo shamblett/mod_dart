@@ -11,9 +11,21 @@ class Apache{
     // Global settings
     
     static final String version =  '<TMPL_VAR name = "version">';
-        
-    // SERVER superglobal
     
+    // Sentinel, must match the definition in mod-dart- do not edit
+    static final String _sentinel = ":-:mod_dart_control:-:";    
+    
+    // Control buffer sections 
+    static final String CB_HEADERS = 'Headers';
+    static final String CB_END = End';
+    
+    // Header definitions, do NOT use the ones in HttpHeaders
+    static final String CONTENT_TYPE = 'Content-Type';
+    static final String ACCEPT = 'Accept';
+    
+    // Super globals
+    
+    // SERVER superglobal
     static final Map Server = { 'SELF' : '<TMPL_VAR name = "server_self">',
                                 'SERVER_ADDR' : '<TMPL_VAR name = "server_addr">',
                                 'SERVER_NAME' : '<TMPL_VAR name = "server_name">',
@@ -85,7 +97,7 @@ class Apache{
     static String _outputBuffer = "";
     // The control buffer
     static String _controlBuffer = "";
-    static final String _sentinel = ":-:mod_dart_control:-:";
+   
     
     // Write output to the output buffer
     static void writeOutput(String output) {
@@ -98,9 +110,14 @@ class Apache{
     static void flushBuffers() {
     
         Map<String,Map> output = new Map<String,Map>();
-        output['Headers'] = _headers;        
+       
+        output[CB_HEADERS] = _headers;  
+        output[CB_END] = null;
+        
         _controlBuffer = _controlBuffer + JSON.encode(output);
         print( _outputBuffer + _sentinel + _controlBuffer );
+        
+        //{"Headers":{"content-type":"text/html","accept":"application/json"},"End":{"TheEnd":"The end is nigh! "}}
     
     }
     

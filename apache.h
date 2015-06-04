@@ -45,9 +45,10 @@ extern "C" {
      * and return the real output;
      * 
      * @param input - The VM output
+     * @param r - the current request record
      * @return - the buffer to write to apache
      */
-    char* parseBuffer(char* input);
+    char* parseBuffer(char* input, request_rec* r);
     
 #ifdef	__cplusplus
 }

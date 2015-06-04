@@ -23,9 +23,61 @@ extern "C" {
 
     /* Buffer sentinel, must match the declaration in the template*/
     const char* SENTINEL = ":-:mod_dart_control:-:";
-    
+
     /* Sentinel length */
     const int SENTINEL_LENGTH = 22;
+
+    /* Control buffer objects */
+    const char* CB_HEADERS = "Headers";
+    const char* CB_END = "End";
+    enum{ CB_INT_HEADERS = 1,
+          CB_INT_END = 10 };
+
+    /* Headers */
+    const char* H_CONTENT_TYPE = "Content-Type";
+    enum{ H_INT_CONTENT_TYPE = 1};
+
+    /* Control buffer switch tables and definitions */
+    typedef struct _switchTableType {
+        int switchValue;
+        char* switchText;
+    } switchTableType;
+
+    const switchTableType cb_switchTable[2] = {
+        {1, "Headers"},
+        {10, "End" }};
+    const switchTableType h_switchTable[1] = {
+        {1, "Content-Type"}};
+
+    const int getCBSwitchInt(const char* text) {
+
+        int index;
+
+        for (index = 0; index <= sizeof (cb_switchTable); index++) {
+
+            if (!strcmp(cb_switchTable[index].switchText, text)) {
+                return cb_switchTable[index].switchValue;
+            }
+        }
+        
+        return 50;
+
+    };
+
+    const int getHSwitchInt(const char* text) {
+
+        int index;
+
+        for (index = 0; index <= sizeof (cb_switchTable); index++) {
+
+            if (!strcmp(h_switchTable[index].switchText, text)) {
+                return h_switchTable[index].switchValue;
+            }
+        }
+        
+        return 50;
+
+    }
 
 #ifdef	__cplusplus
 }
