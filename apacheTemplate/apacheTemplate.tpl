@@ -116,8 +116,6 @@ class Apache{
         
         _controlBuffer = _controlBuffer + JSON.encode(output);
         print( _outputBuffer + _sentinel + _controlBuffer );
-        
-        //{"Headers":{"content-type":"text/html","accept":"application/json"},"End":{"TheEnd":"The end is nigh! "}}
     
     }
     
@@ -205,5 +203,11 @@ class Apache{
         writeOutput('<h3>!------- End of Dump -------!</h3>');
         
     }
+    
+    // Dump the apache environment
+    static void dumpEnvironmentJSON() {
+    
+        writeOutput(JSON.encode(Server) + JSON.encode(Get) + JSON.encode(Post) + JSON.encode(Cookie) + JSON.encode(Request));
         
+    }    
 }
