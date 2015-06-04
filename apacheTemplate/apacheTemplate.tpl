@@ -17,7 +17,7 @@ class Apache{
     
     // Control buffer sections 
     static final String CB_HEADERS = 'Headers';
-    static final String CB_END = End';
+    static final String CB_END = 'End';
     
     // Header definitions, do NOT use the ones in HttpHeaders
     static final String CONTENT_TYPE = 'Content-Type';
