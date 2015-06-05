@@ -18,15 +18,6 @@
 
 #include "apache.h"
 
-//TODO leave for now, used to get table contents
-
-/*static int printitem(void *rec, const char *key, const char *value)
-{
-    request_rec *r = rec;
-    ap_rprintf(r,"Key %s Value %s", key, value);
-    return 1;
-}*/
-
 typedef struct {
     const char *key;
     const char *value;
@@ -443,6 +434,11 @@ char* parseBuffer(char* input, request_rec* r) {
     const char* l1Key;
     const char* l2Key;
 
+    /* Check for a sentinel, if none just return the buffer,
+     this is a VM script parse error that we can send back.
+    */
+    if ( strstr(input, SENTINEL) == NULL ) return input;
+    
     /* Split and get the buffers */
     char* controlBuffer = (strstr(input, SENTINEL) + SENTINEL_LENGTH);
     input[(controlBuffer - SENTINEL_LENGTH - input)] = '\0';
