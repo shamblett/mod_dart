@@ -8,7 +8,7 @@
 
 /* Purpose :-
  * 
- * This module contains constants for mod_dart
+ * This module contains constants and supporting functions for mod_dart
  */
 
 #ifndef CONSTANTS_H
@@ -35,7 +35,8 @@ extern "C" {
 
     /* Headers */
     const char* H_CONTENT_TYPE = "Content-Type";
-    enum{ H_INT_CONTENT_TYPE = 1};
+    enum{ H_INT_CONTENT_TYPE = 1,
+          H_INT_NORMAL = 100 };
 
     /* Control buffer switch tables and definitions */
     typedef struct _switchTableType {
@@ -46,8 +47,9 @@ extern "C" {
     const switchTableType cb_switchTable[2] = {
         {1, "Headers"},
         {10, "End" }};
+    
     const switchTableType h_switchTable[1] = {
-        {1, "Content-Type"}};
+        {H_INT_CONTENT_TYPE, "Content-Type"}};
 
     const int getCBSwitchInt(const char* text) {
 
@@ -60,7 +62,7 @@ extern "C" {
             }
         }
         
-        return 50;
+        return CB_INT_END;
 
     };
 
@@ -75,7 +77,7 @@ extern "C" {
             }
         }
         
-        return 50;
+        return  H_INT_NORMAL;
 
     }
 
