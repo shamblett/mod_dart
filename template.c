@@ -6,17 +6,11 @@
  * License : GPL V3, see the LICENSE file for details
  */
 
-
-#include <stdio.h>
 #include <limits.h>
 #include <string.h>
 #include <stdlib.h>
 
-#include <apr_file_io.h>
-
-
 #include "utils.h"
-#include "ctemplate-1.0/ctemplate.h"
 
 #include "template.h"
 

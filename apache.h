@@ -15,12 +15,7 @@
 #ifndef APACHE_H
 #define	APACHE_H
 
-#include <httpd.h>
-#include <http_config.h>
-#include <http_log.h>
-#include <http_protocol.h>
-#include <apr_file_io.h> 
-
+#include "platform.h"
 
 #ifdef	__cplusplus
 extern "C" {

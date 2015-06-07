@@ -13,19 +13,7 @@
  * builds the Apache class, invokes the Dart VM and collects and parses its output.
  */
 
-#include <stdio.h>
-
-#include <httpd.h>
-#include <http_config.h>
-#include <http_log.h>
-#include <http_protocol.h>
-#include <http_core.h>
-#include <apr_hash.h>
-#include <ap_config.h>
-#include <ap_provider.h>
-#include <apr_strings.h>
-#include <apr_file_io.h>
-
+#include "platform.h"
 #include "apache.h"
 #include "utils.h"
 #include "error.h"

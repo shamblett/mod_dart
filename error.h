@@ -15,7 +15,7 @@
 #ifndef ERROR_H
 #define	ERROR_H
 
-#include <apr_pools.h>
+#include "platform.h"
 
 #ifdef	__cplusplus
 extern "C" {

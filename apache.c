@@ -6,10 +6,6 @@
  * License : GPL V3, see the LICENSE file for details
  */
 
-
-#include <http_core.h>
-#include <apr_strings.h>
-
 #include "template.h"
 #include "utils.h"
 #include "error.h"

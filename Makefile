@@ -18,6 +18,15 @@ JANS=$(current_dir)/jansson/
 #   the used tools
 APXS=apxs
 
+# platform
+DISTRO=$(lsb_release -si)
+ifneq (,$(findstring Ubuntu,$(DISTRO)))
+    UBUNTU=1
+else
+    UBUNTU=0
+endif
+
+
 #   the default target
 all: mod_dart
 
@@ -25,7 +34,7 @@ all: mod_dart
 .PHONY: mod_dart
 mod_dart: 
 	
-	$(APXS) -a -c -Wc,-Wall -Wi,  mod_dart.c template.c utils.c error.c apache.c \
+	$(APXS) -a -c -DDISTRIB=$(UBUNTU) -Wc,-Wall -Wi,  mod_dart.c template.c utils.c error.c apache.c \
 	    -I$(CTMPL) $(CTMPL)/ctemplate.c \
 	    -I$(JANS) $(JANS)/dump.c $(JANS)/hashtable.c $(JANS)/hashtable_seed.c $(JANS)/load.c \
 	    $(JANS)/memory.c $(JANS)/pack_unpack.c $(JANS)/strbuffer.c $(JANS)/strconv.c $(JANS)/utf.c \

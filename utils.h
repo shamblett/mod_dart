@@ -14,8 +14,7 @@
 #ifndef UTILS_H
 #define	UTILS_H
 
-#include <apr_file_io.h> 
-#include <apr_pools.h>
+#include "platform.h"
 
 #ifdef	__cplusplus
 extern "C" {

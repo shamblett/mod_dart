@@ -17,7 +17,7 @@
 #ifndef TEMPLATE_H
 #define	TEMPLATE_H
 
-#include <stdio.h>
+#include "platform.h"
 
 #include "ctemplate-1.0/ctemplate.h"
 
