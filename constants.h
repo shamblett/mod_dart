@@ -30,13 +30,19 @@ extern "C" {
     /* Control buffer objects */
     const char* CB_HEADERS = "Headers";
     const char* CB_END = "End";
-    enum{ CB_INT_HEADERS = 1,
-          CB_INT_END = 10 };
+
+    enum {
+        CB_INT_HEADERS = 1,
+        CB_INT_END = 10
+    };
 
     /* Headers */
     const char* H_CONTENT_TYPE = "Content-Type";
-    enum{ H_INT_CONTENT_TYPE = 1,
-          H_INT_NORMAL = 100 };
+
+    enum {
+        H_INT_CONTENT_TYPE = 1,
+        H_INT_NORMAL = 100
+    };
 
     /* Control buffer switch tables and definitions */
     typedef struct _switchTableType {
@@ -46,10 +52,12 @@ extern "C" {
 
     const switchTableType cb_switchTable[2] = {
         {1, "Headers"},
-        {10, "End" }};
-    
+        {10, "End"}
+    };
+
     const switchTableType h_switchTable[1] = {
-        {H_INT_CONTENT_TYPE, "Content-Type"}};
+        {H_INT_CONTENT_TYPE, "Content-Type"}
+    };
 
     const int getCBSwitchInt(const char* text) {
 
@@ -61,7 +69,7 @@ extern "C" {
                 return cb_switchTable[index].switchValue;
             }
         }
-        
+
         return CB_INT_END;
 
     };
@@ -76,8 +84,8 @@ extern "C" {
                 return h_switchTable[index].switchValue;
             }
         }
-        
-        return  H_INT_NORMAL;
+
+        return H_INT_NORMAL;
 
     }
 

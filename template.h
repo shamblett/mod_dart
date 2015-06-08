@@ -22,7 +22,7 @@
 #include "ctemplate-1.0/ctemplate.h"
 
 typedef TMPL_varlist tpl_varlist;
-typedef TMPL_loop    tpl_loop;
+typedef TMPL_loop tpl_loop;
 
 #ifdef	__cplusplus
 extern "C" {
@@ -51,7 +51,7 @@ extern "C" {
      * @return the variable list
      */
     tpl_varlist* tpl_addLoopVar(const char* keyName, const char* key,
-                                const char* valName, const char* val);
+            const char* valName, const char* val);
     /**
      * tpl_addVarList
      * 
@@ -62,7 +62,7 @@ extern "C" {
      * @return - the updated loop
      */
     tpl_loop* tpl_addVarList(tpl_loop* loop, tpl_varlist* varlist);
-    
+
     /**
      * tpl_addLoop
      * 
@@ -74,8 +74,8 @@ extern "C" {
      * @return - the updated dictionary
      */
     tpl_varlist* tpl_addLoop(tpl_varlist *varlist, const char *name, tpl_loop *loop);
-    
-    
+
+
     /**
      * tpl_write
      * 

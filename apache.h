@@ -44,7 +44,7 @@ extern "C" {
      * @return - the buffer to write to apache
      */
     char* parseBuffer(char* input, request_rec* r);
-    
+
 #ifdef	__cplusplus
 }
 #endif

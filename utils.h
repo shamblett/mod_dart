@@ -39,7 +39,7 @@ extern "C" {
      * @return - the stripped string
      */
     char* trimWhiteSpace(char *s);
-        
+
 #ifdef	__cplusplus
 }
 #endif

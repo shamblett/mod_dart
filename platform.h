@@ -20,11 +20,11 @@ extern "C" {
 #endif
 
 #define UBUNTU 1
-    
-/* Common */
+
+    /* Common */
 #include <stdio.h>
-        
-/* Distro */
+
+    /* Distro */
 #if DISTRIB==UBUNTU
 #include <apache/httpd.h>
 #include <apache/http_config.h>
