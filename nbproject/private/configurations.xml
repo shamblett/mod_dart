@@ -29,8 +29,6 @@
         <in>value.c</in>
       </df>
       <df name="test">
-        <in>curl</in>
-        <in>omissions.md</in>
       </df>
       <in>apache.c</in>
       <in>apache.h</in>
@@ -39,6 +37,7 @@
       <in>error.h</in>
       <in>mod_dart.c</in>
       <in>mod_dart.h</in>
+      <in>platform.h</in>
       <in>template.c</in>
       <in>template.h</in>
       <in>utils.c</in>

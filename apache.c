@@ -191,12 +191,29 @@ tpl_varlist* getPostGlobal(request_rec* r, tpl_varlist* varlist) {
 
     keyValuePair* postMap = readPost(r, &numEntries);
     for (i = 0; i <= numEntries; i++) {
-        loop = tpl_addVarList(loop, TMPL_add_var(0,
-                "key", postMap[i].key, "val", postMap[i].value, 0));
+        loop = tpl_addVarList(loop, tpl_addLoopVar(
+                "key", postMap[i].key, "val", postMap[i].value));
 
     }
 
     return tpl_addLoop(varlist, "post_map", loop);
+}
+
+tpl_varlist* getRequestHeaders(request_rec* r, tpl_varlist* varlist) {
+
+
+    tpl_loop *loop = NULL;
+
+    int headerCallback(void* r, const char* key, const char* value) {
+
+        loop = tpl_addVarList(loop, tpl_addLoopVar(
+                "key", key, "val", value));
+        return 1;
+    }
+
+    apr_table_do(headerCallback, r, r->headers_in, NULL);
+
+    return tpl_addLoop(varlist, "request_header_map", loop);
 }
 
 tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
@@ -391,6 +408,9 @@ apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, re
     /* COOKIES global */
     varList = getCookiesGlobal(r, varList);
 
+    /* Request Headers  */
+    varList = getRequestHeaders(r, varList);
+
     /* Create the template file output file, get its name and close it. */
     len = sizeof (scriptFileTemplate);
     apr_cpystrn(scriptFileTemplate, cachePath, len);
@@ -432,9 +452,9 @@ char* parseBuffer(char* input, request_rec* r) {
 
     /* Check for a sentinel, if none just return the buffer,
      this is a VM script parse error that we can send back.
-    */
-    if ( strstr(input, SENTINEL) == NULL ) return input;
-    
+     */
+    if (strstr(input, SENTINEL) == NULL) return input;
+
     /* Split and get the buffers */
     char* controlBuffer = (strstr(input, SENTINEL) + SENTINEL_LENGTH);
     input[(controlBuffer - SENTINEL_LENGTH - input)] = '\0';
@@ -449,24 +469,30 @@ char* parseBuffer(char* input, request_rec* r) {
 
                 case CB_INT_HEADERS:
                 {
-                    json_object_foreach(l1Value, l2Key, l2Value)
-                {
 
-                    switch (getHSwitchInt(l2Key)) {
+                    json_object_foreach(l1Value, l2Key, l2Value) {
 
-                        case H_INT_CONTENT_TYPE:
-                        {            
-                            ap_set_content_type(r, json_string_value(l2Value));
-                            break;
-                        }
+                        switch (getHSwitchInt(l2Key)) {
 
-                        default:
-                        {
+                            case H_INT_CONTENT_TYPE:
+                            {
+                                ap_set_content_type(r, json_string_value(l2Value));
+                                break;
+                            }
+
+                            case H_INT_NORMAL:
+                            {
+                                apr_table_set(r->headers_out, l2Key, json_string_value(l2Value));
+                                break;
+                            }
+
+                            default:
+                            {
+                            }
+
                         }
 
                     }
-
-                }
 
                     break;
                 }
@@ -476,7 +502,7 @@ char* parseBuffer(char* input, request_rec* r) {
 
                     break;
                 }
-                
+
                 default:
                 {
                     return "mod-dart ERROR!! - Control Buffer Corrupt - Unknown Object Name";

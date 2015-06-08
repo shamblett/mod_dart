@@ -71,12 +71,18 @@
       </makefileType>
       <item path="apache.c" ex="false" tool="0" flavor2="3">
         <cTool flags="0">
+          <preprocessorList>
+            <Elem>DISTRIB=0</Elem>
+          </preprocessorList>
         </cTool>
       </item>
       <item path="ctemplate-1.0/ctemplate.c" ex="false" tool="0" flavor2="3">
       </item>
       <item path="error.c" ex="false" tool="0" flavor2="3">
         <cTool flags="0">
+          <preprocessorList>
+            <Elem>DISTRIB=0</Elem>
+          </preprocessorList>
         </cTool>
       </item>
       <folder path="0/ctemplate-1.0">
@@ -142,14 +148,23 @@
       </item>
       <item path="mod_dart.c" ex="false" tool="0" flavor2="3">
         <cTool flags="0">
+          <preprocessorList>
+            <Elem>DISTRIB=0</Elem>
+          </preprocessorList>
         </cTool>
       </item>
       <item path="template.c" ex="false" tool="0" flavor2="3">
         <cTool flags="0">
+          <preprocessorList>
+            <Elem>DISTRIB=0</Elem>
+          </preprocessorList>
         </cTool>
       </item>
       <item path="utils.c" ex="false" tool="0" flavor2="3">
         <cTool flags="0">
+          <preprocessorList>
+            <Elem>DISTRIB=0</Elem>
+          </preprocessorList>
         </cTool>
       </item>
     </conf>

@@ -19,9 +19,22 @@ class Apache{
     static final String CB_HEADERS = 'Headers';
     static final String CB_END = 'End';
     
-    // Header definitions, do NOT use the ones in HttpHeaders
+    // Response Header definitions, do NOT use the ones in HttpHeaders
     static final String CONTENT_TYPE = 'Content-Type';
     static final String ACCEPT = 'Accept';
+    static final String ACESS_CONTROL_ALLOW_ORIGIN = 'Access-Control-Allow-Origin';
+    static final String ALLOW = 'Allow';
+    static final String CACHE_CONTROL = 'Cache-Control';
+    static final String CONNECTION = 'Connection';
+    static final String CONTENT_DISPOSITION = 'Content-Disposition';
+    static final String CONTENT_ENCODING = 'Content-Encoding';
+    static final String CONTENT_LANGUAGE = 'Content-Language';
+    static final String LOCATION = 'LOCATION';
+    static final String PRAGMA = 'Pragma';
+    static final String SET_COOKIE = 'Set-Cookie';
+    static final String STATUS = 'Status';
+    static final String TRANSFER_ENCODING = 'Transfer-Encoding';
+    static final String WWW_AUTHENTICATE = 'WWW-Authenticate';
     
     // Super globals
     
@@ -88,11 +101,36 @@ class Apache{
         
     }
     
-    static Map<String, String> _headers = new Map<String, String>();
-            
+    static final Map _requestHeaders = { <TMPL_LOOP name = "request_header_map">
+                                    '<TMPL_VAR name = "key">' :'<TMPL_VAR name = "val">',
+                            </TMPL_LOOP>   
+                            };
+    
+    
+    static Map<String, String> _responseHeaders = new Map<String, String>();       
         
     // Functions
     
+    // HTTP protocol
+    
+    // Headers
+    static void setHeader(String name, String value) {
+    
+        _responseHeaders[name] = value;
+    }
+    
+    static void setCookie(Cookie cookie) {
+    
+        _responseHeaders[SET_COOKIE] = cookie.toString();
+    }
+    
+    static Map requestHeaders() {
+     
+        return _requestHeaders;
+    }   
+    
+    // Class specific
+        
     // The output buffer
     static String _outputBuffer = "";
     // The control buffer
@@ -111,7 +149,7 @@ class Apache{
     
         Map<String,Map> output = new Map<String,Map>();
        
-        output[CB_HEADERS] = _headers;  
+        output[CB_HEADERS] = _responseHeaders;  
         output[CB_END] = null;
         
         _controlBuffer = _controlBuffer + JSON.encode(output);
@@ -125,11 +163,6 @@ class Apache{
         _outputBuffer = "";
     }
     
-    // Headers
-    static void setHeader(String name, String value) {
-    
-        _headers[name] = value;
-    }
     
     // Dump the apache environment
     static void dumpEnvironment() {
@@ -199,6 +232,12 @@ class Apache{
             writeOutput('<h3> ${key} : ${value} </h3>');
         });
         
+        // HEADERS
+        writeOutput('<h2><u>HEADERS</u></h2>');
+        requestHeaders().forEach((key, value) {
+            writeOutput('<h3> ${key} : ${value} </h3>');
+        });
+        
         // End
         writeOutput('<h3>!------- End of Dump -------!</h3>');
         
@@ -207,7 +246,12 @@ class Apache{
     // Dump the apache environment
     static void dumpEnvironmentJSON() {
     
-        writeOutput(JSON.encode(Server) + JSON.encode(Get) + JSON.encode(Post) + JSON.encode(Cookie) + JSON.encode(Request));
+        writeOutput(JSON.encode(Server) + 
+                    JSON.encode(Get) + 
+                    JSON.encode(Post) + 
+                    JSON.encode(Cookie) + 
+                    JSON.encode(Request) +
+                    JSON.encode(requestHeaders()));
         
     }    
 }
