@@ -21,6 +21,7 @@
       <df name="test">
         <in>dart.conf</in>
       </df>
+      <in>CONTRIBUTORS.md</in>
       <in>apache.c</in>
       <in>error.c</in>
       <in>mod_dart.c</in>
@@ -72,6 +73,8 @@
           </cTool>
         </makeTool>
       </makefileType>
+      <item path="CONTRIBUTORS.md" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="apache.c" ex="false" tool="0" flavor2="3">
         <cTool flags="0">
           <preprocessorList>
