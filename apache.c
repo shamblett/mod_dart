@@ -476,14 +476,14 @@ char* parseBuffer(char* input, request_rec* r) {
 
                             case H_INT_CONTENT_TYPE:
                             {
-                                ap_set_content_type(r, json_string_value(l2Value));
+                                ap_set_content_type(r, apr_pstrdup(r->pool, json_string_value(l2Value)));
                                 json_decref(l2Value);
                                 break;
                             }
 
                             case H_INT_NORMAL:
                             {
-                                apr_table_set(r->headers_out, l2Key, json_string_value(l2Value));
+                                apr_table_set(r->headers_out, l2Key, apr_pstrdup(r->pool, json_string_value(l2Value)));
                                 json_decref(l2Value);
                                 break;
                             }
@@ -495,14 +495,14 @@ char* parseBuffer(char* input, request_rec* r) {
                         }
 
                     }
-                    
+
                     json_decref(l1Value);
                     break;
                 }
 
                 case CB_INT_END:
                 {
-                    
+
                     json_decref(l1Value);
                     break;
                 }
@@ -513,7 +513,7 @@ char* parseBuffer(char* input, request_rec* r) {
                 }
             }
 
-           
+
         }
 
 
