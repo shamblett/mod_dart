@@ -477,12 +477,14 @@ char* parseBuffer(char* input, request_rec* r) {
                             case H_INT_CONTENT_TYPE:
                             {
                                 ap_set_content_type(r, json_string_value(l2Value));
+                                json_decref(l2Value);
                                 break;
                             }
 
                             case H_INT_NORMAL:
                             {
                                 apr_table_set(r->headers_out, l2Key, json_string_value(l2Value));
+                                json_decref(l2Value);
                                 break;
                             }
 
@@ -493,13 +495,15 @@ char* parseBuffer(char* input, request_rec* r) {
                         }
 
                     }
-
+                    
+                    json_decref(l1Value);
                     break;
                 }
 
                 case CB_INT_END:
                 {
-
+                    
+                    json_decref(l1Value);
                     break;
                 }
 
@@ -509,6 +513,7 @@ char* parseBuffer(char* input, request_rec* r) {
                 }
             }
 
+           
         }
 
 
@@ -516,6 +521,8 @@ char* parseBuffer(char* input, request_rec* r) {
         return "mod-dart ERROR!! - Control Buffer Corrupt - Cannot JSON Decode it - Check your Apache TPL file";
     }
 
+    /* Clean up and return the the client buffer */
+    json_decref(root);
     return input;
 
 
