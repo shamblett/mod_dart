@@ -29,6 +29,7 @@
         <in>value.c</in>
       </df>
       <df name="test">
+        <in>dart.conf</in>
       </df>
       <in>apache.c</in>
       <in>apache.h</in>

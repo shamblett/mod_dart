@@ -18,6 +18,9 @@
         <in>utf.c</in>
         <in>value.c</in>
       </df>
+      <df name="test">
+        <in>dart.conf</in>
+      </df>
       <in>apache.c</in>
       <in>error.c</in>
       <in>mod_dart.c</in>
@@ -159,6 +162,8 @@
             <Elem>DISTRIB=0</Elem>
           </preprocessorList>
         </cTool>
+      </item>
+      <item path="test/dart.conf" ex="false" tool="3" flavor2="0">
       </item>
       <item path="utils.c" ex="false" tool="0" flavor2="3">
         <cTool flags="0">
