@@ -165,7 +165,7 @@ static const command_rec md_directives[] = {
     AP_INIT_TAKE1("DartExePath", md_set_exe_path, NULL, RSRC_CONF, "The path to the Dart executable"),
     AP_INIT_TAKE1("CachePath", md_set_cache_path, NULL, RSRC_CONF, "The path to the script cache"),
     AP_INIT_TAKE1("TemplatePath", md_set_template_path, NULL, RSRC_CONF, "The path to the script template"), 
-    AP_INIT_TAKE1("PackageToot", md_set_package_root, NULL, RSRC_CONF, "The package root of the dart installation"),
+    AP_INIT_TAKE1("PackageRoot", md_set_package_root, NULL, RSRC_CONF, "The package root of the dart installation"),
     {NULL}
 };
 
