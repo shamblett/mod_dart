@@ -64,7 +64,8 @@ if not set this will default to ServerRoot.
 
 Copy the file ```index.dart``` from the test directory to your server root or specified Location, 
 in your browser(assuming localhost) type the following URL:- 
-```http://localhost/index.dart/somestuff?animal=budgie&car=honda&name=fred&format=html
+```
+http://localhost/index.dart/somestuff?animal=budgie&car=honda&name=fred&format=html
 ```
 
 If all is well you should see an Apache environment dump in HTML format, change the 'format' parameter 
