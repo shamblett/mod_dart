@@ -94,3 +94,46 @@ the demo, not very exciting though!
 OK, so how does it all work?
 
 ## How it works
+
+In essence there are two ways to do this IMHO, there's the Dart VM fully integrated into an Apache module approach
+as in Sam McColl's original [mod_dart](https://github.com/sam-mccall/mod_dart) or a way of invoking the Dart VM from inside 
+an Apache module as a standalone entity. Lets call the first approach 'embedded', the Dart VM is compiled into the Apache module so 
+file which also acts as a native extension. Lets call the second approach 'controlled' where the Apache module invokes and
+controls the VM but the VM stays as a standalone entity.
+
+This implementation of mod_dart uses the the controlled approach. I did attempt to get the embedded approach working
+but failed in the end, on 64 bit platforms you need to compile the whole VM with -fPIC(position independent code) to
+enable it to be embedded in a so file. This entails changing various gypi files in the Dart build hierarchy to achieve
+this, then there's the 3rd party code to worry about, this all became too complex and very brittle, the VM is definitely
+built to be static! Note for interested parties I can supply a fuller description of what I did here and how far I got, 
+please mail me.
+
+Basically the controlled approach leverages the power of the VM to run complete valid Dart scripts and to send its output to
+standard out via print statements, so we do this :-
+
+1. Get the incoming script and copy it to a temp file, this must be a valid Dart script with a main() function.
+
+2. Load a templated Dart class(Apache), see [apacheTemplate.tpl](apacheTemplate/apacheTemplate.tpl) for an example, note that
+   this is a valid Dart script albeit with TMPL markup where the template will be filled in.
+
+3. Get the Apache runtime environment and set this in the templated class, we now have a static Dart class containing
+   the Apache environment.
+
+4. Append the templated class to the end of the temp script file creating a Dart script file that now has access to
+   the Apache class.
+
+5. Invoke the VM with this script and any other options by using 'popen'.
+
+6. Collect the output of the popened VM and return it to the caller.
+
+OK, so how do we we do things like set headers, ie instructions to Apache rather than raw output? We make
+the output a combination of data and control buffers, the data buffer is split off and returned to the user,
+the control buffer is parsed first with any commands specified applied. The control buffer is actually encoded
+in JSON format. Please inspect the index.dart file and the template itself to get a feel of how all this works together
+along with the actual code of course.
+
+The target Dart script can be any valid Dart script but *must* import dart:convert, this is the only restriction
+mod-dart imposes. 
+
+
+
