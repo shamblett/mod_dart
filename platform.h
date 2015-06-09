@@ -19,26 +19,6 @@
 extern "C" {
 #endif
 
-#define UBUNTU 1
-
-    /* Common */
-#include <stdio.h>
-
-    /* Distro */
-#if DISTRIB==UBUNTU
-#include <apache/httpd.h>
-#include <apache/http_config.h>
-#include <apache/http_log.h>
-#include <apache/http_protocol.h>
-#include <apache/http_core.h>
-#include <apache/ap_config.h>
-#include <apache/ap_provider.h>
-#include <apr_strings.h>
-#include <apr_file_io.h>
-#include <apr_hash.h>
-#include <apr_strings.h>
-#include <apr_pools.h>
-#else
 #include <httpd.h>
 #include <http_config.h>
 #include <http_log.h>
@@ -51,7 +31,7 @@ extern "C" {
 #include <apr_file_io.h>
 #include <apr_strings.h>
 #include <apr_pools.h>
-#endif
+
 
 #ifdef	__cplusplus
 }
