@@ -17,7 +17,7 @@ before any output is returned to the user.
 As a heads up, have a quick look at the example [index.dart](test/index.dart) in the test directory 
 for a flavour of what is provided.
 
-The module is configured as a standard Apache module using conf directives, see [dart.config](test/dart.conf) 
+The module is configured as a standard Apache module using conf directives, see [dart.conf](test/dart.conf) 
 as an example, more on this later. Notice that the ```DartExePath``` directive sets the path to the 
 Dart executable to use, this is just a standard Dart executable as found in the any Dart SDK, 
 no special builds of Dart are required to use this module.
@@ -66,7 +66,7 @@ If you are using a virtual host the AddHandler directive goes in the 'Directory'
 
 
 See [dart.conf](test/dart.conf) for an example, note for pure directory specifications like the cache path
-the trailing'/' *must* be supplied.
+the trailing '/' *must* be supplied.
 
 
 There is also an associated module config file in the test directory, [00-dart.conf](test/00-dart.conf). 

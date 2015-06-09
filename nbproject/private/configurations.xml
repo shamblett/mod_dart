@@ -31,6 +31,7 @@
       <df name="test">
         <in>dart.conf</in>
       </df>
+      <in>CHANGELOG.md</in>
       <in>CONTRIBUTORS.md</in>
       <in>apache.c</in>
       <in>apache.h</in>
