@@ -53,13 +53,15 @@ with the '/' of location being your server root as a default.
 
 Secondly we have to set the module specific directives :-
 
-1. ```DartExePath``` - mandatory, the path to the Dart executable to use.
-2. ```CachePath ``` - mandatory, a cache directory path, must be read/writeable by the webserver.
-3. ```TemplatePath``` - mandatory, the path to the Apache class template to use, more on this later.
+1. ```DartExePath``` - mandatory, the path to the Dart executable to use, must be executable by the webserver
+2. ```CachePath ``` - mandatory, a cache directory path, must be read/writeable by the webserver and in
+the document root
+3. ```TemplatePath``` - mandatory, the path to the Apache class template to use, must be in the document root 
+more on this later.
 4. ```PackageRoot``` - optional, the package root for the VM, passed as the --package-root option, 
 if not set this will default to ServerRoot.
 
-If you are using a virtual host AddHandler directive goes in the <Directory> config clause.
+If you are using a virtual host the AddHandler directive goes in the <Directory> config clause.
 
 There is also an associated module config file in the test directory, [00-dart.conf](test/00-dart.conf). 
 this should be copied to your apache modules conf directory.
@@ -74,11 +76,14 @@ http://localhost/index.dart/somestuff?animal=budgie&car=honda&name=fred&format=h
 
 If all is well you should see an Apache environment dump in HTML format, change the 'format' parameter 
 to 'json' and you get the same but in JSON format. See the file [mod_dart.html](test/mod_dart.html) in the 
-test directory for what you should see.
+test directory for what you should see. Please check the apache error log for any errors, especially if
+you get a 500 error.
 
 You can also use curl commands for testing of course, an example curl command is shown in the 
 [curl.md](test/curl.md) document in the test directory, this shows how to set cookie and post data.
 
+To boot I've installed this one of my test boxes, go [here](http://moddart.no-ip.net/index.dart?animal=frog) for
+the demo, not very exciting though!
 
 OK, so how does it all work?
 
