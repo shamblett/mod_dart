@@ -49,19 +49,25 @@ handler for Dart :-
 
 ```<Location /> AddHandler dart .dart </Location>```
 
-with the '/' of location being your server root as a default.
+with the '/' of location being your document root as a default.
 
 Secondly we have to set the module specific directives :-
 
 1. ```DartExePath``` - mandatory, the path to the Dart executable to use, must be executable by the webserver
 2. ```CachePath ``` - mandatory, a cache directory path, must be read/writeable by the webserver and in
 the document root
-3. ```TemplatePath``` - mandatory, the path to the Apache class template to use, must be in the document root 
+3. ```TemplatePath``` - mandatory, the path to the Apache class template to use, must be in the document root, 
 more on this later.
 4. ```PackageRoot``` - optional, the package root for the VM, passed as the --package-root option, 
-if not set this will default to ServerRoot.
+if not set this will default to ServerRoot or your document root if set, must be in your document root.
 
-If you are using a virtual host the AddHandler directive goes in the <Directory> config clause.
+
+If you are using a virtual host the AddHandler directive goes in the 'Directory' config clause.
+
+
+See [dart.conf](test/dart.conf) for an example, note for pure directory specifications like the cache path
+the trailing'/' *must* be supplied.
+
 
 There is also an associated module config file in the test directory, [00-dart.conf](test/00-dart.conf). 
 this should be copied to your apache modules conf directory.
