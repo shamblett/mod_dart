@@ -15,15 +15,13 @@ template_path = /var/www/html/template
 CTMPL=$(current_dir)/ctemplate-1.0/
 JANS=$(current_dir)/jansson/
 
-#   the used tools
-APXS=apxs
-
 # platform
-DISTRO=$(lsb_release -si)
+DISTRO=$(shell lsb_release -si)
 ifneq (,$(findstring Ubuntu,$(DISTRO)))
-    UBUNTU=1
+    APXS=apxs2
+    UBUNTU=-Wc,-Wno-format-security
 else
-    UBUNTU=0
+    APXS=apxs
 endif
 
 
@@ -34,7 +32,7 @@ all: mod_dart
 .PHONY: mod_dart
 mod_dart: 
 	
-	$(APXS) -a -c -DDISTRIB=$(UBUNTU) -Wc,-Wall -Wi,  mod_dart.c template.c utils.c error.c apache.c \
+	$(APXS) -a -c -Wc,-Wall $(UBUNTU) -Wi, mod_dart.c template.c utils.c error.c apache.c \
 	    -I$(CTMPL) $(CTMPL)/ctemplate.c \
 	    -I$(JANS) $(JANS)/dump.c $(JANS)/hashtable.c $(JANS)/hashtable_seed.c $(JANS)/load.c \
 	    $(JANS)/memory.c $(JANS)/pack_unpack.c $(JANS)/strbuffer.c $(JANS)/strconv.c $(JANS)/utf.c \
