@@ -54,11 +54,15 @@ with the '/' of location being your server root as a default.
 Secondly we have to set the module specific directives :-
 
 1. ```DartExePath``` - mandatory, the path to the Dart executable to use.
-2. ```CachePath ``` - mandatory, a cache directory path, must be read/writeable by the webserver, 
-you can use /tmp if you wish.
+2. ```CachePath ``` - mandatory, a cache directory path, must be read/writeable by the webserver.
 3. ```TemplatePath``` - mandatory, the path to the Apache class template to use, more on this later.
 4. ```PackageRoot``` - optional, the package root for the VM, passed as the --package-root option, 
 if not set this will default to ServerRoot.
+
+If you are using a virtual host AddHandler directive goes in the <Directory> config clause.
+
+There is also an associated module config file in the test directory, [00-dart.conf](test/00-dart.conf). 
+this should be copied to your apache modules conf directory.
 
 ### Testing
 
@@ -71,6 +75,10 @@ http://localhost/index.dart/somestuff?animal=budgie&car=honda&name=fred&format=h
 If all is well you should see an Apache environment dump in HTML format, change the 'format' parameter 
 to 'json' and you get the same but in JSON format. See the file [mod_dart.html](test/mod_dart.html) in the 
 test directory for what you should see.
+
+You can also use curl commands for testing of course, an example curl command is shown in the 
+[curl.md](test/curl.md) document in the test directory, this shows how to set cookie and post data.
+
 
 OK, so how does it all work?
 
