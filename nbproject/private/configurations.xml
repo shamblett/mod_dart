@@ -28,6 +28,12 @@
         <in>utf.h</in>
         <in>value.c</in>
       </df>
+      <df name="modules">
+        <df name="CentOS">
+        </df>
+        <df name="Ubuntu">
+        </df>
+      </df>
       <df name="test">
         <in>dart.conf</in>
       </df>
