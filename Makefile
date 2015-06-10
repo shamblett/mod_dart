@@ -37,7 +37,7 @@ mod_dart:
 	    -I$(JANS) $(JANS)/dump.c $(JANS)/hashtable.c $(JANS)/hashtable_seed.c $(JANS)/load.c \
 	    $(JANS)/memory.c $(JANS)/pack_unpack.c $(JANS)/strbuffer.c $(JANS)/strconv.c $(JANS)/utf.c \
 	    $(JANS)/value.c $(JANS)/error.c
-	cp apacheTemplate/apacheTemplate.tpl $(template_path)
+#	cp apacheTemplate/apacheTemplate.tpl $(template_path)
 
 
 #   cleanup
