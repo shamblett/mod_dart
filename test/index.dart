@@ -15,7 +15,7 @@ void main() {
         Apache.dumpEnvironment();
   }
 
-  // Flush buffers an exit
+  // Flush buffers and exit
   Apache.flushBuffers();
 
 	  
