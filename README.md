@@ -112,7 +112,7 @@ but failed in the end, on 64 bit platforms you need to compile the whole VM with
 enable it to be embedded in a so file. This entails changing various gyp/gypi files in the Dart build hierarchy to achieve
 this, then there's the 3rd party code to worry about, this all became too complex and very brittle, the VM is definitely
 built to be static! Note for interested parties I can supply a fuller description of what I did here and how far I got, 
-please mail me.
+please mail me steve.hamblett@linux.com.
 
 Basically the controlled approach leverages the power of the VM to run complete valid Dart scripts and to send its output to
 standard out via print statements, so we do this :-
