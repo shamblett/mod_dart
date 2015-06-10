@@ -4,7 +4,7 @@ An Apache module for the Dart language.
 
 ## Introduction
 
-This module provides an Apache class that allows Dart code to be executed in a similar manner to PHP, i.e Dart code
+This module provides an Apache class that allows Dart code to be executed in a similar manner to PHP, i.e. Dart code
 can be called directly from the URL, e.g ```http://myserver.com/index.dart``` and its output
 sent back to the client. In fact, the module is modeled on PHP in that the set of PHP super-globals is 
 provided, this allows PHP constructs such as $_GET to be modeled as Apache.Get for module users, 
@@ -14,7 +14,7 @@ The Apache class also allows interaction with Apache so that headers etc. can be
 before any output is returned to the user. 
 
 As a heads up, have a quick look at the example [index.dart](test/index.dart) in the test directory 
-for a flavour of what is provided, or go [here]((http://moddart.no-ip.net/index.dart?animal=frog) for a quick
+for a flavour of what is provided, or go [here](http://moddart.no-ip.net/index.dart?animal=frog) for a quick
 but unexciting live demo.
 
 The module is configured as a standard Apache module using conf directives, see [dart.conf](test/dart.conf) 
@@ -95,7 +95,7 @@ you get a 500 error(see Error Handling below).
 You can also use curl commands for testing of course, an example curl command is shown in the 
 [curl.md](test/curl.md) document in the test directory, this shows how to set cookie and post data.
 
-There's also the live demo, see above.
+There's also the live [demo](http://moddart.no-ip.net/index.dart?animal=frog).
 
 OK, so how does it all work?
 
@@ -108,7 +108,7 @@ file which also acts as a native extension. Lets call the second approach 'contr
 controls the VM but the VM stays as a standalone entity.
 
 This implementation of mod_dart uses the the controlled approach. I did attempt to get the embedded approach working
-but failed in the end, on 64 bit platforms you need to compile the whole VM with -fPIC(position independent code) to
+but failed in the end, on 64 bit platforms you need to compile the whole VM with fPIC(position independent code) to
 enable it to be embedded in a so file. This entails changing various gyp/gypi files in the Dart build hierarchy to achieve
 this, then there's the 3rd party code to worry about, this all became too complex and very brittle, the VM is definitely
 built to be static! Note for interested parties I can supply a fuller description of what I did here and how far I got, 
@@ -125,7 +125,7 @@ standard out via print statements, so we do this :-
 3. Get the Apache runtime environment and set this in the templated class, we now have a static Dart class containing
    the Apache environment.
 
-4. Append the templated class to the end of the temp script file creating a Dart script file that now has access to
+4. Append the templated class to the end of the temp script file from 1 above, creating a Dart script file that now has access to
    the Apache class.
 
 5. Invoke the VM with this script and any other options by using 'popen'.
@@ -164,7 +164,7 @@ void main() {
   Apache.setHeader(Apache.CONTENT_TYPE, "text/html");
 
   // Write some output
-  Apache.writeOutput('<h1>Hello from MOD_DART!');
+  Apache.writeOutput('<h1>Hello from MOD_DART!</h1>');
   
   // Flush the buffers
   Apache.flushBuffers();
@@ -229,7 +229,7 @@ mod_dosomethingwizzy, you get the picture. All with the security inherent in the
  
 ### Where
 
-Well, firstly it needs to be finished, Sessions and File super globals need to be added, far more control
+Well, firstly it needs to be finished, Sessions and File super-globals need to be added, far more control
 is needed to interact with Apache and load testing needs doing, then there's debugging support, test harnesses
-etc. snapshots?, lots to do in fact. Also a more 'real' application needs writing that imports lots of packages to get
+etc. snapshots? lots to do in fact. Also a more 'real' application needs writing that imports lots of packages to get
 a real feel for this. See the [omissions](test/omissions.md) document in the test directory for what is/isn't supported.
