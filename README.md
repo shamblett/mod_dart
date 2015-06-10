@@ -6,8 +6,8 @@ An Apache module for the Dart language.
 
 This module provides an Apache class that allows Dart code to be executed in a similar manner to PHP, i.e Dart code
 can be called directly from the URL, e.g ```http://myserver.com/index.dart``` and its output
-sent back to the client. In fact, the module is modelled on PHP in that the set of PHP super-globals is 
-provided, this allows PHP constructs such as $_GET to be modelled as Apache.Get for module users, 
+sent back to the client. In fact, the module is modeled on PHP in that the set of PHP super-globals is 
+provided, this allows PHP constructs such as $_GET to be modeled as Apache.Get for module users, 
 some examples, Apache.Get["animal"], Apache.Post["car"]. 
 
 The Apache class also allows interaction with Apache so that headers etc. can be set by the Dart code 
@@ -20,7 +20,8 @@ but unexciting live demo.
 The module is configured as a standard Apache module using conf directives, see [dart.conf](test/dart.conf) 
 as an example, more on this later. Notice that the ```DartExePath``` directive sets the path to the 
 Dart executable to use, this is just a standard Dart executable as found in the any Dart SDK, 
-no special builds of Dart are required to use this module.
+no special builds of Dart are required to use this module, nor does your Dart scripts require the 
+loading of a native extension.
 
 OK, now you have the gist, lets get into some specifics.
 
@@ -28,12 +29,12 @@ OK, now you have the gist, lets get into some specifics.
 
 ### Build
 
-The module itself is a standard built apache module using apxs, the project contains a  Netbeans project 
+The module itself is a standard built apache module using apxs, the project contains a Netbeans project 
 folder for Netbeans users but this is not needed to build the module. Prebuilt modules(64 bit) for 
-Centos/Fedora/Rhel and Ubuntu 14.04 can be found in the 'modules' directory. For purpose of example 
-I'll assume the build will take place on a Centos/Fedora/RHEL platform. 
+Centos/Fedora/Rhel and Ubuntu 14.04 can be found in the 0.1.0 release in the github repository. 
+For purpose of example I'll assume the build will take place on a Centos/Fedora/RHEL platform. 
 
-Install httpd and its associated devel package.
+Install httpd and its associated development package.
 
 In the top level directory of the project type ```make```
 
@@ -57,8 +58,8 @@ with the '/' of location being your document root as a default.
 
 Secondly we have to set the module specific directives :-
 
-1. ```DartExePath``` - mandatory, the path to the Dart executable to use, must be executable by the webserver
-2. ```CachePath ``` - mandatory, a cache directory path, must be read/writeable by the webserver and in
+1. ```DartExePath``` - mandatory, the path to the Dart executable to use, must be executable by the web server
+2. ```CachePath ``` - mandatory, a cache directory path, must be read/writable by the web server and in
 the document root
 3. ```TemplatePath``` - mandatory, the path to the Apache class template to use, must be in the document root, 
 more on this later.
@@ -131,7 +132,7 @@ standard out via print statements, so we do this :-
 
 6. Collect the output of the popened VM and return it to the caller.
 
-OK, so how do we we do things like set headers, ie instructions to Apache rather than raw output? We make
+OK, so how do we we do things like set headers, i.e. instructions to Apache rather than raw output? We make
 the output a combination of data and control buffers, the data buffer is split off and returned to the user,
 the control buffer is parsed first with any commands specified applied. The control buffer is actually encoded
 in JSON format. Please inspect the index.dart file and the template itself to get a feel of how all this works together
@@ -150,7 +151,7 @@ need an element of test harness support.
 
 Your scripts can be any valid Dart scripts with a main() function, they also *must* import dart:convert, 
 these are the only restrictions mod-dart imposes.The methodology of how the script generates output is akin to the
-PHP 'ob' methods, i.e. output buffers's, whereby any script output is buffered and only written back to the client when 
+PHP 'ob' methods, i.e. output buffers, whereby any script output is buffered and only written back to the client when 
 the buffer is flushed. In PHP this is optional, you can write directly back to Apache at any point, in mod_dart it
 isn't, everything is buffered, a quick example :-
 ```
@@ -174,7 +175,7 @@ You can call Apache.writeOutput as many times as you wish, when Apache.flushBuff
 (plus the built control block) is sent back to Apache. You could of course carry on processing in the VM after 
 this but there's no real point. Unlike a normal server side VM application that's built to stay alive your mod_dart
 scripts should be built in the opposite way, i.e. to perform one function and die(a la PHP). You can use timer routines
-if you wish but why would you want to do this, you could also use normal 'print' statements but this would corrupt(preceed)
+if you wish but why would you want to do this, you could also use normal 'print' statements but this would corrupt(precede)
 any output generated by Apache.writeOutput. You can use any valid Dart construct you wish because its valid Dart and I can't
 stop this but please be sensible here.
 
@@ -211,14 +212,14 @@ Arguments: [...]
 #3      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:142)
 
 ```
-Use the'show source' command of your browser to see this better. Just fix as normal.
+Use the 'show' source' source' command of your browser to see this better. Just fix as normal.
 
 ## Why and Where
 
 ### Why
 
 Why do this? Well one thing I like about PHP(and there's plenty not too) is I can just do this anywhere
-to get a posted variable '$_POST["name]", its easy(I'm a coder, thus lazy) , Iv'e always wanted to do this in Dart 
+to get a posted variable '$_POST["name]", its easy(I'm a coder, thus lazy) , I've always wanted to do this in Dart 
 scripts, also
 if your not writing IOT stuff where you are embedding the VM and it needs its own light weight web server or not writing
 Single Page Applications(not everything is an SPA, there are some web sites with really lots of pages!) then you may
@@ -228,14 +229,7 @@ mod_dosomethingwizzy, you get the picture. All with the security inherent in the
  
 ### Where
 
-Well, firstly it needs to be finished, Sessions and File superglobals need to be added, far more control
+Well, firstly it needs to be finished, Sessions and File super globals need to be added, far more control
 is needed to interact with Apache and load testing needs doing, then there's debugging support, test harnesses
 etc. snapshots?, lots to do in fact. Also a more 'real' application needs writing that imports lots of packages to get
 a real feel for this. See the [omissions](test/omissions.md) document in the test directory for what is/isn't supported.
-
-
-
-
-
-
-
