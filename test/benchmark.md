@@ -2,12 +2,12 @@
 # Benchmark Testing
 
 To test if mod_dart is going to be of any use in the real world we need to start doing some stress testing, so here goes.
-The box this is run on is a n1-highcpu-2 (2 vCPU, 1.8 GB memory) instance with out of the box Apache, runing the index.dart
+The box this is run on is a GCE n1-highcpu-2 (2 vCPU, 1.8 GB memory) instance with out of the box Apache, runing the index.dart
 test file.
 
 ## Initial tests at 0.1.0
 
-The following ab command simulates 5 concurrent users each doing 10 page hits, this This represents a peak load of a 
+The following ab command simulates 5 concurrent users each doing 10 page hits, this represents a peak load of a 
 website that gets about 50,000+ hits a month.
 
 ```
