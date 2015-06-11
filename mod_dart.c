@@ -17,6 +17,7 @@
 #include "apache.h"
 #include "utils.h"
 #include "error.h"
+#include "popen-noshell/popen_noshell.h"
 #include "mod_dart.h"
 
 /*
@@ -60,7 +61,6 @@ const char *md_set_package_root(cmd_parms *cmd, void *cfg, const char *arg) {
 static int md_handler(request_rec *r) {
 
     char* filename;
-    char command[PATH_MAX];
     char scriptFileTemplate[PATH_MAX];
     char* scriptFileTemplatePath;
     char output[PATH_MAX];
@@ -73,6 +73,8 @@ static int md_handler(request_rec *r) {
     const char* apacheFileName;
     char errorBuff[1000];
     const char* packageRoot;
+    struct popen_noshell_pass_to_pclose pclose_arg;
+    const char *arg2 = NULL;
     
     /* Check for a Dart file */
     if (!r->handler || strcmp(r->handler, "dart")) return (DECLINED);
@@ -88,6 +90,7 @@ static int md_handler(request_rec *r) {
         logError(errorBuff, r->pool, 0);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
+    
     status = apr_file_name_get(&scriptFileName, scriptFile);
     status = apr_file_copy(filename, scriptFileName, APR_OS_DEFAULT, r->pool);
     if (status != APR_SUCCESS) {
@@ -109,22 +112,27 @@ static int md_handler(request_rec *r) {
     }
     status = apr_file_close(apacheClassFile);
     status = apr_file_remove(apacheFileName, r->pool);
-
+    
     /* Build the dart command */
-    strcpy(command, config.pathToExe);
-    strcat(command, " --package-root=");
+    const char *exec_file = config.pathToExe;
+    
+    char *arg1 = "--package-root=";
     if ( config.packageRootSet) {
-        strcat(command, config.packageRoot); 
+        arg2 = config.packageRoot;
     } else {
         packageRoot = ap_document_root(r);
-        strcat(command, packageRoot);
+        arg2 = packageRoot;
     }
-    strcat(command, " ");
-    strcat(command, scriptFileName);
-    strcat(command, " 2>&1");
+    arg1 = apr_pstrcat(r->pool,arg1, arg2, NULL);   
+    
+    const char *arg3 = scriptFileName;
+    
+    char* arg4 = (char *) NULL;
+    
+    const char* argv[] = {exec_file, arg1, arg3, arg4};
     
     /* Invoke the VM */
-    fp = popen(command, "r");
+    fp = popen_noshell(exec_file, (const char * const *)argv, "r", &pclose_arg, 0);
     if (fp == NULL) {
 
         logError("md_handler - POPEN Fail ", r->pool, 0);
@@ -135,11 +143,14 @@ static int md_handler(request_rec *r) {
      * Parse the returned output, return the actual output and
      * parse and apply the control commands.
      */
-    ap_set_content_type(r, "text/html");
     while (fgets(output, PATH_MAX, fp) != NULL)
         ap_rprintf(r, "%s", parseBuffer(output, r) );
-    pclose(fp);
-
+    int pStatus = pclose_noshell(&pclose_arg);
+    if (pStatus == -1) {
+        logError("md_handler - POPEN Close Fail ", r->pool, 0);
+        return (HTTP_INTERNAL_SERVER_ERROR);
+    }
+    
     /* Remove the script file */
     status = apr_file_close(scriptFile);
     status = apr_file_remove(scriptFileName, r->pool);

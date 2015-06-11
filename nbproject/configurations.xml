@@ -18,6 +18,9 @@
         <in>utf.c</in>
         <in>value.c</in>
       </df>
+      <df name="popen-noshell">
+        <in>popen_noshell.c</in>
+      </df>
       <in>apache.c</in>
       <in>error.c</in>
       <in>mod_dart.c</in>
@@ -96,6 +99,13 @@
           </incDir>
         </cTool>
       </folder>
+      <folder path="0/popen-noshell">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+      </folder>
       <item path="jansson/dump.c" ex="false" tool="0" flavor2="3">
         <cTool flags="0">
         </cTool>
@@ -141,6 +151,10 @@
         </cTool>
       </item>
       <item path="mod_dart.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="popen-noshell/popen_noshell.c" ex="false" tool="0" flavor2="3">
         <cTool flags="0">
         </cTool>
       </item>

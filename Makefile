@@ -14,7 +14,7 @@ template_path = /var/www/html/template
 # third party
 CTMPL=$(current_dir)/ctemplate-1.0/
 JANS=$(current_dir)/jansson/
-POPEN=$current_dir)/popen-noshell
+POPEN=$(current_dir)/popen-noshell
 
 # platform
 DISTRO=$(shell lsb_release -si)

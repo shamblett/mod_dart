@@ -16,14 +16,15 @@ apr_file_t* getTempFile(char* template, apr_pool_t* pool) {
 
     apr_status_t status;
     apr_file_t *ret = NULL;
+    char* tempTpl = apr_pstrdup(pool, template);
 
-
-    status = apr_file_mktemp(&ret, template, 0, pool);
+    status = apr_file_mktemp(&ret, tempTpl, 0, pool);
     if (status != APR_SUCCESS) {
         logError("getTempFile - Failed to create temp file", pool, status);
         return NULL;
     }
 
+    template = tempTpl;
     return ret;
 
 }

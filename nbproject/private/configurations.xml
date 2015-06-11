@@ -28,17 +28,12 @@
         <in>utf.h</in>
         <in>value.c</in>
       </df>
-      <df name="modules">
-        <df name="CentOS">
-        </df>
-        <df name="Ubuntu">
-        </df>
+      <df name="popen-noshell">
+        <in>popen_noshell.c</in>
+        <in>popen_noshell.h</in>
       </df>
       <df name="test">
-        <in>dart.conf</in>
       </df>
-      <in>CHANGELOG.md</in>
-      <in>CONTRIBUTORS.md</in>
       <in>apache.c</in>
       <in>apache.h</in>
       <in>constants.h</in>
