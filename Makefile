@@ -14,6 +14,7 @@ template_path = /var/www/html/template
 # third party
 CTMPL=$(current_dir)/ctemplate-1.0/
 JANS=$(current_dir)/jansson/
+POPEN=$current_dir)/popen-noshell
 
 # platform
 DISTRO=$(shell lsb_release -si)
@@ -36,7 +37,9 @@ mod_dart:
 	    -I$(CTMPL) $(CTMPL)/ctemplate.c \
 	    -I$(JANS) $(JANS)/dump.c $(JANS)/hashtable.c $(JANS)/hashtable_seed.c $(JANS)/load.c \
 	    $(JANS)/memory.c $(JANS)/pack_unpack.c $(JANS)/strbuffer.c $(JANS)/strconv.c $(JANS)/utf.c \
-	    $(JANS)/value.c $(JANS)/error.c
+	    $(JANS)/value.c $(JANS)/error.c \
+	    -I$(POPEN) $(POPEN)/popen_noshell.c
+	
 #	cp apacheTemplate/apacheTemplate.tpl $(template_path)
 
 
