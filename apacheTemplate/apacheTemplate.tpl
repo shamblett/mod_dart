@@ -39,7 +39,7 @@ class Apache{
     // Super globals
     
     // SERVER superglobal
-    static final Map Server = { 'SELF' : '<TMPL_VAR name = "server_self">',
+    final Map Server = { 'SELF' : '<TMPL_VAR name = "server_self">',
                                 'SERVER_ADDR' : '<TMPL_VAR name = "server_addr">',
                                 'SERVER_NAME' : '<TMPL_VAR name = "server_name">',
                                 'SERVER_SOFTWARE' : '<TMPL_VAR name = "server_software">',
@@ -74,23 +74,23 @@ class Apache{
                                     
                                 };
                                 
-    static final Map Get = { <TMPL_LOOP name = "get_map">
+   final Map Get = { <TMPL_LOOP name = "get_map">
                                     '<TMPL_VAR name = "key">' :'<TMPL_VAR name = "val">',
                             </TMPL_LOOP>   
                             };
                             
-    static final Map Post = { <TMPL_LOOP name = "post_map">
+   final Map Post = { <TMPL_LOOP name = "post_map">
                                     '<TMPL_VAR name = "key">' :'<TMPL_VAR name = "val">',
                             </TMPL_LOOP>   
                             };
-    static final Map Cookie = { <TMPL_LOOP name = "cookie_map">
+   final Map Cookie = { <TMPL_LOOP name = "cookie_map">
                                     '<TMPL_VAR name = "key">' :'<TMPL_VAR name = "val">',
                             </TMPL_LOOP>   
                             };
     
-    static Map _request = new Map();
+    Map _request = new Map();
    
-    static Map get Request {
+    Map get Request {
     
         if ( _request.isEmpty ) {
             _request.addAll(Get);
@@ -101,30 +101,30 @@ class Apache{
         
     }
     
-    static final Map _requestHeaders = { <TMPL_LOOP name = "request_header_map">
+    final Map _requestHeaders = { <TMPL_LOOP name = "request_header_map">
                                     '<TMPL_VAR name = "key">' :'<TMPL_VAR name = "val">',
                             </TMPL_LOOP>   
                             };
     
     
-    static Map<String, String> _responseHeaders = new Map<String, String>();       
+     Map<String, String> _responseHeaders = new Map<String, String>();       
         
     // Functions
     
     // HTTP protocol
     
     // Headers
-    static void setHeader(String name, String value) {
+    void setHeader(String name, String value) {
     
         _responseHeaders[name] = value;
     }
     
-    static void setCookie(Cookie cookie) {
+    void setCookie(Cookie cookie) {
     
         _responseHeaders[SET_COOKIE] = cookie.toString();
     }
     
-    static Map requestHeaders() {
+    Map requestHeaders() {
      
         return _requestHeaders;
     }   
@@ -132,20 +132,20 @@ class Apache{
     // Class specific
         
     // The output buffer
-    static String _outputBuffer = "";
+    String _outputBuffer = "";
     // The control buffer
-    static String _controlBuffer = "";
+    String _controlBuffer = "";
    
     
     // Write output to the output buffer
-    static void writeOutput(String output) {
+    void writeOutput(String output) {
     
         _outputBuffer = _outputBuffer + output;
     
     }
     
     // Flush the buffers back to apache
-    static void flushBuffers() {
+    void flushBuffers() {
     
         Map<String,Map> output = new Map<String,Map>();
        
@@ -158,14 +158,14 @@ class Apache{
     }
     
     // Clear the output buffer without flushing
-    static void clearOutput() {
+    void clearOutput() {
     
         _outputBuffer = "";
     }
     
     
     // Dump the apache environment
-    static void dumpEnvironment() {
+    void dumpEnvironment() {
     
         writeOutput('<h1><u> Apache environment supplied by mod_dart.</u></h1>');
         writeOutput('<h2><u> General </u></h2>');
@@ -244,7 +244,7 @@ class Apache{
     }
     
     // Dump the apache environment
-    static void dumpEnvironmentJSON() {
+    void dumpEnvironmentJSON() {
     
         writeOutput(JSON.encode(Server) + 
                     JSON.encode(Get) + 

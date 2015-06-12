@@ -1,22 +1,26 @@
+
 import 'dart:io';
 import 'dart:convert';
 
 void main() {
 
-  // Set a header
-  Apache.setHeader(Apache.CONTENT_LANGUAGE, 'de');
+  // Get Apache
+  Apache myAp = new Apache();
+  myAp.writeOutput("<h1>I am now a real class!</h1>");
 
+  // Set a header
+  myAp.setHeader(Apache.CONTENT_LANGUAGE, 'de');
+ 
   // Dump the environment depending on format selection
-  if ( Apache.Get['format'] == 'json' ) {
-        Apache.setHeader(Apache.CONTENT_TYPE, "application/json");
-        Apache.dumpEnvironmentJSON();
+  if ( myAp.Get['format'] == 'json' ) {
+	myAp.setHeader(Apache.CONTENT_TYPE, "application/json");
+        myAp.dumpEnvironmentJSON();
   } else {
-        Apache.setHeader(Apache.CONTENT_TYPE, "text/html");
-        Apache.dumpEnvironment();
+  	myAp.setHeader(Apache.CONTENT_TYPE, "text/html");
+	myAp.dumpEnvironment();
   }
 
-  // Flush buffers and exit
-  Apache.flushBuffers();
-
+  // Flush buffers an exit
+  myAp.flushBuffers();
 	  
 }
