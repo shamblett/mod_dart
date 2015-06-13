@@ -22,7 +22,7 @@ class Apache{
     // Response Header definitions, do NOT use the ones in HttpHeaders
     static final String CONTENT_TYPE = 'Content-Type';
     static final String ACCEPT = 'Accept';
-    static final String ACESS_CONTROL_ALLOW_ORIGIN = 'Access-Control-Allow-Origin';
+    static final String ACCESS_CONTROL_ALLOW_ORIGIN = 'Access-Control-Allow-Origin';
     static final String ALLOW = 'Allow';
     static final String CACHE_CONTROL = 'Cache-Control';
     static final String CONNECTION = 'Connection';
@@ -119,7 +119,7 @@ class Apache{
         _responseHeaders[name] = value;
     }
     
-    void setCookie(Cookie cookie) {
+    void setCookie(var cookie) {
     
         _responseHeaders[SET_COOKIE] = cookie.toString();
     }
