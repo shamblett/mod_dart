@@ -127,9 +127,11 @@ static int md_handler(request_rec *r) {
     
     const char *arg3 = scriptFileName;
     
-    char* arg4 = (char *) NULL;
+    const char* arg4 = "2>&1";
+
+    char* arg5 = (char *) NULL;
     
-    const char* argv[] = {exec_file, arg1, arg3, arg4};
+    const char* argv[] = {exec_file, arg1, arg3, arg4, arg5};
     
     /* Invoke the VM */
     fp = popen_noshell(exec_file, (const char * const *)argv, "r", &pclose_arg, 0);
