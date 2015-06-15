@@ -127,14 +127,14 @@ static int md_handler(request_rec *r) {
     
     const char *arg3 = scriptFileName;
     
-    const char* arg4 = "2>&1";
+    //const char* arg4 = "2>&1";
 
     char* arg5 = (char *) NULL;
     
-    const char* argv[] = {exec_file, arg1, arg3, arg4, arg5};
+    const char* argv[] = {exec_file, arg1, arg3, arg5};
     
     /* Invoke the VM */
-    fp = popen_noshell(exec_file, (const char * const *)argv, "r", &pclose_arg, 0);
+    fp = popen_noshell(exec_file, (const char * const *)argv, "r", &pclose_arg, 2);
     if (fp == NULL) {
 
         logError("md_handler - POPEN Fail ", r->pool, 0);
@@ -143,8 +143,10 @@ static int md_handler(request_rec *r) {
 
     /**
      * Parse the returned output, return the actual output and
-     * parse and apply the control commands.
+     * parse and apply the control commands. Set a default header
+     * so we can see errors from the VM as we will have no control block
      */
+    ap_set_content_type(r,"text/html");
     while (fgets(output, PATH_MAX, fp) != NULL)
         ap_rprintf(r, "%s", parseBuffer(output, r) );
     int pStatus = pclose_noshell(&pclose_arg);
