@@ -127,8 +127,6 @@ static int md_handler(request_rec *r) {
     
     const char *arg3 = scriptFileName;
     
-    //const char* arg4 = "2>&1";
-
     char* arg5 = (char *) NULL;
     
     const char* argv[] = {exec_file, arg1, arg3, arg5};
