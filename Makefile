@@ -40,7 +40,7 @@ mod_dart:
 	    $(JANS)/value.c $(JANS)/error.c \
 	    -I$(POPEN) $(POPEN)/popen_noshell.c
 	
-#	cp apacheTemplate/apacheTemplate.tpl $(template_path)
+	cp apacheTemplate/apacheTemplate.tpl $(template_path)
 
 
 #   cleanup

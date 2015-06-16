@@ -451,14 +451,15 @@ char* parseBuffer(char* input, request_rec* r) {
     const char* l2Key;
 
     /* Check for a sentinel, if none just return the buffer,
-     this is a VM script parse error that we can send back.
+     * we have a VM script parse error,
+     * a separate line ending in \n or a long line.
      */
     if (strstr(input, SENTINEL) == NULL) return input;
 
-    /* Split and get the buffers */
+    /* Otherwise we have the control buffer on its own, 
+     * split and get it. */
     char* controlBuffer = (strstr(input, SENTINEL) + SENTINEL_LENGTH);
-    input[(controlBuffer - SENTINEL_LENGTH - input)] = '\0';
-
+    
     /* Parse the JSON encoded control buffer */
     root = json_loads(controlBuffer, 0, &error);
     if (root) {
@@ -521,9 +522,9 @@ char* parseBuffer(char* input, request_rec* r) {
         return "mod-dart ERROR!! - Control Buffer Corrupt - Cannot JSON Decode it - Check your Apache TPL file";
     }
 
-    /* Clean up and return the the client buffer */
+    /* Clean up and return the now empty client buffer */
     json_decref(root);
-    return input;
+    return input = "\n\0";
 
 
 }

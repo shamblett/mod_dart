@@ -144,17 +144,20 @@ class Apache{
     
     }
     
-    // Flush the buffers back to apache
-    void flushBuffers() {
+    // Flush the buffers back to apache and exit the VM if
+    // exit is true;
+    void flushBuffers([bool exitVM = false]) {
     
-        Map<String,Map> output = new Map<String,Map>();
-       
-        output[CB_HEADERS] = _responseHeaders;  
+        Map<String, Map> output = new Map<String, Map>();
+
+        output[CB_HEADERS] = _responseHeaders;
         output[CB_END] = null;
-        
+
         _controlBuffer = _controlBuffer + JSON.encode(output);
-        print( _outputBuffer + _sentinel + _controlBuffer );
-    
+        // Delimit the sentinel with a newline so it will never
+        // span an fgets buffer in mod_dart.
+        print(_outputBuffer + '\n' + _sentinel + _controlBuffer + '\n');
+        if (exitVM) exit(0);
     }
     
     // Clear the output buffer without flushing
