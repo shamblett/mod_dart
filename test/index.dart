@@ -6,10 +6,9 @@ void main() {
 
   // Get Apache
   Apache myAp = new Apache();
-  myAp.writeOutput("<h1>I am now a real class!</h1>");
 
   // Set a header
-  myAp.setHeader(Apache.CONTENT_LANGUAGE, 'de');
+  myAp.setHeader(Apache.CONTENT_LANGUAGE, 'en');
  
   // Dump the environment depending on format selection
   if ( myAp.Get['format'] == 'json' ) {
@@ -20,7 +19,7 @@ void main() {
 	myAp.dumpEnvironment();
   }
 
-  // Flush buffers an exit
+  // Flush buffers and exit
   myAp.flushBuffers();
 	  
 }
