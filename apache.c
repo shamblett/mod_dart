@@ -6,6 +6,8 @@
  * License : GPL V3, see the LICENSE file for details
  */
 
+#include <mod_session.h>
+
 #include "template.h"
 #include "utils.h"
 #include "error.h"
