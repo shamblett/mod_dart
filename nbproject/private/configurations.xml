@@ -42,6 +42,8 @@
       <in>mod_dart.c</in>
       <in>mod_dart.h</in>
       <in>platform.h</in>
+      <in>session.c</in>
+      <in>session.h</in>
       <in>template.c</in>
       <in>template.h</in>
       <in>utils.c</in>
