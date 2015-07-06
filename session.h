@@ -63,7 +63,8 @@ extern "C" {
      * 
      * @param r - the request record
      * 
-     * @return  true indicates a session is active.
+     * @return  true indicates a session is active, -1 indicates that
+     * mod_session is not loaded.
      */
     int hasSession(request_rec* r);
 

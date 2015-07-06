@@ -159,7 +159,9 @@
         <cTool flags="0">
         </cTool>
       </item>
-      <item path="session.c" ex="false" tool="0" flavor2="2">
+      <item path="session.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="0">
+        </cTool>
       </item>
       <item path="template.c" ex="false" tool="0" flavor2="3">
         <cTool flags="0">

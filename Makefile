@@ -33,7 +33,7 @@ all: mod_dart
 .PHONY: mod_dart
 mod_dart: 
 	
-	$(APXS) -a -c -Wc,-Wall $(UBUNTU) -Wi, mod_dart.c template.c utils.c error.c apache.c \
+	$(APXS) -a -c -Wc,-Wall $(UBUNTU) -Wi, mod_dart.c template.c utils.c error.c session.c apache.c \
 	    -I$(CTMPL) $(CTMPL)/ctemplate.c \
 	    -I$(JANS) $(JANS)/dump.c $(JANS)/hashtable.c $(JANS)/hashtable_seed.c $(JANS)/load.c \
 	    $(JANS)/memory.c $(JANS)/pack_unpack.c $(JANS)/strbuffer.c $(JANS)/strconv.c $(JANS)/utf.c \

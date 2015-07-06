@@ -381,11 +381,39 @@ tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
 }
 
 tpl_varlist* getSessionGlobal(request_rec* r, tpl_varlist* varlist) {
-    
-    /* Status */
+
+    dartSession theSession;
+    tpl_loop *loop = NULL;
+
+    int sessionCallback(void* r, const char* key, const char* value) {
+
+        loop = tpl_addVarList(loop, tpl_addLoopVar(
+                "key", key, "val", value));
+        return 1;
+    }
+
+    /* See if we have a session, assume not */
     varlist = tpl_addVar("session_active", "false", varlist);
-    
+    int haveSession = hasSession(r);
+    if (haveSession == -1) {
+
+        logError("buildApacheClass -Failed to load mod_session, check your vhost", r->pool, 0);
+
+    } else if (haveSession == TRUE) {
+
+        varlist = tpl_addVar("session_active", "true", varlist);
+        /* Get the session */
+        sessionStart(r, &theSession);
+        /* Load the session variables */
+        if (apr_is_empty_table(theSession.modSession->entries) == FALSE) {
+            apr_table_do(sessionCallback, r, theSession.modSession->entries, NULL);
+            return tpl_addLoop(varlist, "session_map", loop);
+        }
+        return varlist;
+    }
+
     return varlist;
+
 }
 
 apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, request_rec* r) {
@@ -419,8 +447,8 @@ apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, re
 
     /* Request Headers  */
     varList = getRequestHeaders(r, varList);
-    
-    /* Sessions */
+
+    /* SESSIOND global */
     varList = getSessionGlobal(r, varList);
 
     /* Create the template file output file, get its name and close it. */
@@ -471,7 +499,7 @@ char* parseBuffer(char* input, request_rec* r) {
     /* Otherwise we have the control buffer on its own, 
      * split and get it. */
     char* controlBuffer = (strstr(input, SENTINEL) + SENTINEL_LENGTH);
-    
+
     /* Parse the JSON encoded control buffer */
     root = json_loads(controlBuffer, 0, &error);
     if (root) {
@@ -512,7 +540,7 @@ char* parseBuffer(char* input, request_rec* r) {
                     json_decref(l1Value);
                     break;
                 }
-                
+
                 case CB_INT_END:
                 {
 

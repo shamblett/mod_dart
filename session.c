@@ -10,60 +10,64 @@
 
 static int (*ap_session_load_fn) (request_rec * r, session_rec ** z) = NULL;
 static int (*ap_session_save_fn) (request_rec * r, session_rec * z) = NULL;
-static apr_status_t (*ap_session_get_fn)(request_rec * r, session_rec * z,
+static apr_status_t(*ap_session_get_fn)(request_rec * r, session_rec * z,
         const char *key, const char **value) = NULL;
-static apr_status_t (*ap_session_set_fn)(request_rec * r, session_rec * z,
+static apr_status_t(*ap_session_set_fn)(request_rec * r, session_rec * z,
         const char *key, const char *value) = NULL;
 
 int loadSessionModule() {
-    
+
+    int retVal = TRUE;
+
     if (!ap_session_load_fn || !ap_session_save_fn || !ap_session_get_fn || !ap_session_set_fn) {
         ap_session_load_fn = APR_RETRIEVE_OPTIONAL_FN(ap_session_load);
         ap_session_save_fn = APR_RETRIEVE_OPTIONAL_FN(ap_session_save);
         ap_session_get_fn = APR_RETRIEVE_OPTIONAL_FN(ap_session_get);
         ap_session_set_fn = APR_RETRIEVE_OPTIONAL_FN(ap_session_set);
-        if (!ap_session_load_fn || !ap_session_get_fn || !ap_session_set_fn) {
-            return 0;
+        if (!ap_session_load_fn || !ap_session_save_fn || !ap_session_get_fn || !ap_session_set_fn) {
+            retVal = FALSE;
         }
     }
+
+    return retVal;
 }
 
 int hasSession(request_rec* r) {
-    
+
     session_rec* theSession;
     apr_status_t status;
-    
-    if ( !loadSessionModule() ) return 0;
-    
+
+    if (!loadSessionModule()) return -1;
+
     status = ap_session_load_fn(r, &theSession);
     if (status != APR_SUCCESS) return 0;
     /* If the session has never been written we don't have one */
-    if ( theSession->written != 0 ) return 1;
-    return 0;
+    if (theSession->written == TRUE) return 1;
+    return FALSE;
 }
 
 int sessionStart(request_rec* r, dartSession* session) {
-    
+
     apr_status_t status;
-    
-    if ( !loadSessionModule() ) return 0;
-    
-    status = ap_session_load_fn(r, session->modSession);
-    if (status != APR_SUCCESS) return 0;
-    session->isActive = 1;
-    return 1;
+
+    if (!loadSessionModule()) return FALSE;
+
+    status = ap_session_load_fn(r, &session->modSession);
+    if (status != APR_SUCCESS) return FALSE;
+    session->isActive = TRUE;
+    return TRUE;
 }
 
 int sessionDestroy(request_rec* r, dartSession* session) {
-    
-    session->isActive = 0;
-    
-     if ( !loadSessionModule() ) return 0;
-    
+
+    session->isActive = FALSE;
+
+    if (!loadSessionModule()) return FALSE;
+
     /* Set maxage to 1 second */
     session->modSession->maxage = 1;
     apr_status_t status = ap_session_save_fn(r, session->modSession);
-    if (status != APR_SUCCESS) return 0;
-    return 1;
+    if (status != APR_SUCCESS) return FALSE;
+    return TRUE;
 }
 
