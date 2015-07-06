@@ -21,9 +21,51 @@
 extern "C" {
 #endif
 
-    int sessionStart();
+    /* Our session record */
+    typedef struct {
+        
+        session_rec* modSession;
+        int isActive;
+        
+    } dartSession;
     
-    int sessionDestroy();
+    /**
+     * sessionStart
+     * 
+     * Start a session, only use this if you want to do this explicitly,
+     * this will either return a new session if one does not exist or an 
+     * existing one.
+     * 
+     * @param r - the request record
+     * @param session - the returned session
+     * 
+     * @return false indicates the session start failed
+     */
+    int sessionStart(request_rec* r, dartSession* session);
+    
+    /**
+     * sessionDestroy
+     * 
+     * Destroys a session created by sessionStart
+     * 
+     * @param r - the request record
+     * @param session - the session to destroy
+     * 
+     * @return false indicates the session destroy failed
+     */
+    int sessionDestroy(request_rec* r, dartSession* session);
+    
+    /**
+     * hasSession
+     * 
+     * Indicates if a session is active, to get a session use
+     * session start
+     * 
+     * @param r - the request record
+     * 
+     * @return  true indicates a session is active.
+     */
+    int hasSession(request_rec* r);
 
 
 #ifdef	__cplusplus
