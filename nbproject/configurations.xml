@@ -25,7 +25,6 @@
       <in>error.c</in>
       <in>mod_dart.c</in>
       <in>session.c</in>
-      <in>session.h</in>
       <in>template.c</in>
       <in>utils.c</in>
     </df>
@@ -160,9 +159,7 @@
         <cTool flags="0">
         </cTool>
       </item>
-      <item path="session.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="session.h" ex="false" tool="3" flavor2="0">
+      <item path="session.c" ex="false" tool="0" flavor2="2">
       </item>
       <item path="template.c" ex="false" tool="0" flavor2="3">
         <cTool flags="0">

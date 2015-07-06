@@ -17,6 +17,7 @@ class Apache{
     
     // Control buffer sections 
     static final String CB_HEADERS = 'Headers';
+    static final String CB_SESSION = 'Session';
     static final String CB_END = 'End';
     
     // Response Header definitions, do NOT use the ones in HttpHeaders
@@ -87,7 +88,13 @@ class Apache{
                                     '<TMPL_VAR name = "key">' :'<TMPL_VAR name = "val">',
                             </TMPL_LOOP>   
                             };
+   Map Session = { 'session_active' : '<TMPL_VAR name = "session_active">',
+                            <TMPL_LOOP name = "session_map">
+                                    '<TMPL_VAR name = "key">' :'<TMPL_VAR name = "val">',
+                            </TMPL_LOOP>   
+                            };
     
+                            
     Map _request = new Map();
    
     Map get Request {
@@ -129,6 +136,21 @@ class Apache{
         return _requestHeaders;
     }   
     
+    // Sessions
+   
+    void startSession() {
+       Session[session_active] = true;  
+    }
+    
+    void endSession() { 
+         Session.clear();
+         Session[session_active] = false;  
+    }
+    
+    bool sessionActive() {
+        return Session[session_active];
+    }
+    
     // Class specific
         
     // The output buffer
@@ -151,6 +173,7 @@ class Apache{
         Map<String, Map> output = new Map<String, Map>();
 
         output[CB_HEADERS] = _responseHeaders;
+        output[CB_SESSION] = Session;
         output[CB_END] = null;
 
         _controlBuffer = _controlBuffer + JSON.encode(output);
@@ -229,6 +252,12 @@ class Apache{
             writeOutput('<h3> ${key} : ${value} </h3>');
         });
         
+        //SESSION
+        writeOutput('<h2><u>SESSION</u></h2>');
+        Session.forEach((key, value) {
+            writeOutput('<h3> ${key} : ${value} </h3>');
+        });
+        
         // REQUEST
         writeOutput('<h2><u>REQUEST</u></h2>');
         Request.forEach((key, value) {
@@ -240,6 +269,7 @@ class Apache{
         requestHeaders().forEach((key, value) {
             writeOutput('<h3> ${key} : ${value} </h3>');
         });
+        
         
         // End
         writeOutput('<h3>!------- End of Dump -------!</h3>');

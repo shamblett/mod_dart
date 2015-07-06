@@ -380,6 +380,14 @@ tpl_varlist* getServerGlobal(request_rec* r, tpl_varlist* varlist) {
 
 }
 
+tpl_varlist* getSessionGlobal(request_rec* r, tpl_varlist* varlist) {
+    
+    /* Status */
+    varlist = tpl_addVar("session_active", "false", varlist);
+    
+    return varlist;
+}
+
 apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, request_rec* r) {
 
     tpl_varlist* varList = NULL;
@@ -411,6 +419,9 @@ apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, re
 
     /* Request Headers  */
     varList = getRequestHeaders(r, varList);
+    
+    /* Sessions */
+    varList = getSessionGlobal(r, varList);
 
     /* Create the template file output file, get its name and close it. */
     len = sizeof (scriptFileTemplate);
@@ -501,10 +512,18 @@ char* parseBuffer(char* input, request_rec* r) {
                     json_decref(l1Value);
                     break;
                 }
-
+                
                 case CB_INT_END:
                 {
 
+                    json_decref(l1Value);
+                    break;
+                }
+
+
+                case CB_INT_SESSION:
+                {
+                    //TODO
                     json_decref(l1Value);
                     break;
                 }

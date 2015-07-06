@@ -21,9 +21,9 @@
 extern "C" {
 #endif
 
-    bool sessionStart();
+    int sessionStart();
     
-    bool sessionDestroy();
+    int sessionDestroy();
 
 
 #ifdef	__cplusplus
