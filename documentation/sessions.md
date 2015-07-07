@@ -14,10 +14,10 @@ on every page invocation of your Dart scripts, to end sessions just call endSess
 Other than that setup is as standard Apache, for example to use browser based cookie
 sessions add this to your vhost :-
 
-'''
+```
  Session On
  SessionCookieName dartsession path=/
-'''
+```
 
 All other Apache session directives are supported, refer to the Apache documentation.
 
