@@ -30,11 +30,13 @@ extern "C" {
     /* Control buffer objects */
     const char* CB_HEADERS = "Headers";
     const char* CB_SESSION = "Session";
+    const char* CB_SESSION_ACTIVE = "Session_Active";
     const char* CB_END = "End";
 
     enum {
         CB_INT_HEADERS = 1,
         CB_INT_SESSION = 2,
+        CB_INT_SESSION_ACTIVE = 3,
         CB_INT_END = 10
     };
 
@@ -52,9 +54,10 @@ extern "C" {
         char* switchText;
     } switchTableType;
 
-    const switchTableType cb_switchTable[3] = {
+    const switchTableType cb_switchTable[4] = {
         {1, "Headers"},
         {2, "Session"},
+        {3, "Session_Active"},
         {10, "End"}
     };
 

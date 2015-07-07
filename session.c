@@ -38,11 +38,9 @@ int hasSession(request_rec* r) {
 
     if (!loadSessionModule()) return -1;
 
-     apr_status_t status = ap_session_load_fn(r, &theSession);
+    apr_status_t status = ap_session_load_fn(r, &theSession);
     if (status != APR_SUCCESS) return FALSE;
-    /* If the session has never been written we don't have one */
-    if (theSession->written == TRUE) return TRUE;
-    return FALSE;
+    return TRUE;
 }
 
 int sessionStart(request_rec* r, dartSession* session) {

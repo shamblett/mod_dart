@@ -401,7 +401,7 @@ tpl_varlist* getSessionGlobal(request_rec* r, tpl_varlist* varlist) {
 
     } else if (haveSession == TRUE) {
 
-        varlist = tpl_addVar("session_active", "true", varlist);
+        
         /* Get the session */
         sessionStart(r, &theSession);
         /* Load the session variables */
@@ -449,7 +449,7 @@ apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, re
     varList = getRequestHeaders(r, varList);
 
     /* SESSION global */
-    varList = getSessionGlobal(r, varList); 
+    varList = getSessionGlobal(r, varList);
 
     /* Create the template file output file, get its name and close it. */
     len = sizeof (scriptFileTemplate);
@@ -489,6 +489,8 @@ char* parseBuffer(char* input, request_rec* r) {
     json_t *l2Value;
     const char* l1Key;
     const char* l2Key;
+    int sessionActive = FALSE;
+
 
     /* Check for a sentinel, if none just return the buffer,
      * we have a VM script parse error,
@@ -548,43 +550,45 @@ char* parseBuffer(char* input, request_rec* r) {
                     break;
                 }
 
-
-                case CB_INT_SESSION:
+                case CB_INT_SESSION_ACTIVE:
                 {
-                   
-                    int sessionActive = FALSE;
+                    
                     dartSession theSession;
                     
-                    /* Get a session in case we have gone active */
-                    int status = sessionStart(r, &theSession);
-                    if ( status == FALSE ) break;
-                    
-                    json_object_foreach(l1Value, l2Key, l2Value) {
-                       
-                        /* The first key must be session active or not */
-                        if ( !strcmp(l2Key, "session_active")) {
-                            if ( json_is_true(l2Value) == TRUE ) sessionActive = TRUE;
-                            json_decref(l2Value);
-                            continue;
-                        } else {
-                            break;
-                        }
-                        
-                        /* Process the other keys only if active */
-                        if ( sessionActive == TRUE ) {
-                            
-                            sessionSet(r, &theSession, l2Key, json_string_value(l2Value));
-                            json_decref(l2Value);
-                        }
-                    }
-                    
-                    /* Save the session if we are active and force it */
-                    if ( sessionActive == TRUE ) {
-                        sessionSave(r, &theSession, TRUE);
+                    if (json_is_true(l1Value) == TRUE) {
+                        sessionActive = TRUE;
                     } else {
+                        sessionActive = FALSE;
+                        int status = sessionStart(r, &theSession);
+                        if (status == FALSE) break;
                         sessionDestroy(r, &theSession);
                     }
                     
+                    json_decref(l1Value);
+                    break;
+
+                }
+
+                case CB_INT_SESSION:
+                {
+  
+                    if (sessionActive == TRUE) {
+                        
+                        dartSession theSession;
+
+                        /* Get a session now we are active */
+                        int status = sessionStart(r, &theSession);
+                        if (status == FALSE) break;
+
+                        json_object_foreach(l1Value, l2Key, l2Value) {
+
+                            sessionSet(r, &theSession, l2Key, json_string_value(l2Value));
+                            json_decref(l2Value);
+                        }
+                        
+                         sessionSave(r, &theSession, TRUE);
+                    }
+
                     json_decref(l1Value);
                     break;
                 }
@@ -605,7 +609,7 @@ char* parseBuffer(char* input, request_rec* r) {
 
     /* Clean up and return the now empty client buffer */
     json_decref(root);
-    return input;// = "\n\0";
+    return input; // = "\n\0";
 
 
 }

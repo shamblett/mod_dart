@@ -18,6 +18,7 @@ class Apache{
     // Control buffer sections 
     static final String CB_HEADERS = 'Headers';
     static final String CB_SESSION = 'Session';
+    static final String CB_SESSION_ACTIVE = 'Session_Active';
     static final String CB_END = 'End';
     
     // Response Header definitions, do NOT use the ones in HttpHeaders
@@ -88,13 +89,13 @@ class Apache{
                                     '<TMPL_VAR name = "key">' :'<TMPL_VAR name = "val">',
                             </TMPL_LOOP>   
                             };
-   Map Session = { 'session_active' : '<TMPL_VAR name = "session_active">',
-                            <TMPL_LOOP name = "session_map">
+   Map Session = { <TMPL_LOOP name = "session_map">
                                     '<TMPL_VAR name = "key">' :'<TMPL_VAR name = "val">',
                             </TMPL_LOOP>   
                             };
     
-                            
+    bool _sessionActive = false;
+    
     Map _request = new Map();
    
     Map get Request {
@@ -139,16 +140,16 @@ class Apache{
     // Sessions
    
     void startSession() {
-       Session['session_active'] = true;  
+      _sessionActive = true;  
     }
     
     void endSession() { 
          Session.clear();
-         Session['session_active'] = false;  
+         _sessionActive = false;  
     }
     
     bool sessionActive() {
-        return Session['session_active'];
+        return _sessionActive;
     }
     
     // Class specific
@@ -173,7 +174,8 @@ class Apache{
         Map<String, Map> output = new Map<String, Map>();
 
         output[CB_HEADERS] = _responseHeaders;
-        output[CB_SESSION] = Session;
+        output[CB_SESSION_ACTIVE] = _sessionActive;
+        if ( _sessionActive ) output[CB_SESSION] = Session;
         output[CB_END] = null;
 
         _controlBuffer = _controlBuffer + JSON.encode(output);
@@ -254,9 +256,12 @@ class Apache{
         
         //SESSION
         writeOutput('<h2><u>SESSION</u></h2>');
-        Session.forEach((key, value) {
-            writeOutput('<h3> ${key} : ${value.toString()} </h3>');
-        });
+        writeOutput('<h3> sessionActive: ${_sessionActive.toString()} </h3>');
+        if ( _sessionActive ) {
+            Session.forEach((key, value) {
+                writeOutput('<h3> ${key} : ${value.toString()} </h3>');       
+            });
+        }
         
         // REQUEST
         writeOutput('<h2><u>REQUEST</u></h2>');
@@ -283,6 +288,7 @@ class Apache{
                     JSON.encode(Get) + 
                     JSON.encode(Post) + 
                     JSON.encode(Cookie) + 
+                    JSON.encode(_sessionActive) +
                     JSON.encode(Session) + 
                     JSON.encode(Request) +
                     JSON.encode(requestHeaders()));
