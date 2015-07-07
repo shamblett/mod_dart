@@ -23,12 +23,11 @@ extern "C" {
 
     /* Our session record */
     typedef struct {
-        
         session_rec* modSession;
         int isActive;
-        
+
     } dartSession;
-    
+
     /**
      * sessionStart
      * 
@@ -42,7 +41,7 @@ extern "C" {
      * @return false indicates the session start failed
      */
     int sessionStart(request_rec* r, dartSession* session);
-    
+
     /**
      * sessionDestroy
      * 
@@ -54,7 +53,7 @@ extern "C" {
      * @return false indicates the session destroy failed
      */
     int sessionDestroy(request_rec* r, dartSession* session);
-    
+
     /**
      * hasSession
      * 
@@ -90,7 +89,7 @@ extern "C" {
      * @return true indicates success
      */
     int sessionSave(request_rec* r, dartSession* session, int force);
-    
+
 #ifdef	__cplusplus
 }
 #endif

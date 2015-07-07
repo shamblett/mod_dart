@@ -401,7 +401,6 @@ tpl_varlist* getSessionGlobal(request_rec* r, tpl_varlist* varlist) {
 
     } else if (haveSession == TRUE) {
 
-        
         /* Get the session */
         sessionStart(r, &theSession);
         /* Load the session variables */
@@ -552,9 +551,9 @@ char* parseBuffer(char* input, request_rec* r) {
 
                 case CB_INT_SESSION_ACTIVE:
                 {
-                    
+
                     dartSession theSession;
-                    
+
                     if (json_is_true(l1Value) == TRUE) {
                         sessionActive = TRUE;
                     } else {
@@ -563,7 +562,7 @@ char* parseBuffer(char* input, request_rec* r) {
                         if (status == FALSE) break;
                         sessionDestroy(r, &theSession);
                     }
-                    
+
                     json_decref(l1Value);
                     break;
 
@@ -571,22 +570,26 @@ char* parseBuffer(char* input, request_rec* r) {
 
                 case CB_INT_SESSION:
                 {
-  
+
                     if (sessionActive == TRUE) {
-                        
+
                         dartSession theSession;
 
                         /* Get a session now we are active */
                         int status = sessionStart(r, &theSession);
                         if (status == FALSE) break;
-
+                        
+                        /* Clear the entries table */
+                        apr_table_clear(theSession.modSession->entries);
+                        
+                        /* Re-instate the entries table */
                         json_object_foreach(l1Value, l2Key, l2Value) {
 
                             sessionSet(r, &theSession, l2Key, json_string_value(l2Value));
                             json_decref(l2Value);
                         }
-                        
-                         sessionSave(r, &theSession, TRUE);
+
+                        sessionSave(r, &theSession, TRUE);
                     }
 
                     json_decref(l1Value);
@@ -609,7 +612,7 @@ char* parseBuffer(char* input, request_rec* r) {
 
     /* Clean up and return the now empty client buffer */
     json_decref(root);
-    return input; // = "\n\0";
+    return input = "\n\0";
 
 
 }

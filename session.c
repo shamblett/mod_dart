@@ -53,25 +53,25 @@ int sessionStart(request_rec* r, dartSession* session) {
     return TRUE;
 }
 
-int sessionDestroy(request_rec* r, dartSession* session) {   
+int sessionDestroy(request_rec* r, dartSession* session) {
 
     if (!loadSessionModule()) return FALSE;
 
-    
+
     /* Set max age to 1 second */
     session->isActive = FALSE;
     session->modSession->maxage = 1;
     apr_status_t status = ap_session_save_fn(r, session->modSession);
-    
+
     if (status != APR_SUCCESS) return FALSE;
     return TRUE;
 }
 
 int sessionSet(request_rec* r, dartSession* session, const char *key, const char *value) {
-    
-    
+
+
     if (!loadSessionModule()) return FALSE;
-    
+
     session->isActive = TRUE;
     apr_status_t status = ap_session_set_fn(r, session->modSession, key, value);
     if (status != APR_SUCCESS) return FALSE;
@@ -79,14 +79,14 @@ int sessionSet(request_rec* r, dartSession* session, const char *key, const char
 }
 
 int sessionSave(request_rec* r, dartSession* session, int force) {
-    
+
     if (!loadSessionModule()) return FALSE;
-    
+
     session->isActive = TRUE;
-    if ( force == TRUE ) session->modSession->dirty = TRUE;
+    if (force == TRUE) session->modSession->dirty = TRUE;
     apr_status_t status = ap_session_save_fn(r, session->modSession);
     if (status != APR_SUCCESS) return FALSE;
     return TRUE;
-    
+
 }
 
