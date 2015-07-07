@@ -8,8 +8,30 @@ void main() {
   Apache myAp = new Apache();
 
   // Set a header
-  myAp.setHeader(Apache.CONTENT_LANGUAGE, 'en');
+  myAp.setHeader(Apache.CONTENT_LANGUAGE, 'us');
+
+  // Session tests
+  if ( myAp.Request['sesscontrol'] == 'start' ) {
+	myAp.startSession();
+	myAp.Session['Name'] = 'Billy';
+	myAp.Session['Sex'] = 'Male';
+  }
+
+  if ( myAp.Request['sesscontrol'] == 'change' ) {
+	myAp.startSession();
+	myAp.Session['Name'] = 'Fred';
+	myAp.Session.remove('Sex');
+  }
+
+  if ( myAp.Request['sesscontrol'] == 'end' ) {
+	myAp.startSession();
+	myAp.endSession();
+  }
  
+  if ( myAp.Request['sesscontrol'] == 'open' ) {
+	myAp.startSession();
+  }
+	
   // Dump the environment depending on format selection
   if ( myAp.Get['format'] == 'json' ) {
 	myAp.setHeader(Apache.CONTENT_TYPE, "application/json");
@@ -19,7 +41,8 @@ void main() {
 	myAp.dumpEnvironment();
   }
 
-  // Flush buffers and exit
+
+  // Flush buffers an exit
   myAp.flushBuffers();
 	  
 }

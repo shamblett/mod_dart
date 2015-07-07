@@ -229,7 +229,7 @@ mod_dosomethingwizzy, you get the picture. All with the security inherent in the
  
 ### Where
 
-Well, firstly it needs to be finished, Sessions and File super-globals need to be added, far more control
+Well, firstly it needs to be finished, File super-globals need to be added, far more control
 is needed to interact with Apache and load testing needs doing, then there's debugging support, test harnesses
 etc. snapshots? lots to do in fact. Also a more 'real' application needs writing that imports lots of packages to get
 a real feel for this. See the [omissions](test/omissions.md) document in the test directory for what is/isn't supported.

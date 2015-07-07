@@ -1,3 +1,7 @@
+# 0.3.0
+
+Session support added.
+
 # 0.2.0
 
 ## Better fgets handling and a faster popen.

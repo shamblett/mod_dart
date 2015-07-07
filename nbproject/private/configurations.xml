@@ -8,6 +8,9 @@
         <in>ctemplate.c</in>
         <in>ctemplate.h</in>
       </df>
+      <df name="documentation">
+        <in>sessions.md</in>
+      </df>
       <df name="jansson">
         <in>dump.c</in>
         <in>error.c</in>
