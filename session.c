@@ -35,39 +35,60 @@ int loadSessionModule() {
 int hasSession(request_rec* r) {
 
     session_rec* theSession;
-    apr_status_t status;
 
     if (!loadSessionModule()) return -1;
 
-    status = ap_session_load_fn(r, &theSession);
-    if (status != APR_SUCCESS) return 0;
+     apr_status_t status = ap_session_load_fn(r, &theSession);
+    if (status != APR_SUCCESS) return FALSE;
     /* If the session has never been written we don't have one */
-    if (theSession->written == TRUE) return 1;
+    if (theSession->written == TRUE) return TRUE;
     return FALSE;
 }
 
 int sessionStart(request_rec* r, dartSession* session) {
 
-    apr_status_t status;
-
     if (!loadSessionModule()) return FALSE;
 
-    status = ap_session_load_fn(r, &session->modSession);
+    apr_status_t status = ap_session_load_fn(r, &session->modSession);
     if (status != APR_SUCCESS) return FALSE;
     session->isActive = TRUE;
     return TRUE;
 }
 
-int sessionDestroy(request_rec* r, dartSession* session) {
-
-    session->isActive = FALSE;
+int sessionDestroy(request_rec* r, dartSession* session) {   
 
     if (!loadSessionModule()) return FALSE;
 
-    /* Set maxage to 1 second */
+    
+    /* Set max age to 1 second */
+    session->isActive = FALSE;
     session->modSession->maxage = 1;
+    apr_status_t status = ap_session_save_fn(r, session->modSession);
+    
+    if (status != APR_SUCCESS) return FALSE;
+    return TRUE;
+}
+
+int sessionSet(request_rec* r, dartSession* session, const char *key, const char *value) {
+    
+    
+    if (!loadSessionModule()) return FALSE;
+    
+    session->isActive = TRUE;
+    apr_status_t status = ap_session_set_fn(r, session->modSession, key, value);
+    if (status != APR_SUCCESS) return FALSE;
+    return TRUE;
+}
+
+int sessionSave(request_rec* r, dartSession* session, int force) {
+    
+    if (!loadSessionModule()) return FALSE;
+    
+    session->isActive = TRUE;
+    if ( force == TRUE ) session->modSession->dirty = TRUE;
     apr_status_t status = ap_session_save_fn(r, session->modSession);
     if (status != APR_SUCCESS) return FALSE;
     return TRUE;
+    
 }
 

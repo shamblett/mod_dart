@@ -68,7 +68,29 @@ extern "C" {
      */
     int hasSession(request_rec* r);
 
+    /**
+     * sessionSet
+     * 
+     * @param r - request record
+     * @param session - the session
+     * @param key - the key
+     * @param value - the value
+     * 
+     * @return true indicates success
+     */
+    int sessionSet(request_rec* r, dartSession* session, const char *key, const char *value);
 
+    /**
+     * sessionSave
+     * 
+     * @param r - request record
+     * @param session - the session
+     * @param force -- force the save, ie make dirty
+     * 
+     * @return true indicates success
+     */
+    int sessionSave(request_rec* r, dartSession* session, int force);
+    
 #ifdef	__cplusplus
 }
 #endif

@@ -139,16 +139,16 @@ class Apache{
     // Sessions
    
     void startSession() {
-       Session[session_active] = true;  
+       Session['session_active'] = true;  
     }
     
     void endSession() { 
          Session.clear();
-         Session[session_active] = false;  
+         Session['session_active'] = false;  
     }
     
     bool sessionActive() {
-        return Session[session_active];
+        return Session['session_active'];
     }
     
     // Class specific
@@ -255,7 +255,7 @@ class Apache{
         //SESSION
         writeOutput('<h2><u>SESSION</u></h2>');
         Session.forEach((key, value) {
-            writeOutput('<h3> ${key} : ${value} </h3>');
+            writeOutput('<h3> ${key} : ${value.toString()} </h3>');
         });
         
         // REQUEST
@@ -283,6 +283,7 @@ class Apache{
                     JSON.encode(Get) + 
                     JSON.encode(Post) + 
                     JSON.encode(Cookie) + 
+                    JSON.encode(Session) + 
                     JSON.encode(Request) +
                     JSON.encode(requestHeaders()));
         
