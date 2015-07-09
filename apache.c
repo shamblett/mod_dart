@@ -12,13 +12,9 @@
 #include "constants.h"
 #include "jansson/jansson.h"
 #include "session.h"
+#include "apreq/apache_request.h"
 
 #include "apache.h"
-
-typedef struct {
-    const char *key;
-    const char *value;
-} keyValuePair;
 
 /* Parse form data from a string. The input string is NOT preserved. */
 static apr_hash_t *parse_form_from_string(request_rec *r, char *args) {
@@ -107,34 +103,6 @@ static apr_hash_t *parse_cookie_from_string(request_rec *r, const char *args) {
     return cookies;
 }
 
-keyValuePair* readPost(request_rec *r, int* numEntries) {
-    apr_array_header_t *pairs = NULL;
-    apr_off_t len;
-    apr_size_t size;
-    int res;
-    int i = 0;
-    char *buffer;
-    keyValuePair *kvp;
-
-    res = ap_parse_form_data(r, NULL, &pairs, -1, HUGE_STRING_LEN);
-    if (res != OK || !pairs) return NULL; /* Return NULL if we failed or if there are is no POST data */
-    kvp = apr_pcalloc(r->pool, sizeof (keyValuePair) * (pairs->nelts + 1));
-    while (pairs && !apr_is_empty_array(pairs)) {
-        ap_form_pair_t *pair = (ap_form_pair_t *) apr_array_pop(pairs);
-        apr_brigade_length(pair->value, 1, &len);
-        size = (apr_size_t) len;
-        buffer = apr_palloc(r->pool, size + 1);
-        apr_brigade_flatten(pair->value, buffer, &size);
-        buffer[len] = 0;
-        kvp[i].key = apr_pstrdup(r->pool, pair->name);
-        kvp[i].value = buffer;
-        i++;
-    }
-
-    *numEntries = i;
-    return kvp;
-}
-
 tpl_varlist* getCookiesGlobal(request_rec* r, tpl_varlist* varlist) {
 
     apr_hash_index_t *hi;
@@ -186,16 +154,22 @@ tpl_varlist* getGetGlobal(request_rec* r, tpl_varlist* varlist) {
 
 tpl_varlist* getPostGlobal(request_rec* r, tpl_varlist* varlist) {
 
-    int numEntries = 0;
-    int i;
     tpl_loop *loop = NULL;
+    apr_table_t* postParams;
 
-    keyValuePair* postMap = readPost(r, &numEntries);
-    for (i = 0; i <= numEntries; i++) {
+    int postCallback(void* r, const char* key, const char* value) {
+
         loop = tpl_addVarList(loop, tpl_addLoopVar(
-                "key", postMap[i].key, "val", postMap[i].value));
-
+                "key", key, "val", value));
+        return 1;
     }
+
+    ApacheRequest* postReq = ApacheRequest_new(r);
+    ApacheRequest_parse_urlencoded(postReq);
+    postParams = ApacheRequest_post_params(postReq, r->pool);
+
+    apr_table_do(postCallback, r, postParams, NULL);
+
 
     return tpl_addLoop(varlist, "post_map", loop);
 }
@@ -439,11 +413,18 @@ apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, re
     varList = getGetGlobal(r, varList);
 
     /* POST/FILES global */
-    
+
     /* Check the content type */
-    const char* ctype = apr_table_get(r->headers_in, "Content-Type") ;
-    if ( strncmp ( ctype , "multipart/form-data", 19 ) ) {  
-        varList = getPostGlobal(r, varList);
+    const char* type = NULL;
+    type = apr_table_get(r->headers_in, "Content-Type");
+    
+    if (type != NULL) {
+        /* If default(x-www-form-urlencoded) get normal post globals */
+        if (strncaseEQ(type, DEFAULT_ENCTYPE, DEFAULT_ENCTYPE_LENGTH)) {
+            varList = getPostGlobal(r, varList);
+        }
+    } else {
+        /* Get multipart globals */
     }
 
     /* COOKIES global */
@@ -583,10 +564,10 @@ char* parseBuffer(char* input, request_rec* r) {
                         /* Get a session now we are active */
                         int status = sessionStart(r, &theSession);
                         if (status == FALSE) break;
-                        
+
                         /* Clear the entries table */
                         apr_table_clear(theSession.modSession->entries);
-                        
+
                         /* Re-instate the entries table */
                         json_object_foreach(l1Value, l2Key, l2Value) {
 
