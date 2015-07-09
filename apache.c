@@ -174,6 +174,28 @@ tpl_varlist* getPostGlobal(request_rec* r, tpl_varlist* varlist) {
     return tpl_addLoop(varlist, "post_map", loop);
 }
 
+tpl_varlist* getPostGlobalMultiPart(request_rec* r, tpl_varlist* varlist) {
+
+    tpl_loop *loop = NULL;
+    apr_table_t* postParams;
+
+    int postCallback(void* r, const char* key, const char* value) {
+
+        loop = tpl_addVarList(loop, tpl_addLoopVar(
+                "key", key, "val", value));
+        return 1;
+    }
+
+    ApacheRequest* postReq = ApacheRequest_new(r);
+    ApacheRequest_parse_multipart(postReq);
+    postParams = ApacheRequest_post_params(postReq, r->pool);
+
+    apr_table_do(postCallback, r, postParams, NULL);
+
+
+    return tpl_addLoop(varlist, "post_map", loop);
+}
+
 tpl_varlist* getRequestHeaders(request_rec* r, tpl_varlist* varlist) {
 
 
@@ -417,14 +439,16 @@ apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, re
     /* Check the content type */
     const char* type = NULL;
     type = apr_table_get(r->headers_in, "Content-Type");
-    
-    if (type != NULL) {
+    const char* method = apr_pstrdup(r->pool, r->method);
+
+    if ((type != NULL) && (strEQ(method, "POST"))) {
         /* If default(x-www-form-urlencoded) get normal post globals */
         if (strncaseEQ(type, DEFAULT_ENCTYPE, DEFAULT_ENCTYPE_LENGTH)) {
             varList = getPostGlobal(r, varList);
+        } else {
+            /* Get multipart globals */
+            varList = getPostGlobalMultiPart(r, varList);
         }
-    } else {
-        /* Get multipart globals */
     }
 
     /* COOKIES global */
