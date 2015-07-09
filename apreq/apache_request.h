@@ -1,54 +1,45 @@
- 
+
 /* Copyright 1999-2004 The Apache Software Foundation
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
-   	http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
+
+/*
+ Updates for mod_dart usage functions S. Hamblett July 2015 
+ */
 
 #ifndef _APACHE_REQUEST_H
 
 #define _APACHE_REQUEST_H
 
-#include "httpd.h"
-#include "http_config.h"
-#include "http_core.h"
-#include "http_log.h"
-#include "http_main.h"
-#include "http_protocol.h"
-#include "util_script.h"
+#include <httpd.h>
+#include <http_config.h>
+#include <http_log.h>
+#include <http_protocol.h>
+#include <http_core.h>
 
-#ifdef  SFIO
-#include "sfio.h"
-
-/* sfio 2000 changed _stdopen to _stdfdopen */
-#if SFIO_VERSION >= 20000101L
-#define _stdopen _stdfdopen
-#endif
-
-extern Sfio_t*  _stdopen _ARG_((int, const char*)); /*1999*/
-
-#undef  FILE
-#define FILE 			Sfio_t
-#undef  fwrite
-#define fwrite(p,s,n,f)		sfwrite((f),(p),(s)*(n))
-#undef  fseek
-#define fseek(f,a,b)		sfseek((f),(a),(b))
-#undef  ap_pfdopen
-#define ap_pfdopen(p,q,r) 	_stdopen((q),(r))
-#undef  ap_pfclose
-#define ap_pfclose(p,q)		sfclose(q)
-#endif /*SFIO*/
+#include <apr_pools.h>
+#include <util_script.h>
+#include <ap_config.h>
+#include <ap_provider.h>
+#include <apr_strings.h>
+#include <apr_hash.h>
+#include <apr_file_io.h>
+#include <apr_strings.h>
+#include <apr_pools.h>
+#include <apr_lib.h>
 
 typedef struct ApacheUpload ApacheUpload;
 
 typedef struct {
-    table *parms;
+    apr_table_t *parms;
     ApacheUpload *upload;
     int status;
     int parsed;
@@ -66,8 +57,8 @@ struct ApacheUpload {
     char *filename;
     char *name;
     char *tempname;
-    table *info;
-    FILE *fp;
+    apr_table_t *info;
+    apr_file_t* fp;
     long size;
     ApacheRequest *req;
 };
@@ -97,26 +88,26 @@ struct ApacheUpload {
 #define MULTIPART_ENCTYPE_LENGTH 19
 
 #ifdef  __cplusplus
- extern "C" {
+extern "C" {
 #endif 
 
-ApacheRequest *ApacheRequest_new(request_rec *r);
-int ApacheRequest_parse_multipart(ApacheRequest *req);
-int ApacheRequest_parse_urlencoded(ApacheRequest *req);
-char *ApacheRequest_script_name(ApacheRequest *req);
-char *ApacheRequest_script_path(ApacheRequest *req);
-const char *ApacheRequest_param(ApacheRequest *req, const char *key);
-array_header *ApacheRequest_params(ApacheRequest *req, const char *key);
-char *ApacheRequest_params_as_string(ApacheRequest *req, const char *key);
-int ApacheRequest___parse(ApacheRequest *req);
+    ApacheRequest *ApacheRequest_new(request_rec *r);
+    int ApacheRequest_parse_multipart(ApacheRequest *req);
+    int ApacheRequest_parse_urlencoded(ApacheRequest *req);
+    char *ApacheRequest_script_name(ApacheRequest *req);
+    char *ApacheRequest_script_path(ApacheRequest *req);
+    const char *ApacheRequest_param(ApacheRequest *req, const char *key);
+    apr_array_header_t *ApacheRequest_params(ApacheRequest *req, const char *key);
+    char *ApacheRequest_params_as_string(ApacheRequest *req, const char *key);
+    int ApacheRequest___parse(ApacheRequest *req);
 #define ApacheRequest_parse(req) \
     ((req)->status = (req)->parsed ? (req)->status : ApacheRequest___parse(req)) 
-table *ApacheRequest_query_params(ApacheRequest *req, ap_pool *p);
-table *ApacheRequest_post_params(ApacheRequest *req, ap_pool *p);
+    apr_table_t* ApacheRequest_query_params(ApacheRequest *req, apr_pool_t *p);
+    apr_table_t* ApacheRequest_post_params(ApacheRequest *req, apr_pool_t *p);
 
-FILE *ApacheRequest_tmpfile(ApacheRequest *req, ApacheUpload *upload);
-ApacheUpload *ApacheUpload_new(ApacheRequest *req);
-ApacheUpload *ApacheUpload_find(ApacheUpload *upload, char *name);
+    FILE *ApacheRequest_tmpfile(ApacheRequest *req, ApacheUpload *upload);
+    ApacheUpload *ApacheUpload_new(ApacheRequest *req);
+    ApacheUpload *ApacheUpload_find(ApacheUpload *upload, char *name);
 
 #define ApacheRequest_upload(req) \
     (((req)->parsed || (ApacheRequest_parse(req) == OK)) ? (req)->upload : NULL)
@@ -134,16 +125,16 @@ ApacheUpload_info((upload), "Content-Type")
 #define ApacheRequest_set_post_max(req, max) ((req)->post_max = (max))
 #define ApacheRequest_set_temp_dir(req, dir) ((req)->temp_dir = (dir))
 
-char *ApacheUtil_expires(pool *p, char *time_str, int type);
+    char *ApacheUtil_expires(apr_pool_t *p, char *time_str, int type);
 #define EXPIRES_HTTP   1
 #define EXPIRES_COOKIE 2
-char *ApacheRequest_expires(ApacheRequest *req, char *time_str);
+    char *ApacheRequest_expires(ApacheRequest *req, char *time_str);
 
 #ifdef __cplusplus
- }
+}
 #endif
 
-#define REQ_ERROR APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, req->r
+#define REQ_ERROR APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, req->r
 
 #ifdef REQDEBUG
 #define REQ_DEBUG(a) (a)

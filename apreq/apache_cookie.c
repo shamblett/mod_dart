@@ -25,7 +25,7 @@ char *ApacheCookie_expires(ApacheCookie *c, char *time_str)
 
 #define cookie_get_set(thing,val) \
     retval = thing; \
-    if(val) thing = ap_pstrdup(c->r->pool, val)
+    if(val) thing = apr_pstrdup(c->r->pool, val)
 
 char *ApacheCookie_attr(ApacheCookie *c, char *key, char *val)
 {

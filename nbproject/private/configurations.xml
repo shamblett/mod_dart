@@ -4,12 +4,19 @@
     <df root="." name="0">
       <df name="apacheTemplate">
       </df>
+      <df name="apreq">
+        <in>apache_cookie.c</in>
+        <in>apache_cookie.h</in>
+        <in>apache_multipart_buffer.c</in>
+        <in>apache_multipart_buffer.h</in>
+        <in>apache_request.c</in>
+        <in>apache_request.h</in>
+      </df>
       <df name="ctemplate-1.0">
         <in>ctemplate.c</in>
         <in>ctemplate.h</in>
       </df>
       <df name="documentation">
-        <in>sessions.md</in>
       </df>
       <df name="jansson">
         <in>dump.c</in>

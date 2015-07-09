@@ -15,6 +15,7 @@ template_path = /var/www/html/template
 CTMPL=$(current_dir)/ctemplate-1.0/
 JANS=$(current_dir)/jansson/
 POPEN=$(current_dir)/popen-noshell
+APREQ=$(current_dir)/apreq
 
 # platform
 DISTRO=$(shell lsb_release -si)
@@ -38,7 +39,8 @@ mod_dart:
 	    -I$(JANS) $(JANS)/dump.c $(JANS)/hashtable.c $(JANS)/hashtable_seed.c $(JANS)/load.c \
 	    $(JANS)/memory.c $(JANS)/pack_unpack.c $(JANS)/strbuffer.c $(JANS)/strconv.c $(JANS)/utf.c \
 	    $(JANS)/value.c $(JANS)/error.c \
-	    -I$(POPEN) $(POPEN)/popen_noshell.c
+	    -I$(POPEN) $(POPEN)/popen_noshell.c \
+	    -I$(APREQ) $(APREQ)/apache_multipart_buffer.c $(APREQ)/apache_request.c  
 	
 	cp apacheTemplate/apacheTemplate.tpl $(template_path)
 

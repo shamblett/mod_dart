@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett 2015
  * License : GPL V3, see the LICENSE file for details
  */
-
+#include <apreq2/apreq_parser.h>
 #include "template.h"
 #include "utils.h"
 #include "error.h"
@@ -438,8 +438,13 @@ apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, re
     /* GET global */
     varList = getGetGlobal(r, varList);
 
-    /* POST global */
-    varList = getPostGlobal(r, varList);
+    /* POST/FILES global */
+    
+    /* Check the content type */
+    const char* ctype = apr_table_get(r->headers_in, "Content-Type") ;
+    if ( strncmp ( ctype , "multipart/form-data", 19 ) ) {  
+        varList = getPostGlobal(r, varList);
+    }
 
     /* COOKIES global */
     varList = getCookiesGlobal(r, varList);

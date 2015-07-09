@@ -69,9 +69,8 @@ int fill_buffer(multipart_buffer *self)
     /* read the required number of bytes */
     while(bytes_to_read > 0) {
 	char *buf = self->buffer + self->bytes_in_buffer;
-	ap_hard_timeout("[libapreq] multipart_buffer.c:fill_buffer", self->r);
+	
 	actual_read = ap_get_client_block(self->r, buf, bytes_to_read);
-	ap_kill_timeout(self->r);
 
 	/* update the buffer length */
 	if(actual_read > 0) {
@@ -173,17 +172,17 @@ int find_boundary(multipart_buffer *self, char *boundary)
 multipart_buffer *multipart_buffer_new(char *boundary, long length, request_rec *r)
 {
     multipart_buffer *self = (multipart_buffer *)
-	ap_pcalloc(r->pool, sizeof(multipart_buffer));
+	apr_pcalloc(r->pool, sizeof(multipart_buffer));
 
     int minsize = strlen(boundary)+6;
     if(minsize < FILLUNIT) minsize = FILLUNIT;
 
     self->r = r;
-    self->buffer = (char *) ap_pcalloc(r->pool, minsize+1);
+    self->buffer = (char *) apr_pcalloc(r->pool, minsize+1);
     self->bufsize = minsize;
     self->request_length = length;
-    self->boundary = ap_pstrcat(r->pool, "--", boundary, NULL);
-    self->boundary_next = ap_pstrcat(r->pool, "\n", self->boundary, NULL);
+    self->boundary = apr_pstrcat(r->pool, "--", boundary, NULL);
+    self->boundary_next = apr_pstrcat(r->pool, "\n", self->boundary, NULL);
     self->buf_begin = self->buffer;
     self->bytes_in_buffer = 0;
 
@@ -191,16 +190,16 @@ multipart_buffer *multipart_buffer_new(char *boundary, long length, request_rec 
 }
 
 /* parse headers and return them in an apache table */
-table *multipart_buffer_headers(multipart_buffer *self)
+apr_table_t* multipart_buffer_headers(multipart_buffer *self)
 {
-    table *tab;
+    apr_table_t *tab;
     char *line;
 
     /* didn't find boundary, abort */
     if(!find_boundary(self, self->boundary)) return NULL;
 
     /* get lines of text, or CRLF_CRLF */
-    tab = ap_make_table(self->r->pool, 10);
+    tab = apr_table_make(self->r->pool, 10);
     while( (line = get_line(self)) && strlen(line) > 0 ) {
 	/* add header to table */
 	char *key = line;
@@ -208,7 +207,7 @@ table *multipart_buffer_headers(multipart_buffer *self)
 
 	if(value) {
 	    *value = 0;
-	    do { value++; } while(ap_isspace(*value));
+	    do { value++; } while(apr_isspace(*value));
 
 #ifdef DEBUG
 	    ap_log_rerror(MPB_ERROR,
@@ -216,7 +215,7 @@ table *multipart_buffer_headers(multipart_buffer *self)
 			  key, value);
 #endif
 
-	    ap_table_add(tab, key, value);
+	    apr_table_add(tab, key, value);
 	}
 	else {
 #ifdef DEBUG
@@ -224,7 +223,7 @@ table *multipart_buffer_headers(multipart_buffer *self)
 			  "multipart_buffer_headers: '%s' = ''", key);
 #endif
 
-	    ap_table_add(tab, key, "");
+	    apr_table_add(tab, key, "");
 	}
     }
 
@@ -279,7 +278,7 @@ char *multipart_buffer_read_body(multipart_buffer *self)
         if (len + cur_len + 1 > nalloc) {
             char *tmp;
             nalloc = 2 * (nalloc + len + 1);
-            tmp = ap_palloc(self->r->pool, nalloc);
+            tmp = apr_palloc(self->r->pool, nalloc);
             strcpy(tmp, out);
             out = tmp;
         }
