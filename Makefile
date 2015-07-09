@@ -40,7 +40,7 @@ mod_dart:
 	    $(JANS)/memory.c $(JANS)/pack_unpack.c $(JANS)/strbuffer.c $(JANS)/strconv.c $(JANS)/utf.c \
 	    $(JANS)/value.c $(JANS)/error.c \
 	    -I$(POPEN) $(POPEN)/popen_noshell.c \
-	    -I$(APREQ) $(APREQ)/apache_multipart_buffer.c $(APREQ)/apache_request.c  
+	    -I$(APREQ) $(APREQ)/apache_cookie.c $(APREQ)/apache_multipart_buffer.c $(APREQ)/apache_request.c  
 	
 	cp apacheTemplate/apacheTemplate.tpl $(template_path)
 

@@ -10,6 +10,10 @@
    limitations under the License.
 */
 
+/*
+ Updates for mod_dart usage functions S. Hamblett July 2015 
+ */
+
 #include "apache_multipart_buffer.h"
 
 /*********************** internal functions *********************/

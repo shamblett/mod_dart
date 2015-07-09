@@ -41,7 +41,7 @@ extern "C" {
 ((ApacheCookie *)(((ApacheCookie **)arr->elts)[i]))
 
 #define ApacheCookieJarAdd(arr,c) \
-*(ApacheCookie **)ap_push_array(arr) = c
+*(ApacheCookie **)apr_array_push(arr) = c
 
 #define ApacheCookieItems(c) c->values->nelts
 
@@ -49,13 +49,13 @@ extern "C" {
 ((char *)(((char **)c->values->elts)[i]))
 
 #define ApacheCookieAddn(c,val) \
-    if(val) *(char **)ap_push_array(c->values) = (char *)val
+    if(val) *(char **)apr_array_push(c->values) = (char *)val
 
 #define ApacheCookieAdd(c,val) \
-    ApacheCookieAddn(c, ap_pstrdup(c->r->pool, val))
+    ApacheCookieAddn(c, apr_pstrdup(c->r->pool, val))
 
 #define ApacheCookieAddLen(c,val,len) \
-    ApacheCookieAddn(c, ap_pstrndup(c->r->pool, val, len))
+    ApacheCookieAddn(c, apr_pstrndup(c->r->pool, val, len))
 
     ApacheCookie *ApacheCookie_new(request_rec *r, ...);
     ApacheCookieJar *ApacheCookie_parse(request_rec *r, const char *data);
@@ -68,6 +68,6 @@ extern "C" {
 }
 #endif
 
-#define APC_ERROR APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, c->r
+#define APC_ERROR APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, c->r
 
 #endif

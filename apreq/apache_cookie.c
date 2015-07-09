@@ -10,6 +10,10 @@
    limitations under the License.
 */
 
+/*
+ Updates for mod_dart usage functions S. Hamblett July 2015 
+ */
+
 #include "apache_cookie.h"
 
 char *ApacheCookie_expires(ApacheCookie *c, char *time_str)
@@ -69,11 +73,11 @@ ApacheCookie *ApacheCookie_new(request_rec *r, ...)
     va_list args;
     ApacheRequest req;
     ApacheCookie *c =
-	ap_pcalloc(r->pool, sizeof(ApacheCookie));
+	apr_pcalloc(r->pool, sizeof(ApacheCookie));
 
     req.r = r;
     c->r = r;
-    c->values = ap_make_array(r->pool, 1, sizeof(char *));
+    c->values = apr_array_make(r->pool, 1, sizeof(char *));
     c->secure = 0;
     c->name = c->expires = NULL;
 
@@ -99,17 +103,17 @@ ApacheCookieJar *ApacheCookie_parse(request_rec *r, const char *data)
 {
     const char *pair;
     ApacheCookieJar *retval =
-	ap_make_array(r->pool, 1, sizeof(ApacheCookie *));
+	apr_array_make(r->pool, 1, sizeof(ApacheCookie *));
 
     if (!data)
-	if (!(data = ap_table_get(r->headers_in, "Cookie")))
+	if (!(data = apr_table_get(r->headers_in, "Cookie")))
 	    return retval;
 
     while (*data && (pair = ap_getword(r->pool, &data, ';'))) {
 	const char *key, *val;
 	ApacheCookie *c;
 
-	while (ap_isspace(*data))
+	while (apr_isspace(*data))
 	    ++data;
 
 	key = ap_getword(r->pool, &pair, '=');
@@ -119,7 +123,7 @@ ApacheCookieJar *ApacheCookie_parse(request_rec *r, const char *data)
 	if (c->values)
 	    c->values->nelts = 0;
 	else
-	    c->values = ap_make_array(r->pool, 4, sizeof(char *));
+	    c->values = apr_array_make(r->pool, 4, sizeof(char *));
 
 	if (!*pair)
 	    ApacheCookieAdd(c, "");
@@ -140,14 +144,14 @@ ApacheCookieJar *ApacheCookie_parse(request_rec *r, const char *data)
 }
 
 #define cookie_push_arr(arr, val) \
-    *(char **)ap_push_array(arr) = (char *)val
+    *(char **)apr_array_push(arr) = (char *)val
 
 #define cookie_push_named(arr, name, val) \
     if(val && strlen(val) > 0) { \
-        cookie_push_arr(arr, ap_pstrcat(p, name, "=", val, NULL)); \
+        cookie_push_arr(arr, apr_pstrcat(p, name, "=", val, NULL)); \
     }
 
-static char * escape_url(pool *p, char *val)
+static char * escape_url(apr_pool_t *p, char *val)
 {
   char *result = ap_os_escape_path(p, val?val:"", 1);
   char *end = result + strlen(result);
@@ -183,15 +187,15 @@ static char * escape_url(pool *p, char *val)
 
 char *ApacheCookie_as_string(ApacheCookie *c)
 {
-    array_header *values;
-    pool *p = c->r->pool;
+    apr_array_header_t *values;
+    apr_pool_t *p = c->r->pool;
     char *cookie, *retval;
     int i;
 
     if (!c->name)
 	return "";
 
-    values = ap_make_array(p, 6, sizeof(char *));
+    values = apr_array_make(p, 6, sizeof(char *));
     cookie_push_named(values, "domain",  c->domain);
     cookie_push_named(values, "path",    c->path);
     cookie_push_named(values, "expires", c->expires);
@@ -199,9 +203,9 @@ char *ApacheCookie_as_string(ApacheCookie *c)
 	cookie_push_arr(values, "secure");
     }
 
-    cookie = ap_pstrcat(p, escape_url(p, c->name), "=", NULL);
+    cookie = apr_pstrcat(p, escape_url(p, c->name), "=", NULL);
     for (i=0; i<c->values->nelts; i++) {
-	cookie = ap_pstrcat(p, cookie,
+	cookie = apr_pstrcat(p, cookie,
 			    escape_url(p, ((char**)c->values->elts)[i]),
 			    (i < (c->values->nelts -1) ? "&" : NULL),
 			    NULL);
@@ -209,7 +213,7 @@ char *ApacheCookie_as_string(ApacheCookie *c)
 
     retval = cookie;
     for (i=0; i<values->nelts; i++) {
-	retval = ap_pstrcat(p, retval, "; ",
+	retval = apr_pstrcat(p, retval, "; ",
 			    ((char**)values->elts)[i], NULL);
     }
 
@@ -218,6 +222,6 @@ char *ApacheCookie_as_string(ApacheCookie *c)
 
 void ApacheCookie_bake(ApacheCookie *c)
 {
-    ap_table_add(c->r->err_headers_out, "Set-Cookie",
+    apr_table_add(c->r->err_headers_out, "Set-Cookie",
 		 ApacheCookie_as_string(c));
 }
