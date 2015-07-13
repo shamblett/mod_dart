@@ -178,7 +178,8 @@ tpl_varlist* getPostGlobalMultiPart(request_rec* r, tpl_varlist* varlist) {
 
     tpl_loop *loop = NULL;
     apr_table_t* postParams;
-
+    tpl_varlist* retVarList = NULL;
+    
     int postCallback(void* r, const char* key, const char* value) {
 
         loop = tpl_addVarList(loop, tpl_addLoopVar(
@@ -191,9 +192,37 @@ tpl_varlist* getPostGlobalMultiPart(request_rec* r, tpl_varlist* varlist) {
     postParams = ApacheRequest_post_params(postReq, r->pool);
 
     apr_table_do(postCallback, r, postParams, NULL);
+    retVarList = tpl_addLoop(varlist, "post_map", loop);
+    
+    /* Check for uploaded files */
+    ApacheUpload *upload = ApacheRequest_upload(postReq);
+    if (upload != NULL) {
+        
+        /* Construct the FILES superglobal */
+        tpl_loop *fileLoop = NULL;
+        while (upload != NULL) {
 
-
-    return tpl_addLoop(varlist, "post_map", loop);
+            char* fieldName = upload->name;
+            char* name = upload->filename;
+            char* tmp_name = upload->tempname;
+            char* size = apr_ltoa(r->pool, upload->size);
+            char* val = "{ ";
+            val = apr_pstrcat(r->pool, val, "name : ", NULL);
+            val = apr_pstrcat(r->pool, val, name, NULL);
+            val = apr_pstrcat(r->pool, val, ", size : ", NULL);
+            val = apr_pstrcat(r->pool, val, size, NULL);
+            val = apr_pstrcat(r->pool, val, ",tmp_name : ", NULL);
+            val = apr_pstrcat(r->pool, val, tmp_name, NULL);
+            val = apr_pstrcat(r->pool, val, " }, ", NULL);
+            fileLoop = tpl_addVarList(fileLoop, tpl_addLoopVar(
+                    "key", fieldName, "val", val));
+            upload = upload->next;       
+        }
+        retVarList = tpl_addLoop(retVarList, "file_map", fileLoop); 
+              
+    }
+        
+        return retVarList;
 }
 
 tpl_varlist* getRequestHeaders(request_rec* r, tpl_varlist* varlist) {
@@ -443,7 +472,7 @@ apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, re
         const char* type = NULL;
         type = apr_table_get(r->headers_in, "Content-Type");
 
-        if (type != NULL ) {
+        if (type != NULL) {
 
             /* If default(x-www-form-urlencoded) get normal post globals */
             if (strncaseEQ(type, DEFAULT_ENCTYPE, DEFAULT_ENCTYPE_LENGTH)) {
@@ -452,8 +481,6 @@ apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, re
                 /* Get multipart globals, also builds the FILES global; */
                 varList = getPostGlobalMultiPart(r, varList);
             }
-        } else {
-            /* Parse the POST body anyway*/
         }
     }
 

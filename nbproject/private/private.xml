@@ -6,6 +6,10 @@
     </data>
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/home/steve/Development/google/dart/projects/mod_dart/apache.c</file>
+            <file>file:/home/steve/Development/google/dart/projects/mod_dart/apreq/apache_request.c</file>
+            <file>file:/home/steve/Development/google/dart/projects/mod_dart/apreq/apache_request.h</file>
+        </group>
     </open-files>
 </project-private>

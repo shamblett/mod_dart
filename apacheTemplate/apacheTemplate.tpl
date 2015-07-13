@@ -96,6 +96,11 @@ class Apache{
     
     bool _sessionActive = false;
     
+    final Map Files = { <TMPL_LOOP name = "file_map">
+                                    '<TMPL_VAR name = "key">' :'<TMPL_VAR name = "val">',
+                            </TMPL_LOOP>   
+                            };
+                            
     Map _request = new Map();
    
     Map get Request {
@@ -173,6 +178,7 @@ class Apache{
     
         Map<String, Map> output = new Map<String, Map>();
 
+        // Note,  ordering is important here
         output[CB_HEADERS] = _responseHeaders;
         output[CB_SESSION_ACTIVE] = _sessionActive;
         if ( _sessionActive ) output[CB_SESSION] = Session;
@@ -246,6 +252,12 @@ class Apache{
         writeOutput('<h2><u>POST</u></h2>');
         Post.forEach((key, value) {
             writeOutput('<h3> ${key} : ${value} </h3>');
+        });
+        
+        // FILES
+        writeOutput('<h2><u>FILES</u></h2>');
+        Files.forEach((key, value) {
+            writeOutput('<h3> ${key} : ${value.toString()} </h3>');
         });
         
         // COOKIES
