@@ -179,7 +179,7 @@ tpl_varlist* getPostGlobalMultiPart(request_rec* r, tpl_varlist* varlist) {
     tpl_loop *loop = NULL;
     apr_table_t* postParams;
     tpl_varlist* retVarList = NULL;
-    
+
     int postCallback(void* r, const char* key, const char* value) {
 
         loop = tpl_addVarList(loop, tpl_addLoopVar(
@@ -187,17 +187,14 @@ tpl_varlist* getPostGlobalMultiPart(request_rec* r, tpl_varlist* varlist) {
         return 1;
     }
 
+    /* Parse the multi part form */
     ApacheRequest* postReq = ApacheRequest_new(r);
     ApacheRequest_parse_multipart(postReq);
-    postParams = ApacheRequest_post_params(postReq, r->pool);
 
-    apr_table_do(postCallback, r, postParams, NULL);
-    retVarList = tpl_addLoop(varlist, "post_map", loop);
-    
     /* Check for uploaded files */
     ApacheUpload *upload = ApacheRequest_upload(postReq);
     if (upload != NULL) {
-        
+
         /* Construct the FILES superglobal */
         char* val;
         tpl_loop *fileLoop = NULL;
@@ -220,14 +217,22 @@ tpl_varlist* getPostGlobalMultiPart(request_rec* r, tpl_varlist* varlist) {
             val = apr_pstrcat(r->pool, val, "' } ", NULL);
             fileLoop = tpl_addVarList(fileLoop, tpl_addLoopVar(
                     "key", fieldName, "val", val));
-           
-            upload = upload->next;       
+
+            upload = upload->next;
         }
-        retVarList = tpl_addLoop(retVarList, "file_map", fileLoop); 
-              
+        retVarList = tpl_addLoop(varlist, "file_map", fileLoop);
+
     }
-        
-        return retVarList;
+    
+    /* Get the post params and return them */
+    postParams = ApacheRequest_post_params(postReq, r->pool);
+    apr_table_do(postCallback, r, postParams, NULL);
+    if (retVarList == NULL) {
+        retVarList = tpl_addLoop(varlist, "post_map", loop);
+    } else {
+        retVarList = tpl_addLoop(retVarList, "post_map", loop);
+    }
+    return retVarList;
 }
 
 tpl_varlist* getRequestHeaders(request_rec* r, tpl_varlist* varlist) {
