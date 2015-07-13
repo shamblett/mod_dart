@@ -199,23 +199,28 @@ tpl_varlist* getPostGlobalMultiPart(request_rec* r, tpl_varlist* varlist) {
     if (upload != NULL) {
         
         /* Construct the FILES superglobal */
+        char* val;
         tpl_loop *fileLoop = NULL;
         while (upload != NULL) {
 
-            char* fieldName = upload->name;
-            char* name = upload->filename;
-            char* tmp_name = upload->tempname;
-            char* size = apr_ltoa(r->pool, upload->size);
-            char* val = "{ ";
-            val = apr_pstrcat(r->pool, val, "name : ", NULL);
+            const char* fieldName = upload->name;
+            const char* name = upload->filename;
+            const char* type = ApacheUpload_type(upload);
+            const char* tmp_name = upload->tempname;
+            const char* size = apr_ltoa(r->pool, upload->size);
+            val = " { ";
+            val = apr_pstrcat(r->pool, val, "'name' : '", NULL);
             val = apr_pstrcat(r->pool, val, name, NULL);
-            val = apr_pstrcat(r->pool, val, ", size : ", NULL);
+            val = apr_pstrcat(r->pool, val, "' , 'type' : '", NULL);
+            val = apr_pstrcat(r->pool, val, type, NULL);
+            val = apr_pstrcat(r->pool, val, "' , 'size' : '", NULL);
             val = apr_pstrcat(r->pool, val, size, NULL);
-            val = apr_pstrcat(r->pool, val, ",tmp_name : ", NULL);
+            val = apr_pstrcat(r->pool, val, "' ,'tmp_name' : '", NULL);
             val = apr_pstrcat(r->pool, val, tmp_name, NULL);
-            val = apr_pstrcat(r->pool, val, " }, ", NULL);
+            val = apr_pstrcat(r->pool, val, "' } ", NULL);
             fileLoop = tpl_addVarList(fileLoop, tpl_addLoopVar(
                     "key", fieldName, "val", val));
+           
             upload = upload->next;       
         }
         retVarList = tpl_addLoop(retVarList, "file_map", fileLoop); 

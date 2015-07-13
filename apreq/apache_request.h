@@ -117,7 +117,7 @@ extern "C" {
 #define ApacheUpload_size(upload) ((upload)->size)
 
 #define ApacheUpload_info(upload, key) \
-ap_table_get((upload)->info, (key))
+apr_table_get((upload)->info, (key))
 
 #define ApacheUpload_type(upload) \
 ApacheUpload_info((upload), "Content-Type")

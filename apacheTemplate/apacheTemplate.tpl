@@ -97,7 +97,7 @@ class Apache{
     bool _sessionActive = false;
     
     final Map Files = { <TMPL_LOOP name = "file_map">
-                                    '<TMPL_VAR name = "key">' :'<TMPL_VAR name = "val">',
+                                    '<TMPL_VAR name = "key">' :<TMPL_VAR name = "val">,
                             </TMPL_LOOP>   
                             };
                             
@@ -115,7 +115,7 @@ class Apache{
     }
     
     final Map _requestHeaders = { <TMPL_LOOP name = "request_header_map">
-                                    '<TMPL_VAR name = "key">' :'<TMPL_VAR name = "val">',
+                                    '<TMPL_VAR name = "key">' : '<TMPL_VAR name = "val">',
                             </TMPL_LOOP>   
                             };
     
