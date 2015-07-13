@@ -431,23 +431,29 @@ apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, re
     /* SERVER super global */
     varList = getServerGlobal(r, varList);
 
-    /* GET global */
+    /* GET global, just look for this */
     varList = getGetGlobal(r, varList);
 
     /* POST/FILES global */
 
-    /* Check the content type */
-    const char* type = NULL;
-    type = apr_table_get(r->headers_in, "Content-Type");
-    const char* method = apr_pstrdup(r->pool, r->method);
+    /* Check for a POST or PUT */
+    if ((r->method_number == M_POST) || (r->method_number == M_PUT)) {
 
-    if ((type != NULL) && (strEQ(method, "POST"))) {
-        /* If default(x-www-form-urlencoded) get normal post globals */
-        if (strncaseEQ(type, DEFAULT_ENCTYPE, DEFAULT_ENCTYPE_LENGTH)) {
-            varList = getPostGlobal(r, varList);
+        /* Check the content type */
+        const char* type = NULL;
+        type = apr_table_get(r->headers_in, "Content-Type");
+
+        if (type != NULL ) {
+
+            /* If default(x-www-form-urlencoded) get normal post globals */
+            if (strncaseEQ(type, DEFAULT_ENCTYPE, DEFAULT_ENCTYPE_LENGTH)) {
+                varList = getPostGlobal(r, varList);
+            } else {
+                /* Get multipart globals, also builds the FILES global; */
+                varList = getPostGlobalMultiPart(r, varList);
+            }
         } else {
-            /* Get multipart globals */
-            varList = getPostGlobalMultiPart(r, varList);
+            /* Parse the POST body anyway*/
         }
     }
 
