@@ -134,7 +134,7 @@ ApacheUpload_info((upload), "Content-Type")
 }
 #endif
 
-#define REQ_ERROR APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, req->r
+#define REQ_ERROR APLOG_MARK, APLOG_ERR, 0, req->r
 
 #ifdef REQDEBUG
 #define REQ_DEBUG(a) (a)
