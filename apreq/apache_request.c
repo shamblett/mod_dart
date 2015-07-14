@@ -583,25 +583,29 @@ int ApacheRequest_parse_multipart(ApacheRequest *req)
                 continue; 
             }
             
-            apr_size_t wlen1;
+            apr_file_open(&upload->fp, upload->tempname,
+                          APR_READ|APR_WRITE|APR_CREATE , APR_OS_DEFAULT,
+                           r->pool);
 	    while ((blen = multipart_buffer_read(mbuff, buff, sizeof(buff)))) {
 		if (req->upload_hook != NULL) {
 		    wlen = req->upload_hook(req->hook_data, buff, blen, upload);
-                    upload->size += wlen;
 		} else {
-                   wlen1 = blen; 
+                   apr_size_t wlen1 = blen;
 		   apr_file_write(upload->fp, buff, &wlen1);
-                   upload->size += wlen1;
+                   wlen = wlen1;
 		}
 		if (wlen != blen) {
 		    return HTTP_INTERNAL_SERVER_ERROR;
 		}
-		
+		upload->size += wlen;
 	    }
 
 	    if (upload->size > 0 && (upload->fp != NULL)) {
-                apr_file_seek(upload->fp, 0, 0);
+                apr_off_t offset = 0;
+                apr_file_seek(upload->fp, APR_SET, &offset);             
 	    }
+            apr_file_close(upload->fp);
+                       
 	}
     }
 
