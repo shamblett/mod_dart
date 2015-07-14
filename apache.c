@@ -194,7 +194,7 @@ tpl_varlist* getPostGlobalMultiPart(request_rec* r, tpl_varlist* varlist) {
     /* Check for uploaded files */
     ApacheUpload *upload = ApacheRequest_upload(postReq);
     if (upload != NULL) {
-
+        
         /* Construct the FILES superglobal */
         char* val;
         tpl_loop *fileLoop = NULL;
