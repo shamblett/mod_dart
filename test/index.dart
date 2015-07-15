@@ -41,8 +41,19 @@ void main() {
 	myAp.dumpEnvironment();
   }
 
+  // Delete any uploaded files
+  if ( myAp.Request.containsKey('deleteFiles') ) {
 
-  // Flush buffers an exit
+    myAp.Files.forEach((String key, Map value){
+
+        if ( value.containsKey('tmp_name') ) {
+             var myFile = new File(value['tmp_name']);
+             myFile.deleteSync();
+        }
+    });
+  }
+
+  // Flush buffers and exit
   myAp.flushBuffers();
 	  
 }

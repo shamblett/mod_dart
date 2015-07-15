@@ -4,7 +4,7 @@ The Files implementation of mod_dart follows that of the PHP super-global $_FILE
 It is complete other than the 'error' field, this is not supported by mod-dart.
 
 Input fields of a multi part form of the 'file' type are uploaded to the server and
-placed in the cache directory specified in the mod-dart directives. The are specially
+placed in the cache directory specified in the mod-dart directives. They are specially
 named files, to get the uploaded file please use the moveUploadedFile method of the 
 Apache class, this operates as per the PHP move_uploaded_file function.
 

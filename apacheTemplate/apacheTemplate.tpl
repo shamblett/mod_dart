@@ -168,7 +168,7 @@ class Apache{
                 if  ( name.length == 20 ) {
                     var myFile = new File(tempname);
                     myFile.copySync(destination);
-                    myFile.deleteSync(tempname);
+                    myFile.deleteSync();
                     return true;
                 }
             }
