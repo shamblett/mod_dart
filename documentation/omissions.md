@@ -32,7 +32,7 @@ None
 
 ## FILES
 
-Not yet
+No ERROR  file field, otherwise fully supported
 
 ## ENV
 

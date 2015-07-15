@@ -17,6 +17,7 @@
         <in>ctemplate.h</in>
       </df>
       <df name="documentation">
+        <in>files.md</in>
       </df>
       <df name="jansson">
         <in>dump.c</in>

@@ -10,6 +10,9 @@
       <df name="ctemplate-1.0">
         <in>ctemplate.c</in>
       </df>
+      <df name="documentation">
+        <in>files.md</in>
+      </df>
       <df name="jansson">
         <in>dump.c</in>
         <in>error.c</in>
@@ -95,6 +98,8 @@
         </cTool>
       </item>
       <item path="ctemplate-1.0/ctemplate.c" ex="false" tool="0" flavor2="3">
+      </item>
+      <item path="documentation/files.md" ex="false" tool="3" flavor2="0">
       </item>
       <item path="error.c" ex="false" tool="0" flavor2="3">
         <cTool flags="0">
