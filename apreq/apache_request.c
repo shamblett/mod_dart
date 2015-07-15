@@ -164,7 +164,7 @@ ApacheUpload *ApacheUpload_find(ApacheUpload *upload, char *name) {
     return NULL;
 }
 
-ApacheRequest *ApacheRequest_new(request_rec *r) {
+ApacheRequest *ApacheRequest_new(request_rec *r, const char* tmpdir) {
     ApacheRequest *req = (ApacheRequest *)
             apr_pcalloc(r->pool, sizeof (ApacheRequest));
 
@@ -175,7 +175,7 @@ ApacheRequest *ApacheRequest_new(request_rec *r) {
     req->disable_uploads = 0;
     req->upload_hook = NULL;
     req->hook_data = NULL;
-    req->temp_dir = NULL;
+    req->temp_dir = tmpdir;
     req->parsed = 0;
     req->r = r;
     req->nargs = 0;
@@ -395,8 +395,8 @@ apr_file_t* ApacheRequestmpfile(ApacheRequest *req, ApacheUpload *upload) {
 
     apr_status_t status = 0;
     apr_file_t *ret = NULL;
-    char* tempDir = apr_pstrdup(req->r->pool, "/tmp/");
-    char* tempTpl = apr_pstrcat(req->r->pool, tempDir, "apreqXXXXXX", NULL);
+    char* tempDir = apr_pstrdup(req->r->pool, req->temp_dir);
+    char* tempTpl = apr_pstrcat(req->r->pool, tempDir, "aprequploadXXXXXX", NULL);
     status = apr_file_mktemp(&ret, tempTpl,   APR_FOPEN_CREATE | APR_FOPEN_READ | APR_FOPEN_WRITE | APR_FOPEN_EXCL | APR_FOPEN_NOCLEANUP, req->r->pool);
     if (status != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, req->r, "[libapreq] failed to open tmp file %s", tempTpl);

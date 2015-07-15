@@ -164,7 +164,7 @@ tpl_varlist* getPostGlobal(request_rec* r, tpl_varlist* varlist) {
         return 1;
     }
 
-    ApacheRequest* postReq = ApacheRequest_new(r);
+    ApacheRequest* postReq = ApacheRequest_new(r, NULL);
     ApacheRequest_parse_urlencoded(postReq);
     postParams = ApacheRequest_post_params(postReq, r->pool);
 
@@ -174,7 +174,7 @@ tpl_varlist* getPostGlobal(request_rec* r, tpl_varlist* varlist) {
     return tpl_addLoop(varlist, "post_map", loop);
 }
 
-tpl_varlist* getPostGlobalMultiPart(request_rec* r, tpl_varlist* varlist) {
+tpl_varlist* getPostGlobalMultiPart(request_rec* r, tpl_varlist* varlist, const char* cachePath) {
 
     tpl_loop *loop = NULL;
     apr_table_t* postParams;
@@ -188,7 +188,7 @@ tpl_varlist* getPostGlobalMultiPart(request_rec* r, tpl_varlist* varlist) {
     }
 
     /* Parse the multi part form */
-    ApacheRequest* postReq = ApacheRequest_new(r);
+    ApacheRequest* postReq = ApacheRequest_new(r, cachePath);
     ApacheRequest_parse_multipart(postReq);
 
     /* Check for uploaded files */
@@ -489,7 +489,7 @@ apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, re
                 varList = getPostGlobal(r, varList);
             } else {
                 /* Get multipart globals, also builds the FILES global; */
-                varList = getPostGlobalMultiPart(r, varList);
+                varList = getPostGlobalMultiPart(r, varList, cachePath);
             }
         }
     }

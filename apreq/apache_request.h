@@ -47,7 +47,7 @@ typedef struct {
     int disable_uploads;
     int (*upload_hook)(void *ptr, char *buf, int len, ApacheUpload *upload);
     void *hook_data;
-    char* temp_dir;
+    const char* temp_dir;
     request_rec *r;
     int nargs;
 } ApacheRequest;
@@ -91,7 +91,7 @@ struct ApacheUpload {
 extern "C" {
 #endif 
 
-    ApacheRequest *ApacheRequest_new(request_rec *r);
+    ApacheRequest *ApacheRequest_new(request_rec *r, const char* tmpdir);
     int ApacheRequest_parse_multipart(ApacheRequest *req);
     int ApacheRequest_parse_urlencoded(ApacheRequest *req);
     char *ApacheRequest_script_name(ApacheRequest *req);
