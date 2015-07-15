@@ -1,3 +1,7 @@
+# 0.4.0
+
+Files super-global added. 
+
 # 0.3.0
 
 Session support added.
