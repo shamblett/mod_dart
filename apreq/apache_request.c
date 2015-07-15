@@ -396,7 +396,7 @@ apr_file_t* ApacheRequestmpfile(ApacheRequest *req, ApacheUpload *upload) {
     apr_status_t status = 0;
     apr_file_t *ret = NULL;
     char* tempDir = apr_pstrdup(req->r->pool, req->temp_dir);
-    char* tempTpl = apr_pstrcat(req->r->pool, tempDir, "aprequploadXXXXXX", NULL);
+    char* tempTpl = apr_pstrcat(req->r->pool, tempDir, "moddart-uploadXXXXXX", NULL);
     status = apr_file_mktemp(&ret, tempTpl,   APR_FOPEN_CREATE | APR_FOPEN_READ | APR_FOPEN_WRITE | APR_FOPEN_EXCL | APR_FOPEN_NOCLEANUP, req->r->pool);
     if (status != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, req->r, "[libapreq] failed to open tmp file %s", tempTpl);

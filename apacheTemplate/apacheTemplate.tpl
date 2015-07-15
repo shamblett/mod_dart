@@ -157,6 +157,27 @@ class Apache{
         return _sessionActive;
     }
     
+    // Files
+    
+    bool moveUploadedFile(String tempname, String destination) {
+    
+        String name = path.basename(tempname);
+        
+        try {
+            if ( name.startsWith('moddart-upload') ) {
+                if  ( name.length == 20 ) {
+                    var myFile = new File(tempname);
+                    myFile.copySync(destination);
+                    myFile.deleteSync(tempname);
+                    return true;
+                }
+            }
+        } catch (e) {
+            return false;
+        }             
+        return false;   
+    }
+    
     // Class specific
         
     // The output buffer
