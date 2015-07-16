@@ -16,9 +16,12 @@ class Apache{
     static final String _sentinel = ":-:mod_dart_control:-:";    
     
     // Control buffer sections 
+    static final String CB_START = 'Start';
     static final String CB_HEADERS = 'Headers';
     static final String CB_SESSION = 'Session';
     static final String CB_SESSION_ACTIVE = 'Session_Active';
+    static final String CB_SEND_HEADER = 'Send_Header';
+    static final String CB_STATUS = 'Status';
     static final String CB_END = 'End';
     
     // Response Header definitions, do NOT use the ones in HttpHeaders
@@ -31,7 +34,7 @@ class Apache{
     static final String CONTENT_DISPOSITION = 'Content-Disposition';
     static final String CONTENT_ENCODING = 'Content-Encoding';
     static final String CONTENT_LANGUAGE = 'Content-Language';
-    static final String LOCATION = 'LOCATION';
+    static final String LOCATION = 'Location';
     static final String PRAGMA = 'Pragma';
     static final String SET_COOKIE = 'Set-Cookie';
     static final String STATUS = 'Status';
@@ -142,6 +145,39 @@ class Apache{
         return _requestHeaders;
     }   
     
+    // Status code
+    int _statusCode = 200;
+    
+    void status(int code) {
+   
+       _statusCode = code;
+    
+    }
+    
+    
+    // Header
+    // Immediately sends the supplied header to Apache, ignores any 
+    // buffered output, i.e flushBuffers is not performed and exits
+    // the VM. Useful for headers such as 'Location'.
+    void header(String name, String value) {
+    
+        Map<String, Map> output = new Map<String, Map>();
+                
+        Map<String,String> headerOut = { "${name}" : "${value}" };       
+        output[CB_START] = null;
+        output[CB_SEND_HEADER] = headerOut;
+        output[CB_STATUS] = _statusCode;
+        output[CB_END] = null;
+        _outputBuffer = "";
+        _controlBuffer = _controlBuffer + JSON.encode(output);
+        
+        // Delimit the sentinel with a newline so it will never
+        // span an fgets buffer in mod_dart.
+        print(_outputBuffer + '\n' + _sentinel + _controlBuffer + '\n');
+        exit(0);
+    
+    }
+    
     // Sessions
    
     void startSession() {
@@ -200,9 +236,11 @@ class Apache{
         Map<String, Map> output = new Map<String, Map>();
 
         // Note,  ordering is important here
+        output[CB_START] = null;
         output[CB_HEADERS] = _responseHeaders;
         output[CB_SESSION_ACTIVE] = _sessionActive;
         if ( _sessionActive ) output[CB_SESSION] = Session;
+        output[CB_STATUS] = _statusCode;
         output[CB_END] = null;
 
         _controlBuffer = _controlBuffer + JSON.encode(output);

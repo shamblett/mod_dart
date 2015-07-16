@@ -194,7 +194,7 @@ tpl_varlist* getPostGlobalMultiPart(request_rec* r, tpl_varlist* varlist, const 
     /* Check for uploaded files */
     ApacheUpload *upload = ApacheRequest_upload(postReq);
     if (upload != NULL) {
-        
+
         /* Construct the FILES superglobal */
         char* val;
         tpl_loop *fileLoop = NULL;
@@ -223,7 +223,7 @@ tpl_varlist* getPostGlobalMultiPart(request_rec* r, tpl_varlist* varlist, const 
         retVarList = tpl_addLoop(varlist, "file_map", fileLoop);
 
     }
-    
+
     /* Get the post params and return them */
     postParams = ApacheRequest_post_params(postReq, r->pool);
     apr_table_do(postCallback, r, postParams, NULL);
@@ -562,6 +562,12 @@ char* parseBuffer(char* input, request_rec* r) {
 
             switch (getCBSwitchInt(l1Key)) {
 
+                case CB_INT_START:
+                {
+                    /* Start processing hook */
+                    json_decref(l1Value);
+                    break;
+                }
                 case CB_INT_HEADERS:
                 {
 
@@ -597,7 +603,7 @@ char* parseBuffer(char* input, request_rec* r) {
 
                 case CB_INT_END:
                 {
-
+                    /* End processing hook */
                     json_decref(l1Value);
                     break;
                 }
@@ -649,6 +655,26 @@ char* parseBuffer(char* input, request_rec* r) {
                     break;
                 }
 
+                case CB_INT_SEND_HEADER:
+                {
+
+                    json_object_foreach(l1Value, l2Key, l2Value) {
+                        apr_table_set(r->headers_out, l2Key, apr_pstrdup(r->pool, json_string_value(l2Value)));
+                        json_decref(l2Value);
+                    }
+
+                    json_decref(l1Value);
+                    break;
+                }
+
+                case CB_INT_STATUS:
+                {
+                    
+                    r->status = json_integer_value(l1Value);
+                    json_decref(l1Value);
+                    break;
+                    
+                }
                 default:
                 {
                     return "mod-dart ERROR!! - Control Buffer Corrupt - Unknown Object Name";

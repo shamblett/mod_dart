@@ -28,15 +28,21 @@ extern "C" {
     const int SENTINEL_LENGTH = 22;
 
     /* Control buffer objects */
+    const char* CB_START = "Start";
     const char* CB_HEADERS = "Headers";
     const char* CB_SESSION = "Session";
     const char* CB_SESSION_ACTIVE = "Session_Active";
+    const char* CB_SEND_HEADER = "Send_Header";
+    const char* CB_STATUS = "Status";
     const char* CB_END = "End";
 
     enum {
-        CB_INT_HEADERS = 1,
-        CB_INT_SESSION = 2,
-        CB_INT_SESSION_ACTIVE = 3,
+        CB_INT_START = 1,
+        CB_INT_HEADERS = 2,
+        CB_INT_SESSION = 3,
+        CB_INT_SESSION_ACTIVE = 4,
+        CB_INT_SEND_HEADER = 5,
+        CB_INT_STATUS = 6,
         CB_INT_END = 10
     };
 
@@ -54,10 +60,13 @@ extern "C" {
         char* switchText;
     } switchTableType;
 
-    const switchTableType cb_switchTable[4] = {
-        {1, "Headers"},
-        {2, "Session"},
-        {3, "Session_Active"},
+    const switchTableType cb_switchTable[7] = {
+        {1, "Start"},
+        {2, "Headers"},
+        {3, "Session"},
+        {4, "Session_Active"},
+        {5, "Send_Header"},
+        {6, "Status"},
         {10, "End"}
     };
 
