@@ -10,9 +10,6 @@
       <df name="ctemplate-1.0">
         <in>ctemplate.c</in>
       </df>
-      <df name="documentation">
-        <in>files.md</in>
-      </df>
       <df name="jansson">
         <in>dump.c</in>
         <in>error.c</in>
@@ -29,12 +26,14 @@
       <df name="popen-noshell">
         <in>popen_noshell.c</in>
       </df>
-      <in>apache.c</in>
-      <in>error.c</in>
-      <in>mod_dart.c</in>
-      <in>session.c</in>
-      <in>template.c</in>
-      <in>utils.c</in>
+      <df name="src">
+        <in>apache.c</in>
+        <in>error.c</in>
+        <in>mod_dart.c</in>
+        <in>session.c</in>
+        <in>template.c</in>
+        <in>utils.c</in>
+      </df>
     </df>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -71,6 +70,7 @@
             <incDir>
               <pElem>/usr/include/httpd</pElem>
               <pElem>/usr/include/apr-1</pElem>
+              <pElem>.</pElem>
             </incDir>
             <preprocessorList>
               <Elem>LINUX</Elem>
@@ -81,10 +81,6 @@
           </cTool>
         </makeTool>
       </makefileType>
-      <item path="apache.c" ex="false" tool="0" flavor2="3">
-        <cTool flags="0">
-        </cTool>
-      </item>
       <item path="apreq/apache_cookie.c" ex="false" tool="0" flavor2="3">
         <cTool flags="0">
         </cTool>
@@ -99,41 +95,11 @@
       </item>
       <item path="ctemplate-1.0/ctemplate.c" ex="false" tool="0" flavor2="3">
       </item>
-      <item path="documentation/files.md" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="error.c" ex="false" tool="0" flavor2="3">
-        <cTool flags="0">
-        </cTool>
-      </item>
-      <folder path="0/apreq">
-        <cTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </cTool>
-      </folder>
       <folder path="0/ctemplate-1.0">
         <cTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
           <preprocessorList>
             <Elem>_LARGEFILE64_SOURCE</Elem>
           </preprocessorList>
-        </cTool>
-      </folder>
-      <folder path="0/jansson">
-        <cTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </cTool>
-      </folder>
-      <folder path="0/popen-noshell">
-        <cTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
         </cTool>
       </folder>
       <item path="jansson/dump.c" ex="false" tool="0" flavor2="3">
@@ -180,23 +146,31 @@
         <cTool flags="0">
         </cTool>
       </item>
-      <item path="mod_dart.c" ex="false" tool="0" flavor2="3">
-        <cTool flags="0">
-        </cTool>
-      </item>
       <item path="popen-noshell/popen_noshell.c" ex="false" tool="0" flavor2="3">
         <cTool flags="0">
         </cTool>
       </item>
-      <item path="session.c" ex="false" tool="0" flavor2="3">
+      <item path="src/apache.c" ex="false" tool="0" flavor2="3">
         <cTool flags="0">
         </cTool>
       </item>
-      <item path="template.c" ex="false" tool="0" flavor2="3">
+      <item path="src/error.c" ex="false" tool="0" flavor2="3">
         <cTool flags="0">
         </cTool>
       </item>
-      <item path="utils.c" ex="false" tool="0" flavor2="3">
+      <item path="src/mod_dart.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="src/session.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="src/template.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="src/utils.c" ex="false" tool="0" flavor2="3">
         <cTool flags="0">
         </cTool>
       </item>

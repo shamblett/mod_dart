@@ -10,9 +10,9 @@
 #include "utils.h"
 #include "error.h"
 #include "constants.h"
-#include "jansson/jansson.h"
+#include "../jansson/jansson.h"
 #include "session.h"
-#include "apreq/apache_request.h"
+#include "../apreq/apache_request.h"
 
 #include "apache.h"
 

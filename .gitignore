@@ -1,6 +1,7 @@
 *.slo
 *.o
-/.libs
+.libs
 ctemplate-1.0/.libs
 ctemplate-1.0/*.slo
 ctemplate-1.0/*.o
+src/.libs

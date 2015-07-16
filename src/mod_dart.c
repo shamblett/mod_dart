@@ -17,7 +17,7 @@
 #include "apache.h"
 #include "utils.h"
 #include "error.h"
-#include "popen-noshell/popen_noshell.h"
+#include "../popen-noshell/popen_noshell.h"
 #include "mod_dart.h"
 
 /*

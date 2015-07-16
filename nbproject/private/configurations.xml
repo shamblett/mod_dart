@@ -17,7 +17,6 @@
         <in>ctemplate.h</in>
       </df>
       <df name="documentation">
-        <in>files.md</in>
       </df>
       <df name="jansson">
         <in>dump.c</in>
@@ -43,22 +42,24 @@
         <in>popen_noshell.c</in>
         <in>popen_noshell.h</in>
       </df>
+      <df name="src">
+        <in>apache.c</in>
+        <in>apache.h</in>
+        <in>constants.h</in>
+        <in>error.c</in>
+        <in>error.h</in>
+        <in>mod_dart.c</in>
+        <in>mod_dart.h</in>
+        <in>platform.h</in>
+        <in>session.c</in>
+        <in>session.h</in>
+        <in>template.c</in>
+        <in>template.h</in>
+        <in>utils.c</in>
+        <in>utils.h</in>
+      </df>
       <df name="test">
       </df>
-      <in>apache.c</in>
-      <in>apache.h</in>
-      <in>constants.h</in>
-      <in>error.c</in>
-      <in>error.h</in>
-      <in>mod_dart.c</in>
-      <in>mod_dart.h</in>
-      <in>platform.h</in>
-      <in>session.c</in>
-      <in>session.h</in>
-      <in>template.c</in>
-      <in>template.h</in>
-      <in>utils.c</in>
-      <in>utils.h</in>
     </df>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>

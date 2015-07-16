@@ -19,7 +19,7 @@
 
 #include "platform.h"
 
-#include "ctemplate-1.0/ctemplate.h"
+#include "../ctemplate-1.0/ctemplate.h"
 
 typedef TMPL_varlist tpl_varlist;
 typedef TMPL_loop tpl_loop;
