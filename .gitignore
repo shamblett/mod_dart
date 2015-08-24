@@ -1,7 +1,10 @@
 *.slo
 *.o
+*.lo
+*.la
 .libs
 ctemplate-1.0/.libs
 ctemplate-1.0/*.slo
 ctemplate-1.0/*.o
+ctemplate-1.0/*.lo
 src/.libs
