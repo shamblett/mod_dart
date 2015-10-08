@@ -158,7 +158,9 @@ class Apache{
     // Header
     // Immediately sends the supplied header to Apache, ignores any 
     // buffered output, i.e flushBuffers is not performed and exits
-    // the VM. Useful for headers such as 'Location'.
+    // the VM. The 'Location' header is treated as in PHP ie if no
+    // 201 or 3xx status code is set a 302 status code is automatically
+    // returned to the browser.
     void header(String name, String value) {
     
         Map<String, Map> output = new Map<String, Map>();
@@ -166,7 +168,13 @@ class Apache{
         Map<String,String> headerOut = { "${name}" : "${value}" };       
         output[CB_START] = null;
         output[CB_SEND_HEADER] = headerOut;
-        output[CB_STATUS] = _statusCode;
+        if ( name == LOCATION ) {
+            if ( (_statusCode == 201) || ( _statusCode >= 300 && _statusCode < 400) ) {      
+                output[CB_STATUS] = _statusCode;
+            } else {
+                output[CB_STATUS] = 302;
+            }
+        }
         output[CB_END] = null;
         _outputBuffer = "";
         _controlBuffer = _controlBuffer + JSON.encode(output);
