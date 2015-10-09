@@ -1,3 +1,7 @@
+# 0.5.0
+
+Status codes can now be returned, raw header and PHP location function.
+
 # 0.4.0
 
 Files super-global added. 
