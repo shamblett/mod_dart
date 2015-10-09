@@ -56,7 +56,6 @@ void main() {
   // Send Header if asked 
   if ( myAp.Request.containsKey('sendHeader') ) {
 
-    myAp.status(302);
     myAp.header("Location", "http://www.google.com");
   }
 
