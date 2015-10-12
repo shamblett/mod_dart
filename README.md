@@ -229,7 +229,5 @@ mod_dosomethingwizzy, you get the picture. All with the security inherent in the
  
 ### Where
 
-Well, far more control
-is needed to interact with Apache, then there's debugging support, test harnesses
-etc. snapshots? lots to do in fact. See the [omissions](documentation/omissions.md) document in the documentation directory 
-for what is/isn't supported.
+I guess snapshot support will be needed plus anything else people request from real usage.
+See the [omissions](documentation/omissions.md) document in the documentation directory for what is/isn't supported.

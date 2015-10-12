@@ -59,6 +59,24 @@ void main() {
     myAp.header("Location", "http://www.google.com");
   }
 
+  // Die if asked
+  if ( myAp.Request.containsKey('die') ) {
+
+     myAp.die("Test of the die function");
+
+  }
+
+  // Test print_r
+  List myList = [ 'first', 'second', 'third'];
+  int myInt = 10;
+  double myDouble = 1.5678;
+  if ( myAp.Request.containsKey('printr') ) {
+
+     myAp.print_r(myList,"myList is : ");
+     myAp.print_r(myInt);
+     myAp.writeOutput("${myAp.print_r(myDouble, 'The Double is : ', true)}");
+  }
+
   // Flush buffers and exit
   myAp.flushBuffers();
 	  
