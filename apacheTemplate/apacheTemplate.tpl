@@ -222,6 +222,31 @@ class Apache{
         return false;   
     }
     
+    // Debug
+    
+    // Die, prints directly to the output stream then flushes buffers
+    // and exits. This forces the message string to the top of the page
+    // whilst printing the output as far as it got.
+    void die(String message) {
+    
+        print(message);
+        flushBuffers(true);
+    
+    }
+    
+    // print_r, calls toString() on the supplied variable, if asText
+    // is true it returns the output as a String, otherwise it prints
+    // the output to the output buffer. Preceeding text, ie text within
+    // the <pre> tags can also be specified.
+    String print_r(Dynamic variable, [String precText = "", bool asText = false]) {
+    
+        String ret = "<pre>" + precText + variable.toString() + "</pre>";
+        if ( asText ) {      
+         return ret;
+        }
+        writeOutput(ret);
+    }
+    
     // Class specific
         
     // The output buffer
