@@ -57,6 +57,7 @@
         <in>template.h</in>
         <in>utils.c</in>
         <in>utils.h</in>
+        <in>version.h</in>
       </df>
       <df name="test">
       </df>

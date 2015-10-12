@@ -10,6 +10,7 @@
 #include "utils.h"
 #include "error.h"
 #include "constants.h"
+#include "version.h"
 #include "../jansson/jansson.h"
 #include "session.h"
 #include "../apreq/apache_request.h"

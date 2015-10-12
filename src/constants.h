@@ -18,9 +18,6 @@
 extern "C" {
 #endif
 
-    /* Version of mod_dart */
-    const char* VERSION = "0.5.0";
-
     /* Buffer sentinel, must match the declaration in the template*/
     const char* SENTINEL = ":-:mod_dart_control:-:";
 
