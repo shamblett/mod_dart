@@ -28,10 +28,12 @@ extern "C" {
      * 
      * @param templatePath - The path to the Apache class template
      * @param cachePath - The path to the cache directory
+     * @param sessionsOn - indicates if sessions are on in the vhost
      * @param r - The apache request structure
      * @return - An APR files descriptor of the built Apache class script
      */
-    apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, request_rec *r);
+    apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, 
+                                 int sessionsOn, request_rec *r);
 
     /**
      * parseBuffer
@@ -40,10 +42,11 @@ extern "C" {
      * and return the real output;
      * 
      * @param input - The VM output
+     * @param sessionsOn - indicates if sessions are on in the vhost
      * @param r - the current request record
      * @return - the buffer to write to apache
      */
-    char* parseBuffer(char* input, request_rec* r);
+    char* parseBuffer(char* input, int sessionsOn, request_rec* r);
 
 #ifdef	__cplusplus
 }

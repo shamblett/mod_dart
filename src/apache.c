@@ -451,7 +451,8 @@ tpl_varlist* getSessionGlobal(request_rec* r, tpl_varlist* varlist) {
 
 }
 
-apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, request_rec* r) {
+apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath,
+        int sessionsOn, request_rec* r) {
 
     tpl_varlist* varList = NULL;
     apr_file_t* scriptFile;
@@ -502,7 +503,8 @@ apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, re
     varList = getRequestHeaders(r, varList);
 
     /* SESSION global */
-    varList = getSessionGlobal(r, varList);
+    if (sessionsOn == 1)
+        varList = getSessionGlobal(r, varList);
 
     /* Create the template file output file, get its name and close it. */
     len = sizeof (scriptFileTemplate);
@@ -534,7 +536,7 @@ apr_file_t* buildApacheClass(const char* templatePath, const char* cachePath, re
 
 }
 
-char* parseBuffer(char* input, request_rec* r) {
+char* parseBuffer(char* input, int sessionsOn, request_rec* r) {
 
     json_t *root;
     json_error_t error;
@@ -613,14 +615,15 @@ char* parseBuffer(char* input, request_rec* r) {
                 {
 
                     dartSession theSession;
-
-                    if (json_is_true(l1Value) == TRUE) {
-                        sessionActive = TRUE;
-                    } else {
-                        sessionActive = FALSE;
-                        int status = sessionStart(r, &theSession);
-                        if (status == FALSE) break;
-                        sessionDestroy(r, &theSession);
+                    if (sessionsOn == 1) {
+                        if (json_is_true(l1Value) == TRUE) {
+                            sessionActive = TRUE;
+                        } else {
+                            sessionActive = FALSE;
+                            int status = sessionStart(r, &theSession);
+                            if (status == FALSE) break;
+                            sessionDestroy(r, &theSession);
+                        }
                     }
 
                     json_decref(l1Value);
@@ -631,25 +634,27 @@ char* parseBuffer(char* input, request_rec* r) {
                 case CB_INT_SESSION:
                 {
 
-                    if (sessionActive == TRUE) {
+                    if (sessionsOn == 1) {
+                        if (sessionActive == TRUE) {
 
-                        dartSession theSession;
+                            dartSession theSession;
 
-                        /* Get a session now we are active */
-                        int status = sessionStart(r, &theSession);
-                        if (status == FALSE) break;
+                            /* Get a session now we are active */
+                            int status = sessionStart(r, &theSession);
+                            if (status == FALSE) break;
 
-                        /* Clear the entries table */
-                        apr_table_clear(theSession.modSession->entries);
+                            /* Clear the entries table */
+                            apr_table_clear(theSession.modSession->entries);
 
-                        /* Re-instate the entries table */
-                        json_object_foreach(l1Value, l2Key, l2Value) {
+                            /* Re-instate the entries table */
+                            json_object_foreach(l1Value, l2Key, l2Value) {
 
-                            sessionSet(r, &theSession, l2Key, json_string_value(l2Value));
-                            json_decref(l2Value);
+                                sessionSet(r, &theSession, l2Key, json_string_value(l2Value));
+                                json_decref(l2Value);
+                            }
+
+                            sessionSave(r, &theSession, TRUE);
                         }
-
-                        sessionSave(r, &theSession, TRUE);
                     }
 
                     json_decref(l1Value);
@@ -670,11 +675,11 @@ char* parseBuffer(char* input, request_rec* r) {
 
                 case CB_INT_STATUS:
                 {
-                    
+
                     r->status = json_integer_value(l1Value);
                     json_decref(l1Value);
                     break;
-                    
+
                 }
                 default:
                 {
