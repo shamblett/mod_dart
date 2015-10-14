@@ -20,6 +20,7 @@
 #include "../popen-noshell/popen_noshell.h"
 #include "mod_dart.h"
 
+
 /*
  Module configuration 
  */
@@ -121,6 +122,7 @@ static int md_handler(request_rec *r) {
         arg2 = config.packageRoot;
     } else {
         packageRoot = ap_document_root(r);
+        strncat((char*)packageRoot, DEFAULT_PACKAGE, strlen(DEFAULT_PACKAGE));
         arg2 = packageRoot;
     }
     arg1 = apr_pstrcat(r->pool,arg1, arg2, NULL);   

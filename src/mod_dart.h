@@ -9,6 +9,8 @@
 #ifndef MOD_DART_H
 #define	MOD_DART_H
 
+/* Default package directory */
+const char* DEFAULT_PACKAGE = "/packages/";
 
 #endif	/* MOD_DART_H */
 
