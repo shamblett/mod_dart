@@ -20,7 +20,6 @@
 #include "../popen-noshell/popen_noshell.h"
 #include "mod_dart.h"
 
-
 /*
  Module configuration 
  */
@@ -52,17 +51,15 @@ const char *md_set_template_path(cmd_parms *cmd, void *cfg, const char *arg) {
 }
 
 const char *md_set_package_root(cmd_parms *cmd, void *cfg, const char *arg) {
-    config.packageRoot= arg;
+    config.packageRoot = arg;
     config.packageRootSet = 1;
     return (const char*) NULL;
 }
 
 const char *md_set_session(cmd_parms *cmd, void *cfg, const char *arg) {
-    if ( ((strcmp(arg, "On")) || (strcmp(arg, "on"))) == 0 ) {
+    if (((strcmp(arg, "On")) || (strcmp(arg, "on"))) == 0)
         config.sessionsOn = 1;
-    } else {
-        config.sessionsOn = 0;
-    }
+
     return (const char*) NULL;
 }
 
@@ -86,7 +83,7 @@ static int md_handler(request_rec *r) {
     const char* packageRoot;
     struct popen_noshell_pass_to_pclose pclose_arg;
     const char *arg2 = NULL;
-    
+
     /* Check for a Dart file */
     if (!r->handler || strcmp(r->handler, "dart")) return (DECLINED);
 
@@ -101,7 +98,7 @@ static int md_handler(request_rec *r) {
         logError(errorBuff, r->pool, 0);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
-    
+
     status = apr_file_name_get(&scriptFileName, scriptFile);
     status = apr_file_copy(filename, scriptFileName, APR_OS_DEFAULT, r->pool);
     if (status != APR_SUCCESS) {
@@ -110,7 +107,7 @@ static int md_handler(request_rec *r) {
     }
 
     /* Build the apache class template and append it to the script file */
-    apacheClassFile = buildApacheClass(config.pathToTemplate, config.pathToCache,config.sessionsOn, r);
+    apacheClassFile = buildApacheClass(config.pathToTemplate, config.pathToCache, config.sessionsOn, r);
     if (apacheClassFile == NULL) {
         logError("md_handler - Failed to create apache class  file", r->pool, status);
         return HTTP_INTERNAL_SERVER_ERROR;
@@ -123,28 +120,28 @@ static int md_handler(request_rec *r) {
     }
     status = apr_file_close(apacheClassFile);
     status = apr_file_remove(apacheFileName, r->pool);
-    
+
     /* Build the dart command */
     const char *exec_file = config.pathToExe;
-    
+
     char *arg1 = "--package-root=";
-    if ( config.packageRootSet) {
+    if (config.packageRootSet) {
         arg2 = config.packageRoot;
     } else {
         packageRoot = ap_document_root(r);
-        strncat((char*)packageRoot, DEFAULT_PACKAGE, strlen(DEFAULT_PACKAGE));
+        strncat((char*) packageRoot, DEFAULT_PACKAGE, strlen(DEFAULT_PACKAGE));
         arg2 = packageRoot;
     }
-    arg1 = apr_pstrcat(r->pool,arg1, arg2, NULL);   
-    
+    arg1 = apr_pstrcat(r->pool, arg1, arg2, NULL);
+
     const char *arg3 = scriptFileName;
-    
+
     char* arg5 = (char *) NULL;
-    
+
     const char* argv[] = {exec_file, arg1, arg3, arg5};
-    
+
     /* Invoke the VM */
-    fp = popen_noshell(exec_file, (const char * const *)argv, "r", &pclose_arg, 2);
+    fp = popen_noshell(exec_file, (const char * const *) argv, "r", &pclose_arg, 2);
     if (fp == NULL) {
 
         logError("md_handler - POPEN Fail ", r->pool, 0);
@@ -156,15 +153,15 @@ static int md_handler(request_rec *r) {
      * parse and apply the control commands. Set a default header
      * so we can see errors from the VM as we will have no control block
      */
-    ap_set_content_type(r,"text/html");
+    ap_set_content_type(r, "text/html");
     while (fgets(output, PATH_MAX, fp) != NULL)
-        ap_rprintf(r, "%s", parseBuffer(output, config.sessionsOn, r) );
+        ap_rprintf(r, "%s", parseBuffer(output, config.sessionsOn, r));
     int pStatus = pclose_noshell(&pclose_arg);
     if (pStatus == -1) {
         logError("md_handler - POPEN Close Fail ", r->pool, 0);
         return (HTTP_INTERNAL_SERVER_ERROR);
     }
-    
+
     /* Remove the script file */
     status = apr_file_close(scriptFile);
     status = apr_file_remove(scriptFileName, r->pool);
@@ -177,8 +174,9 @@ static int md_handler(request_rec *r) {
  Apache register hooks 
  */
 static void md_register_hooks(apr_pool_t *p) {
-    
+
     config.packageRootSet = 0;
+    config.sessionsOn = 0;
     ap_hook_handler(md_handler, NULL, NULL, APR_HOOK_MIDDLE);
 
 }
@@ -189,10 +187,10 @@ static void md_register_hooks(apr_pool_t *p) {
 static const command_rec md_directives[] = {
     AP_INIT_TAKE1("DartExePath", md_set_exe_path, NULL, RSRC_CONF, "The path to the Dart executable"),
     AP_INIT_TAKE1("CachePath", md_set_cache_path, NULL, RSRC_CONF, "The path to the script cache"),
-    AP_INIT_TAKE1("TemplatePath", md_set_template_path, NULL, RSRC_CONF, "The path to the script template"), 
+    AP_INIT_TAKE1("TemplatePath", md_set_template_path, NULL, RSRC_CONF, "The path to the script template"),
     AP_INIT_TAKE1("PackageRoot", md_set_package_root, NULL, RSRC_CONF, "The package root of the dart installation"),
-    AP_INIT_TAKE1("Session", md_set_session, NULL, RSRC_CONF, "Sessions indicator"),
-    {NULL}
+    AP_INIT_TAKE1("Session", md_set_session, NULL, RSRC_CONF, "Sessions indicator"), {
+        NULL}
 };
 
 
