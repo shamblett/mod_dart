@@ -9,7 +9,6 @@
 
 # setup
 current_dir = $(shell pwd)
-template_path = /var/www/html/template
 SRC=$(current_dir)/src
 
 # third party
@@ -27,25 +26,40 @@ else
     APXS=apxs
 endif
 
+SRC_FILES = $(SRC)/mod_dart.c $(SRC)/template.c $(SRC)/utils.c $(SRC)/error.c \
+            $(SRC)/session.c $(SRC)/apache.c
+            
+TEMPL_FILES = $(CTMPL)/ctemplate.c
 
+JANS_FILES =  $(JANS)/dump.c $(JANS)/hashtable.c $(JANS)/hashtable_seed.c \
+              $(JANS)/load.c $(JANS)/value.c $(JANS)/error.c 
+           
+POPEN_FILES = $(POPEN)/popen_noshell.c
+
+APREQ_FILES = $(APREQ)/apache_cookie.c $(APREQ)/apache_multipart_buffer.c \
+              $(APREQ)/apache_request.c 
+              
 #   the default target
 all: mod_dart
 
 # main module target 
 .PHONY: mod_dart
 mod_dart: 
-	
-	$(APXS) -a -c -Wc,-Wall $(UBUNTU) -Wi, $(SRC)/mod_dart.c $(SRC)/template.c $(SRC)/utils.c $(SRC)/error.c $(SRC)/session.c $(SRC)/apache.c \
-	    -I$(CTMPL) $(CTMPL)/ctemplate.c \
-	    -I$(JANS) $(JANS)/dump.c $(JANS)/hashtable.c $(JANS)/hashtable_seed.c $(JANS)/load.c \
-	    $(JANS)/memory.c $(JANS)/pack_unpack.c $(JANS)/strbuffer.c $(JANS)/strconv.c $(JANS)/utf.c \
-	    $(JANS)/value.c $(JANS)/error.c \
-	    -I$(POPEN) $(POPEN)/popen_noshell.c \
-	    -I$(APREQ) $(APREQ)/apache_cookie.c $(APREQ)/apache_multipart_buffer.c $(APREQ)/apache_request.c  
-	
-	cp apacheTemplate/apacheTemplate.tpl $(template_path)
+          
+	$(APXS) -a -c -Wc,-Wall $(UBUNTU) -Wi, \
+			$(SRC_FILES) \
+	      -I$(CTMPL)  $(TEMPL_FILES) \
+	      -I$(JANS)   $(JANS_FILES) \
+	      -I$(POPEN)  $(POPEN_FILES) \
+	      -I$(APREQ)  $(APREQ_FILES)
 
 
 #   cleanup
 clean:
-	rm -f .libs/* rm *.lo rm *.la rm *.slo
+	rm -f $(SRC)/.libs/* rm $(APREQ)/*.lo rm $(APREQ)/*.la rm $(APREQ)/*.slo rm $(APREQ)/*.o \
+	rm $(POPEN)/*.lo rm $(POPEN)/*.la rm $(POPEN)/*.slo rm $(POPEN)/*.o \
+	rm $(JANS)/*.lo rm $(JANS)/*.la rm $(JANS)/*.slo rm $(JANS)/*.o \
+	rm $(CTMPL)/*.lo rm $(CTMPL)/*.la rm $(CTMPL)/*.slo rm $(CTMPL)/*.o \
+	rm $(SRC)/*.lo rm $(SRC)/*.la rm $(SRC)/*.slo rm $(SRC)/*.o 
+	
+	
