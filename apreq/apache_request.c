@@ -528,7 +528,7 @@ int ApacheRequest_parse_multipart(ApacheRequest *req) {
                 r->remaining -= 2;
                 continue;
             }
-            apr_status_t status = NULL;
+            apr_status_t status = 0;
 
             while ((blen = multipart_buffer_read(mbuff, buff, sizeof (buff)))) {
                 if (req->upload_hook != NULL) {
